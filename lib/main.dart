@@ -1,5 +1,6 @@
 import 'package:homealone/pages/Navbar/addbar.dart';
 import 'package:homealone/pages/Navbar/mainpages.dart';
+import 'package:homealone/pages/addhome.dart';
 import 'package:homealone/pages/addrent.dart';
 import 'package:homealone/pages/adduser.dart';
 
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
         '/main-page': (context) => MainPages(),
         '/manu-page': (context) => AddMenu(),
         '/Addrent-page': (context) => AddRent(),
-        '/Adduser-page': (context) => AddUser()
+        '/Adduser-page': (context) => AddUser(),
+        '/Addhome-page': (context) => AddHome()
       },
     );
   }

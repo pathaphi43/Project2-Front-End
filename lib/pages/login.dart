@@ -102,8 +102,9 @@ class _LoginPageState extends State<LoginPage> {
                           reqlogin.password = _password.text;
                           var Jsonreq = await loginToJson(reqlogin);
                           print(Jsonreq);
-                          Navigator.pushNamed(context, '/main-page',
-                              arguments: [1]);
+
+                          // Navigator.pushNamed(context, '/main-page',
+                          //     arguments: [1]);
                           // Navigator.pushNamed(context, '/home-page',
                           //     arguments: [id, name]);
 
@@ -118,45 +119,49 @@ class _LoginPageState extends State<LoginPage> {
                           // }
 
                           // print(decodeToken);
-                          // print('JsonUser ' + Jsonreq[1]);
-                          // print('JsonPass ' + Jsonreq[2]);
+                          print('JsonUser ' + Jsonreq[1]);
+                          print('JsonPass ' + Jsonreq[2]);
 
-                          // if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
-                          //   print('JsonNotnull');
-                          //   var response = await http.post(
-                          //       'http://homealone.comsciproject.com/user/login',
-                          //       body: Jsonreq,
-                          //       headers: {
-                          //         'Content-Type': 'application/json',
-                          //         'Accept': 'application/json',
-                          //         'Authorization': 'Bearer'+token,
-                          //       });
-                          //   print(response.body);
+                          if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
+                            print('JsonNotnull');
+                            var response = await http.post(
+                                'http://homealone.comsciproject.com/user/login',
+                                body: Jsonreq,
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  // 'Accept': 'application/json',
+                                  // 'Authorization': 'Bearer'+token,
+                                });
+                            print(response.body);
 
-                          //   print(response.statusCode);
-                          //   if (response.statusCode.toString() == '200') {
-                          //     Map<String, dynamic> decodedToken =
-                          //         JwtDecoder.decode(response.body.toString());
-                          //     print(decodedToken['id']);
-                          //     ScaffoldMessenger.of(context).showSnackBar(
-                          //         const SnackBar(
-                          //             content: Text('Login สำเร็จ')));
-                          //     setState(() {});
-                          //     Navigator.pushNamed(context, '/main-page',
-                          //         arguments: [decodedToken['id'].toString()]);
-                          //   } else {
-                          //     ScaffoldMessenger.of(context).showSnackBar(
-                          //         const SnackBar(
-                          //             content: Text(
-                          //                 'Username หรือ Password ไม่ถูกต้อง')));
-                          //     // setState(() {});
-                          //   }
-                          // } else {
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //       const SnackBar(
-                          //           content: Text(
-                          //               'กรุณากรอก Username หรือ Password')));
-                          // }
+                            print(response.statusCode);
+                            if (response.statusCode.toString() == '200') {
+                              Map<String, dynamic> decodedToken =
+                                  JwtDecoder.decode(response.body.toString());
+                              print(decodedToken['id']);
+                              print(decodedToken['status']);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Login สำเร็จ')));
+                              setState(() {});
+                              Navigator.pushNamed(context, '/main-page',
+                                  arguments: [
+                                    decodedToken['id'].toString(),
+                                    decodedToken['status'].toString()
+                                  ]);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Username หรือ Password ไม่ถูกต้อง')));
+                              // setState(() {});
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'กรุณากรอก Username หรือ Password')));
+                          }
                         },
                         child: Text('Login'.toUpperCase(),
                             style: TextStyle(fontSize: 14)),

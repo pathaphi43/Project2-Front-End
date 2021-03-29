@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var reqhouse = House();
 
-    reqhouse.hid = 1;
+    reqhouse.h_Manager = 1;
     reqhouse.houseName = 'PPTown';
     reqhouse.houseAdd =
         '235 หมู่ที่ 15 ต.ขามเรียง อ.กันทรวิชัย จ.มหาสารคาม 44150';
@@ -70,9 +70,9 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
                   child: ListTile(
-                      leading: Image.asset(
-                        'images/fr.jpg',
-                      ),
+                      leading: Image.network(
+                          'http://homealone.comsciproject.com/img/home.jpg'
+                              .toString()),
                       title: Text('ฟอเรสท์ เพลส'),
                       subtitle: Text(
                           '235 หมู่ที่ 15 ต.ขามเรียง อ.กันทรวิชัย จ.มหาสารคาม'),

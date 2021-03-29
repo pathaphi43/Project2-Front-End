@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/payment.dart';
 import 'package:homealone/pages/profile.dart';
+import 'package:condition/condition.dart';
 
 class MainPages extends StatefulWidget {
   @override
@@ -15,55 +16,107 @@ class MainPages extends StatefulWidget {
 class _MainPagesState extends State<MainPages> {
   List<Widget> showWidgets = [HomePage(), PaymentPage(), ProfilePage()];
   int index = 0;
-
+  String message = ' ';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey[200],
-        leading: IconButton(
-            icon: const Icon(
-              Icons.add_box_outlined,
-              color: Colors.black,
-              size: 25,
-            ),
-            tooltip: 'Add User',
-            onPressed: () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('MenuAdd')));
-              Navigator.pushNamed(context, '/manu-page', arguments: null);
-            }),
-        title: Center(
-          child: Text(
-            'Home Alone',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 25.0,
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
+    List<String> args = ModalRoute.of(context).settings.arguments;
+    print('MainContext' + args.toString());
+    if (args[1] == '0') {
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
               icon: const Icon(
-                Icons.exit_to_app_outlined,
+                Icons.add_box_outlined,
                 color: Colors.black,
                 size: 25,
               ),
-              tooltip: 'LOGOUT',
+              tooltip: 'Add User',
               onPressed: () {
-                Navigator.popAndPushNamed(
-                  context,
-                  '/login-page',
-                );
-
                 ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(content: Text('LOGOUT')));
-              })
-        ],
-      ),
-      body: showWidgets[index],
-      bottomNavigationBar: myButtonNavBar(),
-    );
+                    .showSnackBar(const SnackBar(content: Text('MenuAdd')));
+                Navigator.pushNamed(context, '/manu-page', arguments: args);
+              }),
+          title: Center(
+            child: Text(
+              'Home Alone',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 25.0,
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            IconButton(
+                icon: const Icon(
+                  Icons.exit_to_app_outlined,
+                  color: Colors.black,
+                  size: 25,
+                ),
+                tooltip: 'LOGOUT',
+                onPressed: () {
+                  Navigator.popAndPushNamed(
+                    context,
+                    '/login-page',
+                  );
+
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(content: Text('LOGOUT')));
+                })
+          ],
+          backgroundColor: Colors.grey[200],
+        ),
+        body: showWidgets[index],
+        bottomNavigationBar: myButtonNavBar(),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          // leading:  IconButton(
+          //     icon: const Icon(
+          //       Icons.add_box_outlined,
+          //       color: Colors.black,
+          //       size: 25,
+          //     ),
+          //     tooltip: 'Add User',
+          //     onPressed: () {
+          //       ScaffoldMessenger.of(context)
+          //           .showSnackBar(const SnackBar(content: Text('MenuAdd')));
+          //       Navigator.pushNamed(context, '/manu-page', arguments: args);
+          //     }),
+
+          title: Center(
+            child: Text(
+              'Home Alone',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 25.0,
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            IconButton(
+                icon: const Icon(
+                  Icons.exit_to_app_outlined,
+                  color: Colors.black,
+                  size: 25,
+                ),
+                tooltip: 'LOGOUT',
+                onPressed: () {
+                  Navigator.popAndPushNamed(
+                    context,
+                    '/login-page',
+                  );
+
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(content: Text('LOGOUT')));
+                })
+          ],
+          backgroundColor: Colors.grey[200],
+        ),
+        body: showWidgets[index],
+        bottomNavigationBar: myButtonNavBar(),
+      );
+    }
   }
 
   Widget myButtonNavBar() {
