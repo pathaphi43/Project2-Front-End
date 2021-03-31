@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/model/homeinsertmodel.dart';
 import 'package:homealone/model/homemodel.dart';
 import 'package:http/http.dart' as http;
 
@@ -58,15 +59,22 @@ class _AddHomeState extends State<AddHome> {
                       padding: const EdgeInsets.all(10.0),
                       child: TextButton(
                           onPressed: () async {
-                            var reqlogin = House();
-                            reqlogin.h_Manager = int.parse(args[0]);
+                            //
+                            var reqlogin = Inhouse();
+
+                            reqlogin.hManager = int.parse(args[0]);
                             reqlogin.houseName = _name.text;
                             reqlogin.houseAdd = _add.text;
                             reqlogin.houseStatus = int.parse(args[1]);
-                            var Jsonreq = await houseToJson(reqlogin);
-                            print(Jsonreq);
-                            // if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
+                            print('ADDHOMEReq=' + reqlogin.toString());
+                            var Jsonreq = await inhouseToJson(reqlogin);
+                            print('JJ2' + Jsonreq[2].toString());
+
+                            // if (Jsonreq[2] != 'h' &&
+                            //     Jsonreq[1] != null &&
+                            //     Jsonreq[3] != '_') {
                             //   print('JsonNotnull');
+
                             var response = await http.post(
                                 'http://homealone.comsciproject.com/home/api/inserthome',
                                 body: Jsonreq,
@@ -83,8 +91,15 @@ class _AddHomeState extends State<AddHome> {
                                   const SnackBar(
                                       content: Text('เพิ่มบ้านเช่าสำเร็จ')));
                               setState(() {});
-                              Navigator.pushNamed(context, '/manu-page',
-                                  arguments: null);
+
+                              Navigator.pushNamed(context, '/main-page',
+                                  arguments: args);
+                              // ModalRoute.withName('/main-page'),
+                              // arguments: null
+
+                              // (Route<dynamic> route) =>
+                              // Navigator.pushNamed(context, '/manu-page',
+                              //     arguments: null);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -94,8 +109,7 @@ class _AddHomeState extends State<AddHome> {
                             // } else {
                             //   ScaffoldMessenger.of(context).showSnackBar(
                             //       const SnackBar(
-                            //           content: Text(
-                            //               'กรุณากรอก Username หรือ Password')));
+                            //           content: Text('เพิ่มบ้านเช่าไม่สำเร็จ')));
                             // }
                           },
                           child: Text('เพิ่มบ้านเช่า'.toUpperCase(),

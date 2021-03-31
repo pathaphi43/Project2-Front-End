@@ -1,13 +1,17 @@
+import 'dart:ui';
+
 import 'package:homealone/model/homemodel.dart';
-import 'package:homealone/model/testhomemodel.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:convert' as convert;
+
 import 'package:flutter/widgets.dart';
+
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:async';
+
+List<House> homeall;
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,85 +19,119 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    var reqhouse = House();
+  // @override
+  // void initState() {
+  // }
 
-    reqhouse.h_Manager = 1;
-    reqhouse.houseName = 'PPTown';
-    reqhouse.houseAdd =
-        '235 หมู่ที่ 15 ต.ขามเรียง อ.กันทรวิชัย จ.มหาสารคาม 44150';
-    reqhouse.houseStatus = 0;
-    List<String> args = ModalRoute.of(context).settings.arguments;
-    return Scaffold(
-      body: Container(
-          color: Colors.amber[50],
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: ListTile(
-                    leading: Image.asset(
-                      'images/home.jpg',
-                    ),
-                    title: Text(reqhouse.houseName),
-                    subtitle: Text(reqhouse.houseAdd),
-                    trailing: Text(
-                      'ติดจอง',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.orange),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: ListTile(
-                    leading: Image.asset(
-                      'images/ud.jpg',
-                    ),
-                    title: Text('UDTOWN'),
-                    subtitle: Text(reqhouse.houseAdd),
-                    trailing: Text(
-                      'กำลังเช่า',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.yellow[600]),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: ListTile(
-                      leading: Image.network(
-                          'http://homealone.comsciproject.com/img/home.jpg'
-                              .toString()),
-                      title: Text('ฟอเรสท์ เพลส'),
-                      subtitle: Text(
-                          '235 หมู่ที่ 15 ต.ขามเรียง อ.กันทรวิชัย จ.มหาสารคาม'),
-                      trailing: Text(
-                        'ว่าง',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.green),
-                      )),
-                ),
-              ),
-            ],
-          )),
-    );
+  Future<House> gethomeAll() async {
+    final response = await http
+        .get(Uri.http('homealone.comsciproject.com', '/home/allhome'));
+    setState(() {
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        homeall = houseFromJson(response.body);
+        print(homeall.length);
+      } else {
+        throw Exception('Failed to load album');
+      }
+    });
   }
 
-  // List<Testh> getphoto() {
-  //   Future<String> photosJson = rootBundle.loadString('Json/photo.json');
-  //   photosJson.then((value) {
-  //     List<Testh> photos = testhFromJson(value);
-  //   });
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+        child: new Center(
+      child: new RefreshIndicator(
+        child: ListView(
+          children: <Widget>[
+            (homeall != null)
+                ? Column(
+                    children: homeall.map((homeall) {
+                    return Card(
+                        child: ListTile(
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text(''),
+                          duration: const Duration(seconds: 1),
+                          action: SnackBarAction(
+                            label: 'ShowHomeID:' + homeall.hid.toString(),
+                            onPressed: () {
+                              print(homeall.hid);
+                            },
+                          ),
+                        ));
+                      },
+                      leading: Image.network(homeall.houseImage),
+                      title: Text(homeall.houseName),
+                      subtitle: Text(homeall.houseAdd),
+                      trailing: Text(
+                        (homeall.houseStatus == 0)
+                            ? 'ว่าง'
+                            : (homeall.houseStatus == 1)
+                                ? 'กำลังเช่า'
+                                : (homeall.houseStatus == 2)
+                                    ? 'ติดจอง'
+                                    : 'ยกเลิก',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: (homeall.houseStatus == 0)
+                              ? Colors.green
+                              : (homeall.houseStatus == 1)
+                                  ? Colors.yellow[600]
+                                  : (homeall.houseStatus == 2)
+                                      ? Colors.orange
+                                      : Colors.red,
+                        ),
+                      ),
+                    ));
+                  }).toList())
+                : Container()
+          ],
+        ),
+        onRefresh: gethomeAll,
+      ),
+    ));
 
-  //   return;
-  // }
+    // gethomeAll();
+    // return Scaffold(
+
+    //     body: Container(
+    //   child: ListView(
+    //     children: <Widget>[
+    //       (homeall != null)
+    //           ? Column(
+    //               children: homeall.map((homeall) {
+    //               return Card(
+    //                   child: ListTile(
+    //                 leading: Image.network(homeall.houseImage),
+    //                 title: Text(homeall.houseName),
+    //                 subtitle: Text(homeall.houseAdd),
+    //                 trailing: Text(
+    //                   (homeall.houseStatus == 0)
+    //                       ? 'ว่าง'
+    //                       : (homeall.houseStatus == 1)
+    //                           ? 'กำลังเช่า'
+    //                           : (homeall.houseStatus == 2)
+    //                               ? 'ติดจอง'
+    //                               : 'ยกเลิก',
+    //                   style: TextStyle(
+    //                     fontWeight: FontWeight.bold,
+    //                     color: (homeall.houseStatus == 0)
+    //                         ? Colors.green
+    //                         : (homeall.houseStatus == 1)
+    //                             ? Colors.yellow[600]
+    //                             : (homeall.houseStatus == 2)
+    //                                 ? Colors.orange
+    //                                 : Colors.red,
+    //                   ),
+    //                 ),
+    //               ));
+    //             }).toList())
+    //           : Container()
+    //     ],
+    //   ),
+    // )
+
+    // );
+  }
 }

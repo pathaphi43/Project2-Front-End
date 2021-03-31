@@ -60,6 +60,8 @@ flutter:
   - images/ud.jpg
   - images/fr.jpg
   - Json/photo.json
+  # - images/nong.jpg
+  - images/back.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

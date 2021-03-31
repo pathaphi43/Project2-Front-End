@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert' as convert;
 import 'package:homealone/model/loginmodel.dart';
+import 'package:homealone/pages/Navbar/mainpages.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -22,6 +23,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String message = ' ';
+  String id = '';
+  String status = '';
 
   var _username = TextEditingController();
   var _password = TextEditingController();
@@ -38,23 +41,25 @@ class _LoginPageState extends State<LoginPage> {
           child: ListView(
             shrinkWrap: true,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/main-page',
-                        );
-                      },
-                      child: Text('Skip'),
-                    ),
-                  ],
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.end,
+              //     children: <Widget>[
+              //       TextButton(
+              //         onPressed: () {
+              //           // Navigator.pushNamed(context, '/main-page',
+              //           //     arguments: [id, status = 3.toString()]);
+
+              //           Navigator.pushNamedAndRemoveUntil(context, '/main-page',
+              //               (Route<dynamic> route) => false,
+              //               arguments: [id, status = 3.toString()]);
+              //         },
+              //         child: Text('Skip'),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                 child: Image.asset(
@@ -79,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                 child: TextField(
+                  obscureText: true,
                   style: Theme.of(context).textTheme.headline6,
                   textAlign: TextAlign.start,
                   decoration: InputDecoration(
@@ -144,11 +150,22 @@ class _LoginPageState extends State<LoginPage> {
                                   const SnackBar(
                                       content: Text('Login สำเร็จ')));
                               setState(() {});
-                              Navigator.pushNamed(context, '/main-page',
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  '/main-page', (Route<dynamic> route) => false,
                                   arguments: [
                                     decodedToken['id'].toString(),
                                     decodedToken['status'].toString()
                                   ]);
+                              // Navigator.pushAndRemoveUntil(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => MainPages()));
+
+                              // Navigator.pushNamed(context, '/main-page',
+                              //     arguments: [
+                              //       decodedToken['id'].toString(),
+                              //       decodedToken['status'].toString()
+                              //     ]);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
