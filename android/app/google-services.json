@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "84824166718",
+    "firebase_url": "https://homealone-6f70b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "homealone-6f70b",
+    "storage_bucket": "homealone-6f70b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84824166718:android:323dcb9b904a9fb35a9c6f",
+        "android_client_info": {
+          "package_name": "com.example.homealone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84824166718-lks26qjlhpeanmsfhv5nvk4ldfvm5qeg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrtnQLne0oJo0us-tBRiY_d7jw-Q2QUiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84824166718-lks26qjlhpeanmsfhv5nvk4ldfvm5qeg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
