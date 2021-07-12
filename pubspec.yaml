@@ -30,12 +30,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.12.0+2
   jwt_decoder: ^2.0.0
-  shared_preferences: ^2.0.5
+  
   bloc_provider: ^0.8.0
   bloc: ^7.0.0
   flutter_datetime_picker: ^1.5.0
   file_picker: ^3.0.0
   condition: ^0.0.8
+  shared_preferences: ^2.0.6
   
 
 dev_dependencies:
@@ -60,8 +61,8 @@ flutter:
   - images/ud.jpg
   - images/fr.jpg
   - Json/photo.json
-  # - images/nong.jpg
   - images/back.jpg
+  - images/nong.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

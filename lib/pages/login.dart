@@ -150,22 +150,18 @@ class _LoginPageState extends State<LoginPage> {
                                   const SnackBar(
                                       content: Text('Login สำเร็จ')));
                               setState(() {});
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.setString(
+                                  'id', decodedToken['id'].toString());
+                              await prefs.setString(
+                                  'status', decodedToken['status']);
                               Navigator.pushNamedAndRemoveUntil(context,
                                   '/main-page', (Route<dynamic> route) => false,
                                   arguments: [
                                     decodedToken['id'].toString(),
                                     decodedToken['status'].toString()
                                   ]);
-                              // Navigator.pushAndRemoveUntil(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => MainPages()));
-
-                              // Navigator.pushNamed(context, '/main-page',
-                              //     arguments: [
-                              //       decodedToken['id'].toString(),
-                              //       decodedToken['status'].toString()
-                              //     ]);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(

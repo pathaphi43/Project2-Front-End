@@ -7,6 +7,7 @@ import 'package:homealone/pages/adduser.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/login.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/pages/profile.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
         // '/manu-page': (context) => AddMenu(),
         '/Addrent-page': (context) => AddRent(),
         '/Adduser-page': (context) => AddUser(),
-        '/Addhome-page': (context) => AddHome()
+        '/Addhome-page': (context) => AddHome(),
+        '/profile-page': (context) => ProfilePage()
       },
     );
   }

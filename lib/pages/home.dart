@@ -11,6 +11,8 @@ import 'package:http/http.dart' as http;
 
 import 'dart:async';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 List<House> homeall;
 
 class HomePage extends StatefulWidget {
@@ -19,9 +21,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // @override
-  // void initState() {
-  // }
+  @override
+  void initState() {
+    super.initState();
+    gethomeAll();
+  }
 
   Future<House> gethomeAll() async {
     final response = await http
@@ -36,6 +40,12 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return StreamBuilder<House>(
+  //       stream: gethomeAll(), builder: (context, snapshot) {});
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -91,47 +101,5 @@ class _HomePageState extends State<HomePage> {
         onRefresh: gethomeAll,
       ),
     ));
-
-    // gethomeAll();
-    // return Scaffold(
-
-    //     body: Container(
-    //   child: ListView(
-    //     children: <Widget>[
-    //       (homeall != null)
-    //           ? Column(
-    //               children: homeall.map((homeall) {
-    //               return Card(
-    //                   child: ListTile(
-    //                 leading: Image.network(homeall.houseImage),
-    //                 title: Text(homeall.houseName),
-    //                 subtitle: Text(homeall.houseAdd),
-    //                 trailing: Text(
-    //                   (homeall.houseStatus == 0)
-    //                       ? 'ว่าง'
-    //                       : (homeall.houseStatus == 1)
-    //                           ? 'กำลังเช่า'
-    //                           : (homeall.houseStatus == 2)
-    //                               ? 'ติดจอง'
-    //                               : 'ยกเลิก',
-    //                   style: TextStyle(
-    //                     fontWeight: FontWeight.bold,
-    //                     color: (homeall.houseStatus == 0)
-    //                         ? Colors.green
-    //                         : (homeall.houseStatus == 1)
-    //                             ? Colors.yellow[600]
-    //                             : (homeall.houseStatus == 2)
-    //                                 ? Colors.orange
-    //                                 : Colors.red,
-    //                   ),
-    //                 ),
-    //               ));
-    //             }).toList())
-    //           : Container()
-    //     ],
-    //   ),
-    // )
-
-    // );
   }
 }
