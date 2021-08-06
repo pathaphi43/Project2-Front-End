@@ -25,9 +25,9 @@ class _LoginPageState extends State<LoginPage> {
   String message = ' ';
   String id = '';
   String status = '';
-
   var _username = TextEditingController();
   var _password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,25 +104,11 @@ class _LoginPageState extends State<LoginPage> {
                     TextButton(
                         onPressed: () async {
                           var reqlogin = Login();
+                          reqlogin.isUsers = "manager";
                           reqlogin.username = _username.text;
                           reqlogin.password = _password.text;
                           var Jsonreq = await loginToJson(reqlogin);
                           print(Jsonreq);
-
-                          // Navigator.pushNamed(context, '/main-page',
-                          //     arguments: [1]);
-                          // Navigator.pushNamed(context, '/home-page',
-                          //     arguments: [id, name]);
-
-                          //                         Future<bool> setToken(String value) async {
-                          //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-                          //   return prefs.setString('token', value);
-                          // }
-
-                          // Future<String> getToken() async {
-                          //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-                          //   return prefs.getString('token');
-                          // }
 
                           // print(decodeToken);
                           print('JsonUser ' + Jsonreq[1]);
@@ -138,24 +124,27 @@ class _LoginPageState extends State<LoginPage> {
                                   // 'Accept': 'application/json',
                                   // 'Authorization': 'Bearer'+token,
                                 });
-                            print(response.body);
+                            // print(response.body);
 
-                            print(response.statusCode);
+                            // print(response.statusCode);
+
                             if (response.statusCode.toString() == '200') {
                               Map<String, dynamic> decodedToken =
                                   JwtDecoder.decode(response.body.toString());
-                              print(decodedToken['id']);
-                              print(decodedToken['status']);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Login สำเร็จ')));
-                              setState(() {});
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              await prefs.setString(
-                                  'id', decodedToken['id'].toString());
-                              await prefs.setString(
-                                  'status', decodedToken['status']);
+
+                              // print(decodedToken['id']);
+                              // print(decodedToken['status']);
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //     const SnackBar(
+                              //         content: Text('Login สำเร็จ')));
+                              // setState(() {});
+                              // SharedPreferences prefs =
+                              //     await SharedPreferences.getInstance();
+                              // await prefs.setString(
+                              //     'id', decodedToken['id'].toString());
+                              // await prefs.setString(
+                              //     'status', decodedToken['status']);
+
                               Navigator.pushNamedAndRemoveUntil(context,
                                   '/main-page', (Route<dynamic> route) => false,
                                   arguments: [
@@ -221,3 +210,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+
+ //                         Future<bool> setToken(String value) async {
+                          //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+                          //   return prefs.setString('token', value);
+                          // }
+
+                          // Future<String> getToken() async {
+                          //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+                          //   return prefs.getString('token');
+                          // }

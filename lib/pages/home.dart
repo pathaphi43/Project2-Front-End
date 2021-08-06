@@ -25,6 +25,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     gethomeAll();
+
+    // List<String> args = ModalRoute.of(context).settings.arguments;
+    // print('MainContext' + args.toString());
   }
 
   Future<House> gethomeAll() async {
