@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/map/map.dart';
 import 'package:homealone/pages/payment.dart';
-import 'package:homealone/pages/search/search.dart';
+import 'package:homealone/pages/profile.dart';
 
-class ProfilePage extends StatefulWidget {
+class SearchPage extends StatefulWidget {
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _SearchPageState extends State<SearchPage> {
   List<Widget> showWidgets = [
-    HomePage(),
     SearchPage(),
     MapPage(),
+    HomePage(),
     PaymentPage(),
     ProfilePage()
   ];
   int index = 0;
   @override
   Widget build(BuildContext context) {
-    return Text('หน้าโปรไฟล์');
+    return Text('Search');
   }
 }

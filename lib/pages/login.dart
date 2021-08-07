@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert' as convert;
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:homealone/model/loginmodel.dart';
 import 'package:homealone/pages/Navbar/mainpages.dart';
 import 'package:homealone/pages/home.dart';
@@ -103,6 +104,25 @@ class _LoginPageState extends State<LoginPage> {
                     //------------------------ปุ่มLogin----------------------//
                     TextButton(
                         onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                    content: Container(
+                                        // color: Colors.black,
+                                        height: 200,
+                                        width: 50,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            SpinKitRing(color: Colors.amber),
+                                            Text('\tกำลังเข้าสู่ระบบ...')
+                                          ],
+                                        )),
+                                  ));
+
                           var reqlogin = Login();
                           reqlogin.isUsers = "manager";
                           reqlogin.username = _username.text;
@@ -116,6 +136,7 @@ class _LoginPageState extends State<LoginPage> {
 
                           if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
                             print('JsonNotnull');
+
                             var response = await http.post(
                                 'http://homealone.comsciproject.com/user/login',
                                 body: Jsonreq,
@@ -124,9 +145,6 @@ class _LoginPageState extends State<LoginPage> {
                                   // 'Accept': 'application/json',
                                   // 'Authorization': 'Bearer'+token,
                                 });
-                            // print(response.body);
-
-                            // print(response.statusCode);
 
                             if (response.statusCode.toString() == '200') {
                               Map<String, dynamic> decodedToken =
@@ -152,17 +170,28 @@ class _LoginPageState extends State<LoginPage> {
                                     decodedToken['status'].toString()
                                   ]);
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Username หรือ Password ไม่ถูกต้อง')));
-                              // setState(() {});
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                        content: Container(
+                                            height: 200,
+                                            width: 50,
+                                            child: Text(
+                                                'Username หรือ Password ไม่ถูกต้อง')),
+                                      ));
                             }
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'กรุณากรอก Username หรือ Password')));
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                      content: Container(
+                                          // color: Colors.black,
+                                          height: 200,
+                                          width: 50,
+                                          child: Text(
+                                              'กรุณากรอก Username หรือ Password')),
+                                    ));
                           }
                         },
                         child: Text('Login'.toUpperCase(),

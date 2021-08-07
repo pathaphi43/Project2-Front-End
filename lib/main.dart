@@ -7,7 +7,9 @@ import 'package:homealone/pages/adduser.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/login.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/pages/map/map.dart';
 import 'package:homealone/pages/profile.dart';
+import 'package:homealone/pages/search/search.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: MainPages(),
       title: 'Home Alone',
       routes: {
         '/home-page': (context) => HomePage(),
@@ -28,7 +30,9 @@ class MyApp extends StatelessWidget {
         '/Addrent-page': (context) => AddRent(),
         '/Adduser-page': (context) => AddUser(),
         '/Addhome-page': (context) => AddHome(),
-        '/profile-page': (context) => ProfilePage()
+        '/profile-page': (context) => ProfilePage(),
+        '/search-page': (context) => SearchPage(),
+        '/map-page': (context) => MapPage(),
       },
     );
   }
