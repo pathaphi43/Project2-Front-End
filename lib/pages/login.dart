@@ -32,56 +32,52 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.amber[50],
-      //   //   title: Text('Home Alone'),
-      // ),
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(247, 207, 205, 1),
+      ),
       body: Container(
-        color: Colors.amber[50],
+        // color: Colors.amber[50],
         child: Center(
           child: ListView(
             shrinkWrap: true,
             children: <Widget>[
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.end,
-              //     children: <Widget>[
-              //       TextButton(
-              //         onPressed: () {
-              //           // Navigator.pushNamed(context, '/main-page',
-              //           //     arguments: [id, status = 3.toString()]);
-
-              //           Navigator.pushNamedAndRemoveUntil(context, '/main-page',
-              //               (Route<dynamic> route) => false,
-              //               arguments: [id, status = 3.toString()]);
-              //         },
-              //         child: Text('Skip'),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-                child: Image.asset(
-                  'images/homelogo.png',
-                  width: 200,
-                  height: 200,
-                ),
+              Column(
+                children: <Widget>[
+                  Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Color.fromRGBO(250, 120, 186, 1),
+                      fontSize: 60,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(height: 10.0),
+              // Container(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                 child: TextField(
                   style: Theme.of(context).textTheme.headline6,
                   textAlign: TextAlign.start,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100.0)),
-                      labelText: 'Username',
-                      prefixIcon: Icon(Icons.account_circle)),
+                      border: OutlineInputBorder(),
+                      labelText: 'ชื่อผู้ใช้',
+                      labelStyle: new TextStyle(
+                        color: const Color.fromRGBO(250, 120, 186, 1),
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Kanit',
+                      ),
+                      enabledBorder: new UnderlineInputBorder(
+                          borderSide: new BorderSide(
+                              color: Color.fromRGBO(250, 120, 186, 1)))),
+                  // prefixIcon: Icon(Icons.account_circle)),
                   controller: _username,
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                 child: TextField(
@@ -89,10 +85,18 @@ class _LoginPageState extends State<LoginPage> {
                   style: Theme.of(context).textTheme.headline6,
                   textAlign: TextAlign.start,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100.0)),
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock_outline_sharp)),
+                      border: OutlineInputBorder(),
+                      labelText: 'รหัสผ่าน',
+                      labelStyle: new TextStyle(
+                        color: const Color.fromRGBO(250, 120, 186, 1),
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Kanit',
+                      ),
+                      enabledBorder: new UnderlineInputBorder(
+                          borderSide: new BorderSide(
+                              color: Color.fromRGBO(250, 120, 186, 1)))),
+                  // prefixIcon: Icon(Icons.lock_outline_sharp)),
                   controller: _password,
                 ),
               ),
@@ -138,7 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                             print('JsonNotnull');
 
                             var response = await http.post(
-                                'http://homealone.comsciproject.com/user/login',
+                                Uri.parse(
+                                    'http://homealone.comsciproject.com/user/login'),
                                 body: Jsonreq,
                                 headers: {
                                   'Content-Type': 'application/json',
@@ -150,25 +155,23 @@ class _LoginPageState extends State<LoginPage> {
                               Map<String, dynamic> decodedToken =
                                   JwtDecoder.decode(response.body.toString());
 
-                              // print(decodedToken['id']);
-                              // print(decodedToken['status']);
-                              // ScaffoldMessenger.of(context).showSnackBar(
-                              //     const SnackBar(
-                              //         content: Text('Login สำเร็จ')));
-                              // setState(() {});
-                              // SharedPreferences prefs =
-                              //     await SharedPreferences.getInstance();
-                              // await prefs.setString(
-                              //     'id', decodedToken['id'].toString());
-                              // await prefs.setString(
-                              //     'status', decodedToken['status']);
-
+                              // var pushAndRemoveUntil = Navigator.of(context).pushAndRemoveUntil(
+                              //     MaterialPageRoute(
+                              //         builder: (context) => MainPages()),
+                              //     (Route<dynamic> route) => false);
                               Navigator.pushNamedAndRemoveUntil(context,
                                   '/main-page', (Route<dynamic> route) => false,
                                   arguments: [
                                     decodedToken['id'].toString(),
                                     decodedToken['status'].toString()
                                   ]);
+                              print("Login Ok");
+
+                              // SharedPreferences prefs =
+                              //     await SharedPreferences.getInstance();
+                              // await prefs.setInt('id', decodedToken['id']);
+                              // await prefs.setInt(
+                              //     'status', decodedToken['status']);
                             } else {
                               showDialog(
                                   context: context,
@@ -194,15 +197,19 @@ class _LoginPageState extends State<LoginPage> {
                                     ));
                           }
                         },
-                        child: Text('Login'.toUpperCase(),
-                            style: TextStyle(fontSize: 14)),
+                        child: Text('Sing in'.toUpperCase(),
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Roboto',
+                                color: Colors.white)),
                         style: ButtonStyle(
                             padding: MaterialStateProperty.all<EdgeInsets>(
                                 EdgeInsets.all(15)),
                             foregroundColor: MaterialStateProperty.all<Color>(
-                                Colors.black45),
+                                Color.fromRGBO(250, 120, 186, 1)),
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.amber[100]),
+                                Color.fromRGBO(250, 120, 186, 1)),
                             minimumSize:
                                 MaterialStateProperty.all<Size>(Size(200, 45)),
                             shape: MaterialStateProperty.all<

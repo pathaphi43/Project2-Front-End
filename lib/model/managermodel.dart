@@ -15,7 +15,8 @@ class Manager {
     this.mid,
     this.managerUsername,
     this.managerPassword,
-    this.managerFullname,
+    this.managerFirstname,
+    this.managerLastname,
     this.managerImage,
     this.managerPhone,
     this.managerOffice,
@@ -27,7 +28,8 @@ class Manager {
   int mid;
   String managerUsername;
   String managerPassword;
-  String managerFullname;
+  String managerFirstname;
+  String managerLastname;
   String managerImage;
   String managerPhone;
   String managerOffice;
@@ -39,7 +41,8 @@ class Manager {
         mid: json["Mid"],
         managerUsername: json["manager_Username"],
         managerPassword: json["manager_Password"],
-        managerFullname: json["manager_Fullname"],
+        managerFirstname: json["manager_Firstname"],
+        managerLastname: json["manager_Lastname"],
         managerImage: json["manager_Image"],
         managerPhone: json["manager_Phone"],
         managerOffice: json["manager_Office"],
@@ -52,7 +55,8 @@ class Manager {
         "Mid": mid,
         "manager_Username": managerUsername,
         "manager_Password": managerPassword,
-        "manager_Fullname": managerFullname,
+        "manager_Firstname": managerFirstname,
+        "manager_Lastname": managerLastname,
         "manager_Image": managerImage,
         "manager_Phone": managerPhone,
         "manager_Office": managerOffice,

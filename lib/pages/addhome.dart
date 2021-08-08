@@ -77,7 +77,8 @@ class _AddHomeState extends State<AddHome> {
                             //   print('JsonNotnull');
 
                             var response = await http.post(
-                                'http://homealone.comsciproject.com/home/api/inserthome',
+                                Uri.parse(
+                                    'http://homealone.comsciproject.com/home/api/inserthome'),
                                 body: Jsonreq,
                                 headers: {
                                   'Content-Type': 'application/json',
