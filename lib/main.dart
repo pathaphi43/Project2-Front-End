@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:homealone/pages/map/map.dart';
 import 'package:homealone/pages/prelogin.dart';
 import 'package:homealone/pages/profile.dart';
+import 'package:homealone/pages/register.dart';
 import 'package:homealone/pages/search/search.dart';
 
 void main() {

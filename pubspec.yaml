@@ -65,7 +65,8 @@ flutter:
   - images/home.jpg
   - images/ud.jpg
   - images/fr.jpg
-  - Json/photo.json
+  # - Json/photo.json
+  - Json/thai_provinces.json
   - images/back.jpg
   - images/nong.jpg
   - img/logo.png
