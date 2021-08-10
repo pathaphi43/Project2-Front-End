@@ -8,6 +8,9 @@ import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/pages/map/map.dart';
+import 'package:homealone/pages/payment/elecpay.dart';
+import 'package:homealone/pages/payment/rentpay.dart';
+import 'package:homealone/pages/payment/waterpay.dart';
 import 'package:homealone/pages/prelogin.dart';
 import 'package:homealone/pages/profile.dart';
 import 'package:homealone/pages/register.dart';
@@ -35,7 +38,11 @@ class MyApp extends StatelessWidget {
         '/Profile-page': (context) => ProfilePage(),
         '/Search-page': (context) => SearchPage(),
         '/Map-page': (context) => MapPage(),
-        '/Prelogin-page': (context) => PreLogin()
+        '/Prelogin-page': (context) => PreLogin(),
+        '/Register-page': (context) => RegisterPage(),
+        '/Waterpay-page': (context) => WaterpayPage(),
+        '/Elecpay-page': (context) => ElecpayPage(),
+        '/Rentpay-page': (context) => RentpayPage()
       },
     );
   }
