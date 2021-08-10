@@ -14,6 +14,7 @@ import 'package:homealone/pages/payment/waterpay.dart';
 import 'package:homealone/pages/prelogin.dart';
 import 'package:homealone/pages/profile.dart';
 import 'package:homealone/pages/register.dart';
+import 'package:homealone/pages/regmanager.dart';
 import 'package:homealone/pages/search/search.dart';
 
 void main() {
@@ -31,7 +32,6 @@ class MyApp extends StatelessWidget {
         '/home-page': (context) => HomePage(),
         '/login-page': (context) => LoginPage(),
         '/main-page': (context) => MainPages(),
-        // '/manu-page': (context) => AddMenu(),
         '/Addrent-page': (context) => AddRent(),
         '/Adduser-page': (context) => AddUser(),
         '/Addhome-page': (context) => AddHome(),
@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/Map-page': (context) => MapPage(),
         '/Prelogin-page': (context) => PreLogin(),
         '/Register-page': (context) => RegisterPage(),
+        '/Regmanager-page': (context) => RegManagerPage(),
         '/Waterpay-page': (context) => WaterpayPage(),
         '/Elecpay-page': (context) => ElecpayPage(),
         '/Rentpay-page': (context) => RentpayPage()

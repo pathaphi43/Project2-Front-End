@@ -51,7 +51,8 @@ class _PreLoginState extends State<PreLogin> {
                     minWidth: 300.0,
                     height: 60.0,
                     onPressed: () {
-                      print('Register Ok');
+
+                      Navigator.pushNamed(context, '/Regmanager-page',arguments: null);
                     },
                     child: Text(
                       "สมัครสมาชิก",

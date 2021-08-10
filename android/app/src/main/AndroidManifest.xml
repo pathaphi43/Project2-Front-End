@@ -1,12 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.homealone">
-<uses-permission android:name="android.permission.INTERNET" />
+<!--<uses-permission android:name="android.permission.INTERNET" />-->
 <!-- <application android:usesCleartextTraffic="true"> -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
    <application
         android:label="homealone"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
-        
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value=" AIzaSyBktB9p0Cs-8YCeYjNOrPAu__F5RwEUJUI"/>
+
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

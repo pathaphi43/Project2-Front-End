@@ -36,7 +36,10 @@ class _PaymentPageState extends State<PaymentPage> {
                   minWidth: 300.0,
                   height: 100.0,
                   color: Color.fromRGBO(247, 207, 205, 1),
-                  onPressed: () {},
+                  onPressed: () {
+
+                    Navigator.pushNamed(context, '/Rentpay-page', arguments: null);
+                  },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -70,7 +73,9 @@ class _PaymentPageState extends State<PaymentPage> {
                   minWidth: 300.0,
                   height: 100.0,
                   color: Color.fromRGBO(247, 207, 205, 1),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/Waterpay-page',arguments: null);
+                  },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -104,7 +109,9 @@ class _PaymentPageState extends State<PaymentPage> {
                   minWidth: 300.0,
                   height: 100.0,
                   color: Color.fromRGBO(247, 207, 205, 1),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/Elecpay-page',arguments: null);
+                  },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

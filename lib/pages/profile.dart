@@ -6,6 +6,7 @@ import 'package:homealone/pages/payment.dart';
 import 'package:homealone/pages/search/search.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert' show utf8;
+import 'dart:ui';
 
 class ProfilePage extends StatefulWidget {
   @override
