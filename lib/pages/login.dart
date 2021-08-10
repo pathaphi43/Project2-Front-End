@@ -1,26 +1,17 @@
-import 'dart:io';
-import 'dart:convert' as convert;
+
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:homealone/model/loginmodel.dart';
-import 'package:homealone/pages/Navbar/mainpages.dart';
-import 'package:homealone/pages/home.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
-
-// class _HomePageState extends State<HomePage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container();
-//   }
-// }
 
 class _LoginPageState extends State<LoginPage> {
   String message = ' ';
@@ -108,7 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                     //------------------------ปุ่มLogin----------------------//
                     TextButton(
                         onPressed: () async {
-                          showDialog(
+                          var message2 = "\tกำลังเข้าสู่ระบบ...";
+                          await showDialog(
                               context: context,
                               builder: (BuildContext context) => AlertDialog(
                                     content: Container(
@@ -122,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                                               CrossAxisAlignment.center,
                                           children: <Widget>[
                                             SpinKitRing(color: Colors.amber),
-                                            Text('\tกำลังเข้าสู่ระบบ...')
+                                            Text(message2)
                                           ],
                                         )),
                                   ));
@@ -131,12 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                           reqlogin.isUsers = "manager";
                           reqlogin.username = _username.text;
                           reqlogin.password = _password.text;
-                          var Jsonreq = await loginToJson(reqlogin);
-                          print(Jsonreq);
-
-                          // print(decodeToken);
-                          print('JsonUser ' + Jsonreq[1]);
-                          print('JsonPass ' + Jsonreq[2]);
+                          var Jsonreq = loginToJson(reqlogin);
 
                           if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
                             print('JsonNotnull');
@@ -154,11 +141,6 @@ class _LoginPageState extends State<LoginPage> {
                             if (response.statusCode.toString() == '200') {
                               Map<String, dynamic> decodedToken =
                                   JwtDecoder.decode(response.body.toString());
-
-                              // var pushAndRemoveUntil = Navigator.of(context).pushAndRemoveUntil(
-                              //     MaterialPageRoute(
-                              //         builder: (context) => MainPages()),
-                              //     (Route<dynamic> route) => false);
                               Navigator.pushNamedAndRemoveUntil(context,
                                   '/main-page', (Route<dynamic> route) => false,
                                   arguments: [
@@ -172,29 +154,48 @@ class _LoginPageState extends State<LoginPage> {
                               // await prefs.setInt('id', decodedToken['id']);
                               // await prefs.setInt(
                               //     'status', decodedToken['status']);
+
+                              // prefs.clear();
+                              // prefs.commit();
                             } else {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                        content: Container(
-                                            height: 200,
-                                            width: 50,
-                                            child: Text(
-                                                'Username หรือ Password ไม่ถูกต้อง')),
-                                      ));
+                              message2 = null;
+                              setState(() {
+                                message2 = "\tชื่อผู้ใช้หรือรหัสผ่านผิด!!!";
+                              });
+
+                              // await showDialog(
+                              //     context: context,
+                              //     builder: (BuildContext context) =>
+                              //         AlertDialog(
+                              //           content: Container(
+                              //               height: 200,
+                              //               width: 50,
+                              //               child: Text(
+                              //                   'ชื่อผู้ใช้หรือรหัสผ่านผิด')),
+                              //         ));
+                              // ScaffoldMessenger.of(context)
+                              //     .showSnackBar(SnackBar(
+                              //   content: const Text(''),
+                              //   duration: const Duration(seconds: 1),
+                              //   action: SnackBarAction(
+                              //     label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+                              //     onPressed: () {
+                              //       print('Ok');
+                              //     },
+                              //   ),
+                              // ));
                             }
                           } else {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                      content: Container(
-                                          // color: Colors.black,
-                                          height: 200,
-                                          width: 50,
-                                          child: Text(
-                                              'กรุณากรอก Username หรือ Password')),
-                                    ));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text(''),
+                              duration: const Duration(seconds: 1),
+                              action: SnackBarAction(
+                                label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+                                onPressed: () {
+                                  print('Ok');
+                                },
+                              ),
+                            ));
                           }
                         },
                         child: Text('Sing in'.toUpperCase(),
@@ -202,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Roboto',
-                                color: Colors.white)),
+                                color: Colors.amber)),
                         style: ButtonStyle(
                             padding: MaterialStateProperty.all<EdgeInsets>(
                                 EdgeInsets.all(15)),
