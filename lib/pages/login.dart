@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
-
+import 'dart:async';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -99,25 +99,25 @@ class _LoginPageState extends State<LoginPage> {
                     //------------------------ปุ่มLogin----------------------//
                     TextButton(
                         onPressed: () async {
-                          var message2 = "\tกำลังเข้าสู่ระบบ...";
-                          await showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                    content: Container(
-                                        // color: Colors.black,
-                                        height: 200,
-                                        width: 50,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SpinKitRing(color: Colors.amber),
-                                            Text(message2)
-                                          ],
-                                        )),
-                                  ));
+                          // var message2 = "\tกำลังเข้าสู่ระบบ...";
+                          // await showDialog(
+                          //     context: context,
+                          //     builder: (BuildContext context) => AlertDialog(
+                          //           content: Container(
+                          //               // color: Colors.black,
+                          //               height: 200,
+                          //               width: 50,
+                          //               child: Row(
+                          //                 mainAxisAlignment:
+                          //                     MainAxisAlignment.center,
+                          //                 crossAxisAlignment:
+                          //                     CrossAxisAlignment.center,
+                          //                 children: <Widget>[
+                          //                   SpinKitRing(color: Colors.amber),
+                          //                   Text(message2)
+                          //                 ],
+                          //               )),
+                          //         ));
 
                           var reqlogin = Login();
                           reqlogin.isUsers = "manager";
@@ -129,15 +129,15 @@ class _LoginPageState extends State<LoginPage> {
                             print('JsonNotnull');
 
                             var response = await http.post(
-                                Uri.parse(
-                                    'http://homealone.comsciproject.com/user/login'),
+                                    'http://homealone.comsciproject.com/user/login',
                                 body: Jsonreq,
                                 headers: {
                                   'Content-Type': 'application/json',
                                   // 'Accept': 'application/json',
                                   // 'Authorization': 'Bearer'+token,
                                 });
-
+                              print("Response");
+                              print(response.statusCode);
                             if (response.statusCode.toString() == '200') {
                               Map<String, dynamic> decodedToken =
                                   JwtDecoder.decode(response.body.toString());
@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                                     decodedToken['id'].toString(),
                                     decodedToken['status'].toString()
                                   ]);
-                              print("Login Ok");
+
 
                               // SharedPreferences prefs =
                               //     await SharedPreferences.getInstance();
@@ -158,32 +158,18 @@ class _LoginPageState extends State<LoginPage> {
                               // prefs.clear();
                               // prefs.commit();
                             } else {
-                              message2 = null;
-                              setState(() {
-                                message2 = "\tชื่อผู้ใช้หรือรหัสผ่านผิด!!!";
-                              });
 
-                              // await showDialog(
-                              //     context: context,
-                              //     builder: (BuildContext context) =>
-                              //         AlertDialog(
-                              //           content: Container(
-                              //               height: 200,
-                              //               width: 50,
-                              //               child: Text(
-                              //                   'ชื่อผู้ใช้หรือรหัสผ่านผิด')),
-                              //         ));
-                              // ScaffoldMessenger.of(context)
-                              //     .showSnackBar(SnackBar(
-                              //   content: const Text(''),
-                              //   duration: const Duration(seconds: 1),
-                              //   action: SnackBarAction(
-                              //     label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
-                              //     onPressed: () {
-                              //       print('Ok');
-                              //     },
-                              //   ),
-                              // ));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: const Text(''),
+                                duration: const Duration(seconds: 1),
+                                action: SnackBarAction(
+                                  label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+                                  onPressed: () {
+                                    print('Ok');
+                                  },
+                                ),
+                              ));
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -203,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Roboto',
-                                color: Colors.amber)),
+                                color: Colors.white)),
                         style: ButtonStyle(
                             padding: MaterialStateProperty.all<EdgeInsets>(
                                 EdgeInsets.all(15)),

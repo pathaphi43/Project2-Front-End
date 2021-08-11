@@ -50,10 +50,59 @@ class _PreLoginState extends State<PreLogin> {
                   child: new FlatButton(
                     minWidth: 300.0,
                     height: 60.0,
-                    onPressed: () {
+                    onPressed: () => showDialog(context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title:  Text("สมัครสมาชิก"),
+                          content:Container(
+                            height: MediaQuery.of(context).size.height *0.25,
+                            child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              FlatButton(onPressed: () {
+                                Navigator.pushNamed(context, '/Regmanager-page',arguments: null);
+                              }, child: Text(
+                                "ผู้จัดการ",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(2, 97, 26, 1),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Kanit',
+                                ),
+                              ),
+                                shape: StadiumBorder(
+                                    side: BorderSide(
+                                        width: 3.0,
+                                        color: Color.fromRGBO(247, 207, 205, 1)))),
+                              FlatButton(onPressed: () {
+                                Navigator.pushNamed(context, '/Register-page',arguments: null);
+                              }, child: Text(
+                                "ผู้เช่า",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(2, 97, 26, 1),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Kanit',
+                                ),
+                              ),
+                                shape: StadiumBorder(
+                                    side: BorderSide(
+                                        width: 3.0,
+                                        color: Color.fromRGBO(247, 207, 205, 1))))
+                            ],),),
+                          actions: [
+                            TextButton(onPressed:  () => Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel', style: TextStyle(
+                              color: Color.fromRGBO(2, 97, 26, 1),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Kanit',
+                            ),))
+                          ],
+                        ))
 
-                      Navigator.pushNamed(context, '/Regmanager-page',arguments: null);
-                    },
+
+                    ,
                     child: Text(
                       "สมัครสมาชิก",
                       style: TextStyle(

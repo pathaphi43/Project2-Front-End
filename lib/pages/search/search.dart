@@ -4,6 +4,7 @@ import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/map/map.dart';
 import 'package:homealone/pages/payment.dart';
 import 'package:homealone/pages/profile.dart';
+import 'package:anim_search_bar/anim_search_bar.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -19,8 +20,24 @@ class _SearchPageState extends State<SearchPage> {
     ProfilePage()
   ];
   int index = 0;
+  TextEditingController textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Text('Search');
+    return Container(child: Row(children: <Widget>[
+       AnimSearchBar(
+        width: MediaQuery.of(context).size.width,
+        textController: textController,
+
+        onSuffixTap: () {
+          setState(() {
+            print(textController.text);
+            textController.clear();
+          });
+
+        },
+      ),
+    ],),
+    );
+
   }
 }

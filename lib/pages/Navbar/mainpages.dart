@@ -12,7 +12,7 @@ import 'package:homealone/pages/profile.dart';
 import 'package:homealone/pages/search/search.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'dart:async';
 
 List<Manager> managerdata;
@@ -49,7 +49,6 @@ class _MainPagesState extends State<MainPages> {
     args = ModalRoute.of(context).settings.arguments;
     if (args != null) {
       if (args[1] == '0' && args[1] != null) {
-        print("Manager:" + args[1]);
         getManager(args);
       } else if (args[1] == '1' && args[1] != null) {
         print("Tennant");
@@ -66,7 +65,7 @@ class _MainPagesState extends State<MainPages> {
     setState(() {
       // print(response.statusCode);
       if (response.statusCode == 200) {
-        managerdata = managerFromJson(response.body);
+          managerdata = managerFromJson(response.body);
         // managerdata = null;
       } else {
         throw Exception('Failed to load data');
@@ -89,8 +88,7 @@ class _MainPagesState extends State<MainPages> {
 
   @override
   Widget build(BuildContext context) {
-    print(managerdata != null);
-    if (managerdata != null) {
+    if (managerdata != null || tenantdata != null) {
       if (args[1] == '0' && args != null) {
         return Scaffold(
           endDrawer: new Drawer(
@@ -100,8 +98,18 @@ class _MainPagesState extends State<MainPages> {
                 UserAccountsDrawerHeader(
                   accountName: Text(managerdata[0].managerFirstname +
                       "\t" +
-                      managerdata[0].managerLastname),
-                  accountEmail: Text(managerdata[0].managerOffice),
+                      managerdata[0].managerLastname,style: TextStyle(
+                    color: Color.fromRGBO(250, 120, 186, 1),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Kanit',
+                  ),),
+                  accountEmail: Text(managerdata[0].managerUsername,style: TextStyle(
+                    color: Color.fromRGBO(247, 207, 205, 1),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Kanit',
+                  ),),
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: ExactAssetImage('images/back.jpg'.toString()),
@@ -149,6 +157,7 @@ class _MainPagesState extends State<MainPages> {
                       (Route<dynamic> route) => false,
                     );
                     managerdata = null;
+                    tenantdata = null;
                   },
                 ),
               ],
@@ -194,15 +203,27 @@ class _MainPagesState extends State<MainPages> {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  accountName: Text('Demo'),
-                  accountEmail: Text('Demo'),
+                  accountName: Text(tenantdata[0].tenantFirstname +
+                      "\t" +
+                      tenantdata[0].tenantLastname,style: TextStyle(
+              color: Color.fromRGBO(250, 120, 186, 1),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Kanit',
+            ),),
+                  accountEmail: Text(tenantdata[0].tenantUsername,style: TextStyle(
+                    color: Color.fromRGBO(250, 120, 186, 1),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Kanit',
+                  ),),
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: ExactAssetImage('images/back.jpg'.toString()),
                           fit: BoxFit.cover)),
                   currentAccountPicture: CircleAvatar(
                     backgroundImage: NetworkImage(
-                        "http://homealone.comsciproject.com/img/nong.jpg"
+                        tenantdata[0].tenantImage
                             .toString()),
                   ),
                 ),
@@ -220,6 +241,7 @@ class _MainPagesState extends State<MainPages> {
                       (Route<dynamic> route) => false,
                     );
                     managerdata = null;
+                    tenantdata = null;
                   },
                 ),
               ],
@@ -239,7 +261,7 @@ class _MainPagesState extends State<MainPages> {
                         tag: 'Profile Picture',
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
-                              "http://homealone.comsciproject.com/img/nong.jpg"),
+                              tenantdata[0].tenantImage.toString()),
                         ),
                       ),
                     ),
@@ -247,7 +269,7 @@ class _MainPagesState extends State<MainPages> {
                       Scaffold.of(context).openEndDrawer();
                     },
                     tooltip:
-                        MaterialLocalizations.of(context).openAppDrawerTooltip,
+                    MaterialLocalizations.of(context).openAppDrawerTooltip,
                   );
                 },
               ),
@@ -302,8 +324,8 @@ class _MainPagesState extends State<MainPages> {
         });
       },
       currentIndex: index,
-      unselectedItemColor: Colors.black,
-      selectedItemColor: Colors.amber,
+      unselectedItemColor: Color.fromRGBO(247, 207, 205, 1),
+      selectedItemColor: Color.fromRGBO(250, 120, 186, 1),
       backgroundColor: Colors.pink[200],
       items: <BottomNavigationBarItem>[
         homeNav(),

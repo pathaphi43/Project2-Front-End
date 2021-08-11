@@ -3,8 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert' show utf8;
-
+import 'dart:async';
 import 'package:homealone/model/register/provincesmodel.dart';
+import 'package:homealone/model/register/regtenantmodel.dart';
+
+import 'package:http/http.dart' as http;
 
 var encoded = utf8.encode('Lorem ipsum dolor sit amet, consetetur...');
 var decoded = utf8.decode(encoded);
@@ -22,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   var tenant_Phone = TextEditingController();
   var tenant_IDcard = TextEditingController();
   var tenant_Add = TextEditingController();
-  var tenant_Province = TextEditingController();
+  var tenant_Province;
   var tenant_District = TextEditingController();
   var tenant_Email = TextEditingController();
 
@@ -304,7 +307,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
-              /////////////////จังหวัด
+/////////////////จังหวัด
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -348,6 +351,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             onChanged: (value) {
                               setState(() {
                                 this.dropdownValue1 = value;
+                                tenant_Province = value;
                               });
                             },
                             value: dropdownValue1,
@@ -548,8 +552,31 @@ class _RegisterPageState extends State<RegisterPage> {
                             borderRadius: BorderRadius.circular(18.0),
                             side: BorderSide(
                                 color: Color.fromRGBO(250, 120, 186, 1))),
-                        onPressed: () {
-                          print(tenant_Phone);
+                        onPressed: () async {
+                          var regdata = Regtenant();
+                          regdata.tenantUsername = tenant_Username.text;
+                          regdata.tenantPassword = tenant_Password.text;
+                          regdata.tenantFirstname = tenant_Firstname.text;
+                          regdata.tenantLastname = tenant_Lastname.text;
+                          regdata.tenantAdd = tenant_Add.text;
+                          regdata.tenantProvince = tenant_Province;
+                          regdata.tenantDistrict = tenant_District.text;
+                          regdata.tenantIDcard = tenant_IDcard.text;
+                          regdata.tenantPhone = tenant_Phone.text;
+                          regdata.tenantEmail = tenant_Email.text;
+
+                          var jsondata = regtenantToJson(regdata);
+                          print(jsondata);
+                          var response = await http.post(Uri.parse('http://homealone.comsciproject.com/user/regtenant'),
+                              body: jsondata, headers: {
+                                'Content-Type': 'application/json',
+                              }
+                          );
+                          if(response.statusCode.toString() == "201"){
+                            Navigator.popUntil(context, ModalRoute.withName('/Prelogin-page'));
+                          }else{
+                            print("ชื่อผู้ใช้งานซ้ำกัน");
+                          }
                         },
                         padding: EdgeInsets.all(10.0),
                         color: Color.fromRGBO(250, 120, 186, 1),

@@ -71,10 +71,7 @@ class _AddHomeState extends State<AddHome> {
                             var Jsonreq = await inhouseToJson(reqlogin);
                             print('JJ2' + Jsonreq[2].toString());
 
-                            // if (Jsonreq[2] != 'h' &&
-                            //     Jsonreq[1] != null &&
-                            //     Jsonreq[3] != '_') {
-                            //   print('JsonNotnull');
+
 
                             var response = await http.post(
                                 Uri.parse(

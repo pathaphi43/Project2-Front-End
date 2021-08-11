@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/pages/Navbar/mainpages.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/map/map.dart';
 import 'package:homealone/pages/payment.dart';
@@ -22,6 +23,15 @@ class _ProfilePageState extends State<ProfilePage> {
     ProfilePage()
   ];
   int index = 0;
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    MainPages mainPages=new MainPages();
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,10 +187,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     minWidth: 300.0,
                     height: 120.0,
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => page15()),
-                      // );
+                      Navigator.pushNamed(context, '/Review-page',arguments: null);
+
                     },
                     child: Text(
                       "เขียนรีวิว",

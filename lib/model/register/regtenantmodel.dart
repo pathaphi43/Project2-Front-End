@@ -1,16 +1,15 @@
 // To parse this JSON data, do
 //
-//     final tenant = tenantFromJson(jsonString);
+//     final regtenant = regtenantFromJson(jsonString);
 
 import 'dart:convert';
 
-List<Tenant> tenantFromJson(String str) => List<Tenant>.from(json.decode(str).map((x) => Tenant.fromJson(x)));
+Regtenant regtenantFromJson(String str) => Regtenant.fromJson(json.decode(str));
 
-String tenantToJson(List<Tenant> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String regtenantToJson(Regtenant data) => json.encode(data.toJson());
 
-class Tenant {
-  Tenant({
-    this.tid,
+class Regtenant {
+  Regtenant({
     this.tenantUsername,
     this.tenantPassword,
     this.tenantFirstname,
@@ -21,11 +20,8 @@ class Tenant {
     this.tenantProvince,
     this.tenantDistrict,
     this.tenantEmail,
-    this.tenantImage,
-    this.tenantStatus,
   });
 
-  int tid;
   String tenantUsername;
   String tenantPassword;
   String tenantFirstname;
@@ -36,11 +32,8 @@ class Tenant {
   String tenantProvince;
   String tenantDistrict;
   String tenantEmail;
-  String tenantImage;
-  int tenantStatus;
 
-  factory Tenant.fromJson(Map<String, dynamic> json) => Tenant(
-    tid: json["Tid"],
+  factory Regtenant.fromJson(Map<String, dynamic> json) => Regtenant(
     tenantUsername: json["tenant_Username"],
     tenantPassword: json["tenant_Password"],
     tenantFirstname: json["tenant_Firstname"],
@@ -49,14 +42,11 @@ class Tenant {
     tenantIDcard: json["tenant_IDcard"],
     tenantAdd: json["tenant_Add"],
     tenantProvince: json["tenant_Province"],
-    tenantDistrict: json["tenant_District"] == null ? null : json["tenant_District"],
+    tenantDistrict: json["tenant_District"],
     tenantEmail: json["tenant_Email"],
-    tenantImage: json["tenant_Image"],
-    tenantStatus: json["tenant_Status"],
   );
 
   Map<String, dynamic> toJson() => {
-    "Tid": tid,
     "tenant_Username": tenantUsername,
     "tenant_Password": tenantPassword,
     "tenant_Firstname": tenantFirstname,
@@ -65,9 +55,7 @@ class Tenant {
     "tenant_IDcard": tenantIDcard,
     "tenant_Add": tenantAdd,
     "tenant_Province": tenantProvince,
-    "tenant_District": tenantDistrict == null ? null : tenantDistrict,
+    "tenant_District": tenantDistrict,
     "tenant_Email": tenantEmail,
-    "tenant_Image": tenantImage,
-    "tenant_Status": tenantStatus,
   };
 }

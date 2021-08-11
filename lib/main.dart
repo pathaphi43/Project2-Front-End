@@ -15,6 +15,7 @@ import 'package:homealone/pages/prelogin.dart';
 import 'package:homealone/pages/profile.dart';
 import 'package:homealone/pages/register.dart';
 import 'package:homealone/pages/regmanager.dart';
+import 'package:homealone/pages/reviewhome/reviewpage.dart';
 import 'package:homealone/pages/search/search.dart';
 
 void main() {
@@ -43,7 +44,8 @@ class MyApp extends StatelessWidget {
         '/Regmanager-page': (context) => RegManagerPage(),
         '/Waterpay-page': (context) => WaterpayPage(),
         '/Elecpay-page': (context) => ElecpayPage(),
-        '/Rentpay-page': (context) => RentpayPage()
+        '/Rentpay-page': (context) => RentpayPage(),
+        '/Review-page': (context) => ReviewPage()
       },
     );
   }
