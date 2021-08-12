@@ -33,13 +33,14 @@ class _ReviewPageState extends State<ReviewPage> {
                 itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                 itemBuilder: (context, _) => Icon(
                   Icons.star,
-                  color: Color.fromRGBO(250, 120, 186, 1),
+                  color: Color.fromRGBO(255, 195, 202, 1),
                 ),
                 onRatingUpdate: (rating) {
                   print(rating);
                 },
               ),
             ),
+
 
 
             SizedBox(height: 20),
@@ -78,7 +79,7 @@ class _ReviewPageState extends State<ReviewPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(30.0),
+                  padding: const EdgeInsets.all(10.0),
                   child :
                   new FlatButton (
                     minWidth: 120.0,
@@ -110,7 +111,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.all(30.0),
+                  padding: const EdgeInsets.all(10.0),
                   child :
                   new FlatButton (
                     minWidth: 120.0,

@@ -1,5 +1,6 @@
+import 'package:flutter_thailand_provinces/flutter_thailand_provinces.dart';
 import 'package:homealone/pages/Navbar/addbar.dart';
-import 'package:homealone/pages/Navbar/mainpages.dart';
+import "package:homealone/pages/Navbar/mainpages.dart";
 import 'package:homealone/pages/addhome.dart';
 import 'package:homealone/pages/addrent.dart';
 import 'package:homealone/pages/adduser.dart';
@@ -18,16 +19,21 @@ import 'package:homealone/pages/regmanager.dart';
 import 'package:homealone/pages/reviewhome/reviewpage.dart';
 import 'package:homealone/pages/search/search.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ThailandProvincesDatabase.init();
   runApp(MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
-      home: MainPages(),
+      home: RegisterPage(),
       title: 'Home Alone',
       routes: {
         '/home-page': (context) => HomePage(),

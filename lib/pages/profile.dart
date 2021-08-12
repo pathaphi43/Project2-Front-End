@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Text(
                       "แก้ไขข้อมูลส่วนตัว",
                       style: TextStyle(
-                        color: Color.fromRGBO(247, 207, 205, 1),
+                        color: Color.fromRGBO(250, 120, 186, 1),
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Kanit',
@@ -118,93 +118,76 @@ class _ProfilePageState extends State<ProfilePage> {
                     shape: StadiumBorder(
                         side: BorderSide(
                             width: 1.0,
-                            color: Color.fromRGBO(247, 207, 205, 1))),
-                  ),
-                ),
-////////////////////////////////////////////////////////////////////////////////
-///////////////////////
-                Padding(
-                  padding: const EdgeInsets.all(50.0),
-                  child: new FlatButton(
-                    minWidth: 400.0,
-                    height: 60.0,
-                    color: Color.fromRGBO(247, 207, 205, 1),
-                    onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => page5()),
-                      // );
-                    },
-                    child: Text(
-                      "ลงทะเบียนเป็นเจ้าของบ้านเช่า",
-                      style: TextStyle(
-                        color: Color.fromRGBO(250, 120, 186, 1),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
-                      ),
+                            color: Color.fromRGBO(250, 120, 186, 1),
+                        ),
                     ),
-                    shape: StadiumBorder(
-                        side: BorderSide(
-                      width: 1.0,
-                      color: Color.fromRGBO(250, 120, 186, 1),
-                    )),
                   ),
                 ),
 ////////////////////////////////////////////////////////////////////////////////
 
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: new FlatButton(
-                    minWidth: 300.0,
-                    height: 120.0,
-                    onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => page8()),
-                      // );
-                    },
-                    child: Text(
-                      "ข้อมูลบ้านเช่า",
-                      style: TextStyle(
-                        color: Color.fromRGBO(250, 120, 186, 1),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
-                      ),
-                    ),
-                    shape: StadiumBorder(
-                        side: BorderSide(
-                            width: 2.0,
-                            color: Color.fromRGBO(250, 120, 186, 1))),
-                  ),
-                ),
 ////////////////////////////////////////////////////////////////////////////////
 
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: new FlatButton(
-                    minWidth: 300.0,
-                    height: 120.0,
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/Review-page',arguments: null);
-
-                    },
-                    child: Text(
-                      "เขียนรีวิว",
-                      style: TextStyle(
-                        color: Color.fromRGBO(250, 120, 186, 1),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: new FlatButton(
+                        color: Color.fromRGBO(247, 207, 205, 1),
+                        minWidth: 30.0,
+                        height: 90.0,
+                        onPressed: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => page8()),
+                          // );
+                        },
+                        child: Text(
+                          "ข้อมูลบ้านเช่า",
+                          style: TextStyle(
+                            color: Color.fromRGBO(250, 120, 186, 1),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Kanit',
+                          ),
+                        ),
+                        shape: StadiumBorder(
+                            side: BorderSide(
+                                width: 2.0,
+                                color: Color.fromRGBO(250, 120, 186, 1))),
                       ),
                     ),
-                    shape: StadiumBorder(
-                        side: BorderSide(
-                            width: 2.0,
-                            color: Color.fromRGBO(250, 120, 186, 1))),
-                  ),
+
+                    ////////////////////////////////////////////////////////////////////////////////
+
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: new FlatButton(
+                        color: Color.fromRGBO(247, 207, 205, 1),
+                        minWidth: 60.0,
+                        height: 90.0,
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/Review-page',arguments: null);
+
+                        },
+                        child: Text(
+                          "    เขียนรีวิว    ",
+                          style: TextStyle(
+                            color: Color.fromRGBO(250, 120, 186, 1),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Kanit',
+                          ),
+                        ),
+                        shape: StadiumBorder(
+                            side: BorderSide(
+                                width: 2.0,
+                                color: Color.fromRGBO(250, 120, 186, 1))),
+                      ),
+                    ),
+                  ],
                 ),
+
 ////////////////////////////////////////////////////////////////////////////////
 
                 Padding(
