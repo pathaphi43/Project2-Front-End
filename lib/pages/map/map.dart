@@ -15,6 +15,7 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+
   Completer<GoogleMapController> _controller = Completer();
   List<Widget> showWidgets = [
     SearchPage(),
@@ -24,15 +25,42 @@ class _MapPageState extends State<MapPage> {
     ProfilePage()
   ];
   int index = 0;
+
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(body: GoogleMap(mapType: MapType.normal,
-      myLocationEnabled: true,
+    return SafeArea(child: Container(child:GoogleMap(mapType: MapType.normal,
       initialCameraPosition: CameraPosition(
           target: LatLng(16.199775637587717,103.2825989989716),zoom: 15),
       onMapCreated: (GoogleMapController controller){
-      _controller.complete(controller);
-    },),);
+        _controller.complete(controller);
+      },
+      myLocationEnabled: true,
+    ),
+        // floatingActionButton: FloatingActionButton.extended(
+        //   onPressed: _currentLocation,
+        //   label: Text('My Location'),
+        //   icon: Icon(Icons.location_on),
+        //
+        // ),
+        ),
+    );
+  }
+  void _currentLocation() async {
+    final GoogleMapController controller = await _controller.future;
+    LocationData currentLocation;
+    var location = new Location();
+    try {
+      currentLocation = await location.getLocation();
+    } on Exception {
+      currentLocation = null;
+    }
+
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        target: LatLng(currentLocation.latitude, currentLocation.longitude),
+        zoom: 17.0,
+      ),
+    ));
   }
 }

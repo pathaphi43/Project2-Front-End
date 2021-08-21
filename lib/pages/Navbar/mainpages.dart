@@ -14,6 +14,7 @@ import 'package:homealone/pages/search/search.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 List<Manager> managerdata;
 List<Tenant> tenantdata;
@@ -38,13 +39,25 @@ class _MainPagesState extends State<MainPages> {
   @override
   void initState() {
     super.initState();
-
+    asyncFunc();
     print("initState");
   }
+  SharedPreferences prefs;
+  asyncFunc() async {
+     prefs = await SharedPreferences.getInstance();
+  }
+
+  // SharedPreferences prefs =
+  //     await SharedPreferences.getInstance();
+  // await prefs.setInt('id', decodedToken['id']);
+  // await prefs.setInt(
+  // 'status', decodedToken['status']);
+  // print(prefs.getInt('id'));
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     print("didChangeDependencies");
     args = ModalRoute.of(context).settings.arguments;
     if (args != null) {
@@ -118,13 +131,22 @@ class _MainPagesState extends State<MainPages> {
                     backgroundImage:
                         NetworkImage(managerdata[0].managerImage.toString()),
                   ),
+
                 ),
+                // ListTile(
+                //   leading: Icon(Icons.person_add_outlined),
+                //   title: Text('เพิ่มสมาชิก'),
+                //   onTap: () {
+                //     Navigator.pushNamed(context, '/Adduser-page',
+                //         arguments: null);
+                //   },
+                // ),
                 ListTile(
-                  leading: Icon(Icons.person_add_outlined),
-                  title: Text('เพิ่มสมาชิก'),
+                  leading: Icon(Icons.edit),
+                  title: Text('แก้ไขข้อมูลส่วนตัว'),
                   onTap: () {
-                    Navigator.pushNamed(context, '/Adduser-page',
-                        arguments: null);
+                    Navigator.pushNamed(context, '/Editmanager-page',
+                        arguments: args);
                   },
                 ),
                 ListTile(
@@ -144,6 +166,14 @@ class _MainPagesState extends State<MainPages> {
                   },
                 ),
                 ListTile(
+                  leading: Icon(Icons.apartment),
+                  title: Text('ข้อมูลบ้านเช่า'),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/Myhouse-page',
+                        arguments: args);
+                  },
+                ),
+                ListTile(
                   leading: Icon(Icons.settings),
                   title: Text('ตั้งค่า'),
                 ),
@@ -151,6 +181,7 @@ class _MainPagesState extends State<MainPages> {
                   leading: Icon(Icons.exit_to_app_outlined),
                   title: Text('ออกจากระบบ'),
                   onTap: () {
+                    prefs.clear();
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/main-page',
@@ -235,6 +266,7 @@ class _MainPagesState extends State<MainPages> {
                   leading: Icon(Icons.exit_to_app_outlined),
                   title: Text('ออกจากระบบ'),
                   onTap: () {
+                    prefs.clear();
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/main-page',

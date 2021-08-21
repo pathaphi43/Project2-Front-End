@@ -1,4 +1,5 @@
 
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:homealone/model/loginmodel.dart';
 import 'dart:ui';
@@ -7,6 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:async';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,6 +22,23 @@ class _LoginPageState extends State<LoginPage> {
   String status = '';
   var _username = TextEditingController();
   var _password = TextEditingController();
+
+  void configLoading() {
+    EasyLoading.instance
+      ..displayDuration = const Duration(milliseconds: 2000)
+      ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+      ..loadingStyle = EasyLoadingStyle.dark
+      ..indicatorSize = 45.0
+      ..radius = 10.0
+      ..progressColor = Colors.yellow
+      ..backgroundColor = Colors.green
+      ..indicatorColor = Colors.yellow
+      ..textColor = Colors.yellow
+      ..maskColor = Colors.blue.withOpacity(0.5)
+      ..userInteractions = true
+      ..dismissOnTap = false;
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                 child: TextField(
+                  textInputAction: TextInputAction.next,
                   style: Theme.of(context).textTheme.headline6,
                   textAlign: TextAlign.start,
                   decoration: InputDecoration(
@@ -72,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                 child: TextField(
+                  textInputAction: TextInputAction.go,
                   obscureText: true,
                   style: Theme.of(context).textTheme.headline6,
                   textAlign: TextAlign.start,
@@ -89,6 +111,72 @@ class _LoginPageState extends State<LoginPage> {
                               color: Color.fromRGBO(250, 120, 186, 1)))),
                   // prefixIcon: Icon(Icons.lock_outline_sharp)),
                   controller: _password,
+                  onSubmitted: (value) async {
+
+                    var reqlogin = Login();
+                    reqlogin.isUsers = "manager";
+                    reqlogin.username = _username.text;
+                    reqlogin.password = _password.text;
+                    var Jsonreq = loginToJson(reqlogin);
+
+                    if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
+                      print('JsonNotnull');
+
+                      var response = await http.post(
+                          'http://homealone.comsciproject.com/user/login',
+                          body: Jsonreq,
+                          headers: {
+                            'Content-Type': 'application/json',
+                            // 'Accept': 'application/json',
+                            // 'Authorization': 'Bearer'+token,
+                          });
+                      print("Response");
+                      print(response.statusCode);
+                      if (response.statusCode.toString() == '200') {
+
+                        Map<String, dynamic> decodedToken =
+                        JwtDecoder.decode(response.body.toString());
+
+                        SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                        await prefs.setInt('id', decodedToken['id']);
+                        await prefs.setInt(
+                            'status', decodedToken['status']);
+                        print(prefs.getInt('id'));
+
+                        Navigator.pushNamedAndRemoveUntil(context,
+                            '/main-page', (Route<dynamic> route) => false,
+                            arguments: [
+                              decodedToken['id'].toString(),
+                              decodedToken['status'].toString()
+                            ]);
+
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                          content: const Text(''),
+                          duration: const Duration(seconds: 1),
+                          action: SnackBarAction(
+                            label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+                            onPressed: () {
+                              print('Ok');
+                            },
+                          ),
+                        ));
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Text(''),
+                        duration: const Duration(seconds: 1),
+                        action: SnackBarAction(
+                          label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+                          onPressed: () {
+                            print('Ok');
+                          },
+                        ),
+                      ));
+                    }
+                  },
                 ),
               ),
               Padding(
@@ -99,26 +187,6 @@ class _LoginPageState extends State<LoginPage> {
                     //------------------------ปุ่มLogin----------------------//
                     TextButton(
                         onPressed: () async {
-                          // var message2 = "\tกำลังเข้าสู่ระบบ...";
-                          // await showDialog(
-                          //     context: context,
-                          //     builder: (BuildContext context) => AlertDialog(
-                          //           content: Container(
-                          //               // color: Colors.black,
-                          //               height: 200,
-                          //               width: 50,
-                          //               child: Row(
-                          //                 mainAxisAlignment:
-                          //                     MainAxisAlignment.center,
-                          //                 crossAxisAlignment:
-                          //                     CrossAxisAlignment.center,
-                          //                 children: <Widget>[
-                          //                   SpinKitRing(color: Colors.amber),
-                          //                   Text(message2)
-                          //                 ],
-                          //               )),
-                          //         ));
-
                           var reqlogin = Login();
                           reqlogin.isUsers = "manager";
                           reqlogin.username = _username.text;
@@ -139,8 +207,17 @@ class _LoginPageState extends State<LoginPage> {
                               print("Response");
                               print(response.statusCode);
                             if (response.statusCode.toString() == '200') {
+
                               Map<String, dynamic> decodedToken =
                                   JwtDecoder.decode(response.body.toString());
+
+                              SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                              await prefs.setInt('id', decodedToken['id']);
+                              await prefs.setInt(
+                                  'status', decodedToken['status']);
+                              print(prefs.getInt('id'));
+
                               Navigator.pushNamedAndRemoveUntil(context,
                                   '/main-page', (Route<dynamic> route) => false,
                                   arguments: [
@@ -148,17 +225,7 @@ class _LoginPageState extends State<LoginPage> {
                                     decodedToken['status'].toString()
                                   ]);
 
-
-                              // SharedPreferences prefs =
-                              //     await SharedPreferences.getInstance();
-                              // await prefs.setInt('id', decodedToken['id']);
-                              // await prefs.setInt(
-                              //     'status', decodedToken['status']);
-
-                              // prefs.clear();
-                              // prefs.commit();
                             } else {
-
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
                                 content: const Text(''),

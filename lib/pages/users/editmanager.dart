@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:homealone/model/Edit/editmanagermodel.dart';
+import 'package:homealone/model/managermodel.dart';
 import 'package:homealone/model/register/regmanagermodel.dart';
+import 'package:homealone/model/tenantmodel.dart';
+import 'package:homealone/pages/home.dart';
 import 'dart:convert' show utf8;
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -10,14 +14,19 @@ import 'package:homealone/model/register/provincesmodel.dart';
 
 var encoded = utf8.encode('Lorem ipsum dolor sit amet, consetetur...');
 var decoded = utf8.decode(encoded);
-class RegManagerPage extends StatefulWidget {
+
+class EditManager extends StatefulWidget {
+  const EditManager({Key key}) : super(key: key);
 
   @override
-  _RegManagerPageState createState() => _RegManagerPageState();
+  _EditManagerState createState() => _EditManagerState();
 }
 
-class _RegManagerPageState extends State<RegManagerPage> {
+List<Manager> managerdata;
+List<Tenant> tenantdata;
+List<String> args;
 
+class _EditManagerState extends State<EditManager> {
   var manager_Username = TextEditingController();
   var manager_Password = TextEditingController();
   var manager_Firstname = TextEditingController();
@@ -27,10 +36,54 @@ class _RegManagerPageState extends State<RegManagerPage> {
   var manager_LineID = TextEditingController();
   var manager_Facebook = TextEditingController();
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("didChangeDependencies");
+    args = ModalRoute.of(context).settings.arguments;
+    if (args != null) {
+      if (args[1] == '0' && args[1] != null) {
+        getManager(args);
+      } else if (args[1] == '1' && args[1] != null) {
+        print("Tennant");
+        getTenant(args);
+      } else {
+        print("Error");
+      }
+    }
+  }
+
+  Future<Tenant> getTenant(List<String> args) async {
+    final response = await http.get(
+        Uri.http('homealone.comsciproject.com', '/tenant/tenant/' + args[0]));
+    setState(() {
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        tenantdata = tenantFromJson(response.body);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    });
+  }
+
+  Future<Manager> getManager(List<String> args) async {
+    final response = await http.get(
+        Uri.http('homealone.comsciproject.com', '/manager/manager/' + args[0]));
+    setState(() {
+      // print(response.statusCode);
+      if (response.statusCode == 200) {
+        managerdata = managerFromJson(response.body);
+        // managerdata = null;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
         //centerTitle: true,
@@ -41,7 +94,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
             children: <Widget>[
               SizedBox(height: 80.0),
               new Text(
-                ' Sign up',
+                'Manager',
                 style: TextStyle(
                   color: Color.fromRGBO(250, 120, 186, 1),
                   fontSize: 60,
@@ -76,12 +129,12 @@ class _RegManagerPageState extends State<RegManagerPage> {
                               fontFamily: 'Kanit',
                             ),
                             decoration: InputDecoration(
+
                                 border: OutlineInputBorder(),
-                                labelText: 'ชื่อ',
+                                labelText: managerdata[0].managerFirstname,
                                 labelStyle: new TextStyle(
                                     color:
                                     const Color.fromRGBO(250, 120, 186, 1)),
-                                // hintText: 'Enter valid mail id as abc@gmail.com'
                                 enabledBorder: new UnderlineInputBorder(
                                     borderSide: new BorderSide(
                                         color:
@@ -106,7 +159,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                             ),
                             decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'สกุล',
+                                labelText: managerdata[0].managerLastname,
                                 labelStyle: new TextStyle(
                                     color:
                                     const Color.fromRGBO(250, 120, 186, 1)),
@@ -148,7 +201,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         ),
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'ที่อยู่สำนักงาน',
+                            labelText: managerdata[0].managerOffice,
                             labelStyle: new TextStyle(
                                 color: const Color.fromRGBO(250, 120, 186, 1)),
                             // hintText: 'Enter valid mail id as abc@gmail.com'
@@ -184,7 +237,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         ),
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'เบอร์โทร',
+                            labelText: managerdata[0].managerPhone,
                             labelStyle: new TextStyle(
                                 color: const Color.fromRGBO(250, 120, 186, 1)),
                             // hintText: 'Enter valid mail id as abc@gmail.com'
@@ -221,7 +274,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         ),
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Line ID',
+                            labelText: managerdata[0].managerLineid,
                             labelStyle: new TextStyle(
                                 color: const Color.fromRGBO(250, 120, 186, 1)),
                             // hintText: 'Enter valid mail id as abc@gmail.com'
@@ -257,7 +310,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         ),
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Facebook',
+                            labelText: managerdata[0].managerFacebook,
                             labelStyle: new TextStyle(
                                 color: const Color.fromRGBO(250, 120, 186, 1)),
                             // hintText: 'Enter valid mail id as abc@gmail.com'
@@ -271,80 +324,6 @@ class _RegManagerPageState extends State<RegManagerPage> {
                 ),
               ),
 
-
-////////// ชื่อผู้ใช้
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    new Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(200),
-                      ),
-                      //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
-                      width: 300.0,
-                      child: TextField(
-                        controller: manager_Username,
-                        style: TextStyle(
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                        ),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'ชื่อผู้ใช้',
-                            labelStyle: new TextStyle(
-                                color: const Color.fromRGBO(250, 120, 186, 1)),
-                            // hintText: 'Enter valid mail id as abc@gmail.com'
-                            enabledBorder: new UnderlineInputBorder(
-                                borderSide: new BorderSide(
-                                    color: Color.fromRGBO(250, 120, 186, 1)))),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-/////////////รหัสผ่าน
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    new Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(200),
-                      ),
-                      //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
-                      width: 300.0,
-                      child: TextField(
-                        controller: manager_Password,
-                        style: TextStyle(
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                        ),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'รหัสผ่าน',
-                            labelStyle: new TextStyle(
-                                color: const Color.fromRGBO(250, 120, 186, 1)),
-                            // hintText: 'Enter valid mail id as abc@gmail.com'
-                            enabledBorder: new UnderlineInputBorder(
-                                borderSide: new BorderSide(
-                                    color: Color.fromRGBO(250, 120, 186, 1)))),
-                        autofocus: false,
-                        obscureText: true,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
 
               Center(
                 child: Column(
@@ -360,27 +339,30 @@ class _RegManagerPageState extends State<RegManagerPage> {
                             side: BorderSide(
                                 color: Color.fromRGBO(250, 120, 186, 1))),
                         onPressed: () async {
-                          print(manager_Username);
-                          var regdata = Regmanager();
-                          regdata.managerFirstname = manager_Firstname.text;
-                          regdata.managerLastname = manager_Lastname.text;
-                          regdata.managerUsername = manager_Username.text;
-                          regdata.managerPassword = manager_Password.text;
-                          regdata.managerOffice = manager_Office.text;
-                          regdata.managerPhone = manager_Phone.text;
-                          regdata.managerLineid = manager_LineID.text;
-                          regdata.managerFacebook = manager_Facebook.text;
+                          print(manager_Firstname.text.isEmpty);
 
-                          var jsonregdata = regmanagerToJson(regdata);
+
+                          var regdata = Editmanager();
+                          regdata.managerFirstname =  manager_Firstname.text.isEmpty? managerdata[0].managerFirstname:manager_Firstname.text;
+                          regdata.managerLastname = manager_Lastname.text.isEmpty? managerdata[0].managerLastname:manager_Lastname.text;
+                          // regdata.managerUsername = manager_Username.text;
+                          // regdata.managerPassword = manager_Password.text;
+                          regdata.managerOffice = manager_Office.text.isEmpty? managerdata[0].managerOffice:manager_Office.text;
+                          regdata.managerPhone = manager_Phone.text.isEmpty? managerdata[0].managerPhone:manager_Phone.text;
+                          regdata.managerLineid = manager_LineID.text.isEmpty? managerdata[0].managerLineid:manager_LineID.text;
+                          regdata.managerFacebook = manager_Facebook.text.isEmpty? managerdata[0].managerFacebook:manager_Facebook;
+                          regdata.managerImage = managerdata[0].managerImage;
+                          regdata.managerStatus = int.parse(args[1]);
+                          regdata.mid = int.parse(args[0]);
+                          var jsonregdata = editmanagerToJson(regdata);
                           print(jsonregdata);
-                          var response = await http.post(Uri.parse('http://homealone.comsciproject.com/user/regmanager'),
+                          var response = await http.post(Uri.parse('http://homealone.comsciproject.com/manager/editmanager'),
                               body: jsonregdata,headers:{'Content-Type': 'application/json',} );
                           print(response.statusCode.toString());
-
-                          if(response.statusCode.toString() == "201"){
-                            Navigator.popUntil(context, ModalRoute.withName('/Prelogin-page'));
+                          if(response.statusCode.toString() == "200"){
+                            Navigator.pop(context);
                           }else{
-                            print("ชื่อผู้ใช้งานซ้ำกัน");
+                            print("Edit Error");
                           }
 
                         },
@@ -405,6 +387,4 @@ class _RegManagerPageState extends State<RegManagerPage> {
       ),
     );
   }
-
-
 }

@@ -21,6 +21,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  TextStyle _textStyle(){
+    TextStyle(color: Color.fromRGBO(250, 120, 186, 1),
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Kanit',
+        );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +47,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       throw Exception('Failed to load homedata');
     }
+
     return homeall.first;
   }
 
@@ -62,36 +72,10 @@ class _HomePageState extends State<HomePage> {
                           children: homeall.map((homeall) {
                             return Card(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                                
-                                child: 
-                                // Row(children: <Widget>[
-                                  // Expanded(
-                                  //     child: FittedBox(
-                                  //       // alignment: Alignment.centerLeft,
-                                  //       fit: BoxFit.contain,
-                                  //       child: Image.network(homeall.houseImage,
-                                  //       width: 100,height: 100,
-                                  //       )
-                                  //
-                                  //     )
-                                  // ),
-                                //   Expanded(
-                                //       child: Column(children: <Widget>[
-                                //     Expanded(
-                                //         child: Align(
-                                //           alignment: Alignment.centerLeft,
-                                //           child: Text(homeall.houseName,style: _biggerFont,),
-                                //         )
-                                //     ),
-                                //     Expanded(
-                                //         child:Align(
-                                //           alignment: Alignment.centerLeft,
-                                //           child: Text("see more detail and click to detail about",style: _blueFont,),
-                                //         ))
-                                //       ],))
-                                // ],)
+                                child:
                                 ListTile(
-                                  leading:FittedBox(fit: BoxFit.contain,child: Image.network(homeall.houseImage),alignment: Alignment.centerLeft, ) ,
+                                  leading:FittedBox(
+                                    fit: BoxFit.contain,child: Image.network(homeall.houseImage),alignment: Alignment.center, ) ,
                                   title: Text(homeall.houseName,style: TextStyle(fontWeight: FontWeight.bold),),
                                   subtitle: Row(
                                     children: <Widget>[
@@ -99,13 +83,33 @@ class _HomePageState extends State<HomePage> {
                                           child: Column(
                                             children: <Widget>[
                                               Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(homeall.houseAdd,style: TextStyle(
-                                                                  color: Color.fromRGBO(250, 120, 186, 1),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Kanit',
-                                                ),),),
+                                                  alignment: Alignment.centerLeft,
+                                                  child:Text(homeall.houseAdd == null ?"" :homeall.houseAdd,style: TextStyle(
+                                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Kanit',
+                                                  ),),),
+
+                                                      Row(children: <Widget>[
+                                                        Align(alignment: Alignment.centerLeft,
+                                                          child:
+                                                            Text(homeall.houseProvince == null ?"" :"จ."+homeall.houseProvince,style: TextStyle(
+                                                              color: Color.fromRGBO(250, 120, 186, 1),
+                                                              fontSize: 16,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontFamily: 'Kanit',
+                                                            ),),
+                                                      ),Align(alignment: Alignment.centerLeft,
+                                                          child:
+                                                          Text(homeall.houseDistrict == null ?"" :" อ."+homeall.houseDistrict,style: TextStyle(
+                                                            color: Color.fromRGBO(250, 120, 186, 1),
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontFamily: 'Kanit',
+                                                          ),),
+                                                        ),
+                                                      ],),
                                               Row(children: <Widget>[
                                                 Align(alignment: Alignment.centerLeft,
                                                 child: Text(homeall.houseType == null ? "":homeall.houseType+" ",style: TextStyle(
@@ -118,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                                                 Align(
                                                   alignment: Alignment.centerLeft,
                                                   child:Row(children: <Widget>[
-                                                    Icon(Icons.king_bed,color: Color.fromRGBO(250, 120, 186, 1),size: 25,),Text(homeall.houseBedroom.toString()+" ",style: TextStyle(
+                                                    Icon(Icons.king_bed,color: Color.fromRGBO(250, 120, 186, 1),size: 25,),Text(homeall.houseBedroom == null ? " ":homeall.houseBedroom.toString()+" ",style: TextStyle(
                                                       color: Color.fromRGBO(250, 120, 186, 1),
                                                       fontSize: 12,
                                                       fontWeight: FontWeight.bold,
@@ -146,8 +150,6 @@ class _HomePageState extends State<HomePage> {
 
                                               ])
 
-
-
                                             ],
                                           
                                           )) ,
@@ -169,6 +171,7 @@ class _HomePageState extends State<HomePage> {
                                           : (homeall.houseStatus == 2)
                                           ? Colors.orange
                                           : Colors.red,
+
                                     ),
                                   ),
                                 )
@@ -177,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                           : Container()],),),
 
                       ),
-                      onRefresh: gethomeAll,
+                      onRefresh:gethomeAll
                     );
             } return LinearProgressIndicator();
           }),
@@ -199,7 +202,32 @@ class _HomePageState extends State<HomePage> {
 
 // }
 // return LinearProgressIndicator();
-
+// Row(children: <Widget>[
+// Expanded(
+//     child: FittedBox(
+//       // alignment: Alignment.centerLeft,
+//       fit: BoxFit.contain,
+//       child: Image.network(homeall.houseImage,
+//       width: 100,height: 100,
+//       )
+//
+//     )
+// ),
+//   Expanded(
+//       child: Column(children: <Widget>[
+//     Expanded(
+//         child: Align(
+//           alignment: Alignment.centerLeft,
+//           child: Text(homeall.houseName,style: _biggerFont,),
+//         )
+//     ),
+//     Expanded(
+//         child:Align(
+//           alignment: Alignment.centerLeft,
+//           child: Text("see more detail and click to detail about",style: _blueFont,),
+//         ))
+//       ],))
+// ],)
 
 // homeall.map((homeall){
 // print("Homeall Ok");
