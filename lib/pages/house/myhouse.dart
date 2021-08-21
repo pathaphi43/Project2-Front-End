@@ -6,10 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/widgets.dart';
+import 'package:homealone/pages/Navbar/mainpages.dart';
 
 import 'package:http/http.dart' as http;
 
 import 'dart:async';
+
+String args;
 
 class MyHouse extends StatefulWidget {
   const MyHouse({Key key}) : super(key: key);
@@ -24,14 +27,21 @@ class _MyHouseState extends State<MyHouse> {
   @override
   void initState() {
     super.initState();
-    gethomeAll();
+
   }
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final _blueFont = const TextStyle(color: Colors.blueAccent);
-
-  Future<House> gethomeAll() async {
+@override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("didChangeDependencies");
+    args = ModalRoute.of(context).settings.arguments;
+    print(args);
+    gethomeAll(args);
+  }
+  Future<House> gethomeAll(String id) async {
     final response = await http
-        .get(Uri.http('homealone.comsciproject.com', '/home/allhome'));
+        .get(Uri.http('homealone.comsciproject.com', '/searchhouse/managers/'+id));
     print(response.statusCode);
     if (response.statusCode == 200) {
       homeall = houseFromJson(response.body);
@@ -44,14 +54,16 @@ class _MyHouseState extends State<MyHouse> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(247, 207, 205, 1),
+      ),
       resizeToAvoidBottomInset: false,
       body:FutureBuilder(
-          future: gethomeAll(),
+          future: gethomeAll(args),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               print("snapshot OK");
-              return new RefreshIndicator(
-                  child:  SingleChildScrollView( child: Container(
+              return SingleChildScrollView( child: Container(
                     color: Color.fromRGBO(247, 207, 205, 1),
                     margin: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.1),
                     padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.15),
@@ -61,9 +73,13 @@ class _MyHouseState extends State<MyHouse> {
                           ? Column(
                           children: homeall.map((homeall) {
                             return Card(
+
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                                 child:
                                 ListTile(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/Edithouse-page',arguments: homeall.hid.toString());
+                                  },
                                   leading:FittedBox(
                                     fit: BoxFit.contain,child: Image.network(homeall.houseImage),alignment: Alignment.center, ) ,
                                   title: Text(homeall.houseName,style: TextStyle(fontWeight: FontWeight.bold),),
@@ -172,11 +188,13 @@ class _MyHouseState extends State<MyHouse> {
                           }).toList())
                           : Container()],),),
 
-                  ),
-                  onRefresh:gethomeAll
-              );
+                  );
             } return LinearProgressIndicator();
           }),
     );
   }
+}
+
+Widget homeWidget(){
+
 }

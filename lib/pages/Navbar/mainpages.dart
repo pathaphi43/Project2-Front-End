@@ -19,6 +19,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 List<Manager> managerdata;
 List<Tenant> tenantdata;
 List<String> args;
+SharedPreferences prefs;
+int id,status;
 
 class MainPages extends StatefulWidget {
   @override
@@ -42,53 +44,64 @@ class _MainPagesState extends State<MainPages> {
     asyncFunc();
     print("initState");
   }
-  SharedPreferences prefs;
-  asyncFunc() async {
-     prefs = await SharedPreferences.getInstance();
-  }
 
-  // SharedPreferences prefs =
-  //     await SharedPreferences.getInstance();
-  // await prefs.setInt('id', decodedToken['id']);
-  // await prefs.setInt(
-  // 'status', decodedToken['status']);
-  // print(prefs.getInt('id'));
+  asyncFunc()async {
+    prefs = await SharedPreferences.getInstance();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    print("didChangeDependencies");
-    args = ModalRoute.of(context).settings.arguments;
-    if (args != null) {
-      if (args[1] == '0' && args[1] != null) {
-        getManager(args);
-      } else if (args[1] == '1' && args[1] != null) {
-        print("Tennant");
-        getTenant(args);
-      } else {
-        print("Error");
+    if(prefs.getInt('id') != null && prefs.getInt('status') != null){
+      id = prefs.getInt('id');
+      status = prefs.getInt('status');
+      if(status == 0){
+        await  getManager(id);
+      }else if(status == 1){
+        await  getTenant(id);
       }
+    }else{
+      setState(() {
+        managerdata = null;
+        tenantdata = null;
+        id = null;
+        status = null;
+      });
     }
+
   }
 
-  Future<Manager> getManager(List<String> args) async {
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   print("didChangeDependencies");
+  //   args = ModalRoute.of(context).settings.arguments;
+  //   if (prefs != null) {
+  //     if (status == 0 && status != null) {
+  //       getManager(id);
+  //     } else if (status == 1 && status != null) {
+  //       print("Tennant");
+  //       getTenant(id);
+  //     } else {
+  //       print("Error");
+  //     }
+  //   }
+  // }
+
+  Future<Manager> getManager(int id) async {
     final response = await http.get(
-        Uri.http('homealone.comsciproject.com', '/manager/manager/' + args[0]));
+        Uri.http('homealone.comsciproject.com', '/manager/manager/' + id.toString()));
     setState(() {
       // print(response.statusCode);
       if (response.statusCode == 200) {
-          managerdata = managerFromJson(response.body);
-        // managerdata = null;
+        managerdata = managerFromJson(response.body);
+
       } else {
         throw Exception('Failed to load data');
       }
     });
   }
 
-  Future<Tenant> getTenant(List<String> args) async {
+  Future<Tenant> getTenant(int id) async {
     final response = await http.get(
-        Uri.http('homealone.comsciproject.com', '/tenant/tenant/' + args[0]));
+        Uri.http('homealone.comsciproject.com', '/tenant/tenant/' + id.toString()));
     setState(() {
       print(response.statusCode);
       if (response.statusCode == 200) {
@@ -102,7 +115,7 @@ class _MainPagesState extends State<MainPages> {
   @override
   Widget build(BuildContext context) {
     if (managerdata != null || tenantdata != null) {
-      if (args[1] == '0' && args != null) {
+      if (status == 0 && status != null) {
         return Scaffold(
           endDrawer: new Drawer(
             child: ListView(
@@ -181,6 +194,7 @@ class _MainPagesState extends State<MainPages> {
                   leading: Icon(Icons.exit_to_app_outlined),
                   title: Text('ออกจากระบบ'),
                   onTap: () {
+                    setState(() {
                     prefs.clear();
                     Navigator.pushNamedAndRemoveUntil(
                       context,
@@ -189,6 +203,7 @@ class _MainPagesState extends State<MainPages> {
                     );
                     managerdata = null;
                     tenantdata = null;
+                    });
                   },
                 ),
               ],
@@ -227,7 +242,7 @@ class _MainPagesState extends State<MainPages> {
         );
       }
       // ผู้เช่า//////////////
-      else if (args[1] == '1' && args != null) {
+      else if (status == 1 && status != null) {
         return Scaffold(
           endDrawer: new Drawer(
             child: ListView(

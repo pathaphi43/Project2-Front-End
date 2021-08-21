@@ -28,13 +28,15 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Container(child:GoogleMap(mapType: MapType.normal,
+    return SafeArea(child:
+    Container(child:GoogleMap(mapType: MapType.normal,
       initialCameraPosition: CameraPosition(
           target: LatLng(16.199775637587717,103.2825989989716),zoom: 15),
       onMapCreated: (GoogleMapController controller){
         _controller.complete(controller);
       },
       myLocationEnabled: true,
+
     ),
         // floatingActionButton: FloatingActionButton.extended(
         //   onPressed: _currentLocation,

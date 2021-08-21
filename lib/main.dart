@@ -6,6 +6,7 @@ import 'package:homealone/pages/addrent.dart';
 import 'package:homealone/pages/adduser.dart';
 
 import 'package:homealone/pages/home.dart';
+import 'package:homealone/pages/house/edithouse.dart';
 import 'package:homealone/pages/house/myhouse.dart';
 import 'package:homealone/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,8 @@ class MyApp extends StatelessWidget {
         '/Rentpay-page': (context) => RentpayPage(),
         '/Review-page': (context) => ReviewPage(),
         '/Myhouse-page': (context) => MyHouse(),
-        '/Editmanager-page': (context) => EditManager()
+        '/Editmanager-page': (context) => EditManager(),
+        '/Edithouse-page': (context) => EditHouse()
       },
     );
   }
