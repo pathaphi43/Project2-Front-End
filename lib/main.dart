@@ -60,6 +60,7 @@ class MyApp extends StatelessWidget {
         '/Myhouse-page': (context) => MyHouse(),
         '/Editmanager-page': (context) => EditManager(),
         '/Edithouse-page': (context) => EditHouse()
+
       },
     );
   }
