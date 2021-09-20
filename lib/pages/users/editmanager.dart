@@ -112,16 +112,14 @@ class _EditManagerState extends State<EditManager> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(width: 30.0, height: 40.0),
+
                         new Container(
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(200),
-                          ),
                           //decoration: kBoxDecorationStyle ,
                           height: 70.0,
                           width: 160.0,
                           child: TextField(
-                            controller: manager_Firstname,
+                           controller: manager_Firstname,
                             style: TextStyle(
                               color: Color.fromRGBO(250, 120, 186, 1),
                               fontSize: 18.0,
@@ -129,16 +127,16 @@ class _EditManagerState extends State<EditManager> {
                               fontFamily: 'Kanit',
                             ),
                             decoration: InputDecoration(
-
+                                hintText: managerdata[0].managerFirstname,
                                 border: OutlineInputBorder(),
-                                labelText: managerdata[0].managerFirstname,
-                                labelStyle: new TextStyle(
+                                hintStyle: new TextStyle(
                                     color:
                                     const Color.fromRGBO(250, 120, 186, 1)),
-                                enabledBorder: new UnderlineInputBorder(
+                                  enabledBorder: new UnderlineInputBorder(
                                     borderSide: new BorderSide(
                                         color:
-                                        Color.fromRGBO(250, 120, 186, 1)))),
+                                        Color.fromRGBO(250, 120, 186, 1))
+                                  )),
                           ),
                         ),
                         new Container(
@@ -150,7 +148,7 @@ class _EditManagerState extends State<EditManager> {
                           height: 70.0,
                           width: 160.0,
                           child: TextField(
-                            controller: manager_Lastname,
+                            //controller: manager_Lastname,
                             style: TextStyle(
                               color: Color.fromRGBO(250, 120, 186, 1),
                               fontSize: 18.0,
@@ -158,9 +156,10 @@ class _EditManagerState extends State<EditManager> {
                               fontFamily: 'Kanit',
                             ),
                             decoration: InputDecoration(
+
+                                hintText: managerdata[0].managerLastname,
                                 border: OutlineInputBorder(),
-                                labelText: managerdata[0].managerLastname,
-                                labelStyle: new TextStyle(
+                                hintStyle: new TextStyle(
                                     color:
                                     const Color.fromRGBO(250, 120, 186, 1)),
                                 // hintText: 'Enter valid mail id as abc@gmail.com'
@@ -200,9 +199,10 @@ class _EditManagerState extends State<EditManager> {
                           fontFamily: 'Kanit',
                         ),
                         decoration: InputDecoration(
+
+                            hintText: managerdata[0].managerOffice,
                             border: OutlineInputBorder(),
-                            labelText: managerdata[0].managerOffice,
-                            labelStyle: new TextStyle(
+                            hintStyle: new TextStyle(
                                 color: const Color.fromRGBO(250, 120, 186, 1)),
                             // hintText: 'Enter valid mail id as abc@gmail.com'
                             enabledBorder: new UnderlineInputBorder(
@@ -236,9 +236,10 @@ class _EditManagerState extends State<EditManager> {
                           fontFamily: 'Kanit',
                         ),
                         decoration: InputDecoration(
+
+                            hintText: managerdata[0].managerPhone,
                             border: OutlineInputBorder(),
-                            labelText: managerdata[0].managerPhone,
-                            labelStyle: new TextStyle(
+                            hintStyle: new TextStyle(
                                 color: const Color.fromRGBO(250, 120, 186, 1)),
                             // hintText: 'Enter valid mail id as abc@gmail.com'
                             enabledBorder: new UnderlineInputBorder(
@@ -273,9 +274,10 @@ class _EditManagerState extends State<EditManager> {
                           fontFamily: 'Kanit',
                         ),
                         decoration: InputDecoration(
+
+                            hintText: managerdata[0].managerLineid,
                             border: OutlineInputBorder(),
-                            labelText: managerdata[0].managerLineid,
-                            labelStyle: new TextStyle(
+                            hintStyle: new TextStyle(
                                 color: const Color.fromRGBO(250, 120, 186, 1)),
                             // hintText: 'Enter valid mail id as abc@gmail.com'
                             enabledBorder: new UnderlineInputBorder(
@@ -309,9 +311,10 @@ class _EditManagerState extends State<EditManager> {
                           fontFamily: 'Kanit',
                         ),
                         decoration: InputDecoration(
+
+                            hintText: managerdata[0].managerFacebook,
                             border: OutlineInputBorder(),
-                            labelText: managerdata[0].managerFacebook,
-                            labelStyle: new TextStyle(
+                            hintStyle: new TextStyle(
                                 color: const Color.fromRGBO(250, 120, 186, 1)),
                             // hintText: 'Enter valid mail id as abc@gmail.com'
                             enabledBorder: new UnderlineInputBorder(

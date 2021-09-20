@@ -1,6 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_thailand_provinces/dao/amphure_dao.dart';
+import 'package:flutter_thailand_provinces/dao/province_dao.dart';
+import 'package:flutter_thailand_provinces/provider/amphure_provider.dart';
+import 'package:flutter_thailand_provinces/provider/province_provider.dart';
+import 'package:homealone/model/AmphureThailand.dart';
+import 'package:homealone/model/Thailand.dart';
 import 'package:homealone/model/homemodel.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/map/map.dart';
@@ -15,6 +21,10 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  var _ChoseValue;
+  var _ChoseValueAmphureThailand;
+
+
   List<Widget> showWidgets = [
     SearchPage(),
     MapPage(),
@@ -45,6 +55,68 @@ class _SearchPageState extends State<SearchPage> {
     }
     return homeall.first;
   }
+
+
+  void initState() {
+    // super.initState();
+    _Thailand();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  List<Thailand> province_th =[];
+  List<AmphureThailand> Amphurethai =[];
+
+  _Thailand() async{
+    var list = await ProvinceProvider.all();
+    ProvinceDao province ;
+    for(province in list){
+      // province.nameTh;
+      // province.nameEn;
+      // province.id;
+      print("111111111111111111111111111");
+      province_th.add(new Thailand(
+        name: province.nameTh.toString(),
+        id: province.id.toString(),
+      ));
+    }
+    // var lists = await AddressProvider.all();
+    setState(() {
+
+    });
+    // print(province_th);
+  }
+  _Amphure(value) async{
+    // var Amphuree = await AmphureProvider.searchInProvince(provinceId: 1);
+
+    // AmphureDao amphure ;
+    var list = await AmphureProvider.all(provinceId: int.parse(value));
+
+    Amphurethai.removeRange(0,Amphurethai.length);
+
+    for(AmphureDao amphure in list){
+      // amphure.id;
+      // amphure.provinceId;
+      // amphure.nameTh;
+      // amphure.nameEn;
+      Amphurethai.add(new AmphureThailand(
+        name: amphure.nameTh.toString(),
+        id: amphure.id.toString(),
+      ));
+      print(amphure.nameTh);
+    }
+
+    setState(() {
+
+    });
+    // print(Amphuree);
+  }
+
+  String dropdownValue1 = 'กรุงเทพฯ';
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +165,157 @@ class _SearchPageState extends State<SearchPage> {
                     // keyboardType: TextInputType.number,
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    new Text('จังหวัด',
+                      style: TextStyle(
+                        color: Color.fromRGBO(250, 120, 186, 1),
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Kanit',
+                      ),
+                    ),
+
+                    new Container(
+                      alignment: Alignment.centerRight,
+                      height: 70.0,
+                      width: 220.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(200),
+                      ),
+                      child: DropdownButton<String>(
+                        icon: const Icon(
+                          Icons.arrow_circle_down,
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                        ),
+                        //iconSize: 25,
+                        //iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
+                        elevation: 10,
+                        style: const TextStyle(
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanit',
+                        ),
+                        underline: Container(
+                          height: 1,
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                        ),
+                        value: _ChoseValue,
+                        hint: Text(
+                          "  -- โปรดเลือก --  ",
+                          style: TextStyle(
+                              color: Color.fromRGBO(250, 120, 186, 1),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        // value: dropdownValue1,
+
+                        items: province_th.map((item) {
+                          return DropdownMenuItem<String>(
+                            value: item.id,
+                            child: Text(item.name,
+                                style: TextStyle(
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    fontSize: 18)
+                            ),
+
+                            // ,style:TextStyle(color:Colors.black,fontSize: 20),),
+                          );
+                        })?.toList(),
+
+                        onChanged: (value) {
+                          setState(() {
+                            _ChoseValue = value;
+                            // print(_ChoseValue);
+                            _Amphure(_ChoseValue);
+                          });
+                        },
+
+                      ),
+                    ),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    new Text('อำเภอ',
+                      style: TextStyle(
+                        color: Color.fromRGBO(250, 120, 186, 1),
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Kanit',
+                      ),
+                    ),
+                    new Container(
+                      alignment: Alignment.centerRight,
+                      height: 70.0,
+                      width: 220.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(200),
+                      ),
+
+                      child: DropdownButton<String>(
+                        icon: const Icon(
+                          Icons.arrow_circle_down,
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                        ),
+                        //iconSize: 25,
+                        //  iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
+                        elevation: 10,
+                        style: const TextStyle(
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanit',
+                        ),
+                        underline: Container(
+                          height: 1,
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                        ),
+                        value: _ChoseValueAmphureThailand,
+                        hint: Text(
+                          "  -- โปรดเลือก --  ",
+                          style: TextStyle(
+                              color: Color.fromRGBO(250, 120, 186, 1),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        // value: dropdownValue1,
+
+                        items: Amphurethai.map((item) {
+                          return DropdownMenuItem<String>(
+                            value: item.id,
+                            child: Text(item.name,
+                                style: TextStyle(
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    fontSize: 18)
+                            ),
+
+                            // ,style:TextStyle(color:Colors.black,fontSize: 20),),
+                          );
+                        })?.toList(),
+
+                        onChanged: (value) {
+                          setState(() {
+                            _ChoseValueAmphureThailand = value;
+                            // print(_ChoseValue);
+
+                          });
+                        },
+
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
+
+
           ),
+
           FutureBuilder(
               future: gethomeAll(_searchText),
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -221,7 +441,10 @@ class _SearchPageState extends State<SearchPage> {
                                     )
                                 );
                               }).toList())
-                              : Container()],),),
+                              : Container()
+                        ],
+                        ),
+                       ),
                       );
                 } return LinearProgressIndicator();
               }),
