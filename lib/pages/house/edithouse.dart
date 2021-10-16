@@ -220,7 +220,7 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: homeall[0].houseAdd,
+                                      labelText: homeall[0].houseAddress,
                                       labelStyle: new TextStyle(
                                           color: const Color.fromRGBO(250, 120, 186, 1)
                                       ),

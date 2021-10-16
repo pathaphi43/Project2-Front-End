@@ -37,6 +37,13 @@ class Manager {
   String managerFacebook;
   int managerStatus;
 
+  void set(int num){
+    this.managerStatus = num;
+  }
+
+  int get(){
+    return this.managerStatus;
+  }
   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
         mid: json["Mid"],
         managerUsername: json["manager_Username"],

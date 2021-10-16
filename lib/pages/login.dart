@@ -128,19 +128,20 @@ class _LoginPageState extends State<LoginPage> {
                   onSubmitted: (value) async {
 
                     var reqlogin = Login();
-                    reqlogin.isUsers = "manager";
+                    // reqlogin.isUsers = "manager";
                     reqlogin.username = _username.text;
                     reqlogin.password = _password.text;
                     var Jsonreq = loginToJson(reqlogin);
 
                     if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
                       print('JsonNotnull');
-
-                      var response = await http.post(
-                          'http://homealone.comsciproject.com/user/login',
+                      // https://homealone-springcloud.azuremicroservices.io/user/signin
+                      // http://homealone.comsciproject.com/user/login
+                      var response = await http.post(Uri.parse
+                        ('https://homealone-springcloud.azuremicroservices.io/user/signin'),
                           body: Jsonreq,
                           headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/json; charset=UTF-8',
                             // 'Accept': 'application/json',
                             // 'Authorization': 'Bearer'+token,
                           });

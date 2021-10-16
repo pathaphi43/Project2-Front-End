@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,7 +51,7 @@ class _SearchPageState extends State<SearchPage> {
     print(response.statusCode);
 
     if (response.statusCode == 200) {
-      homedata = houseFromJson(response.body);
+      homedata = houseFromJson(utf8.decode(response.bodyBytes));
       print(homedata[0].houseName);
     } else {
       throw Exception('Failed to load homedata');
@@ -602,7 +604,7 @@ class _SearchPageState extends State<SearchPage> {
                                                   children: <Widget>[
                                                     Align(
                                                       alignment: Alignment.centerLeft,
-                                                      child:Text(homeall.houseAdd == null ?"" :homeall.houseAdd,style: TextStyle(
+                                                      child:Text(homeall.houseAddress == null ?"" :homeall.houseAddress,style: TextStyle(
                                                         color: Color.fromRGBO(250, 120, 186, 1),
                                                         fontSize: 16,
                                                         fontWeight: FontWeight.bold,

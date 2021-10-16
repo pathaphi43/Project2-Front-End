@@ -5,10 +5,12 @@ import 'package:http/http.dart' as http;
 class AddUser extends StatefulWidget {
   @override
   _AddUserState createState() => _AddUserState();
+
 }
 
 class _AddUserState extends State<AddUser> {
   //50, 0, 50, 10
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

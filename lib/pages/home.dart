@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:homealone/model/homemodel.dart';
@@ -38,17 +39,18 @@ class _HomePageState extends State<HomePage> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final _blueFont = const TextStyle(color: Colors.blueAccent);
 
-  Future<House> gethomeAll() async {
+  Future<List<House>> gethomeAll() async {
     final response = await http
-        .get(Uri.http('homealone.comsciproject.com', '/home/allhome'));
+        .get(Uri.http('homealone-springcloud.azuremicroservices.io', '/house/all'));
     print(response.statusCode);
     if (response.statusCode == 200) {
-      homeall = houseFromJson(response.body);
+      return homeall = houseFromJson(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Failed to load homedata');
     }
 
-    return homeall.first;
+    print(homeall[0].houseName);
+
   }
 
   @override
@@ -60,6 +62,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               print("snapshot OK");
+
               return new RefreshIndicator(
                       child:  SingleChildScrollView( child: Container(
                         color: Color.fromRGBO(247, 207, 205, 1),
@@ -84,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                                             children: <Widget>[
                                               Align(
                                                   alignment: Alignment.centerLeft,
-                                                  child:Text(homeall.houseAdd == null ?"" :homeall.houseAdd,style: TextStyle(
+                                                  child:Text(homeall.houseAddress== null ?"" :homeall.houseAddress,style: TextStyle(
                                                     color: Color.fromRGBO(250, 120, 186, 1),
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,

@@ -90,7 +90,7 @@ class _MyHouseState extends State<MyHouse> {
                                               children: <Widget>[
                                                 Align(
                                                   alignment: Alignment.centerLeft,
-                                                  child:Text(homeall.houseAdd == null ?"" :homeall.houseAdd,style: TextStyle(
+                                                  child:Text(homeall.houseAddress == null ?"" :homeall.houseAddress,style: TextStyle(
                                                     color: Color.fromRGBO(250, 120, 186, 1),
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
