@@ -14,6 +14,7 @@ import 'package:homealone/pages/payment.dart';
 import 'package:homealone/pages/profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:anim_search_bar/anim_search_bar.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -116,207 +117,463 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   String dropdownValue1 = 'กรุงเทพฯ';
-
+  void startHammering() {
+    print('success');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:ListView(children: <Widget>[Column(children: <Widget>[
+        body:ListView(children: <Widget>[
+          Column(children: <Widget>[
 
-          Container(
-            alignment: Alignment.topCenter,
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                new Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(200),
-                  ),
-                  //decoration: kBoxDecorationStyle ,
-                  height: 80.0,
-                  width: 300.0,
-                  child: TextField(
-                    textInputAction: TextInputAction.search,
-                    style: TextStyle(
-                      color: Color.fromRGBO(250, 120, 186, 1),
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Kanit',
-                    ),
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'ชื่อบ้านเช่า',
-                        labelStyle: new TextStyle(
-                            color: const Color.fromRGBO(250, 120, 186, 1)
-                        ),
-                        // hintText: 'Enter valid mail id as abc@gmail.com'
-                        enabledBorder: new UnderlineInputBorder(
-                            borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                        )
-                    ),onSubmitted: (value) {
-                      setState(() {
-
-
-                      _searchText = value;
-                      gethomeAll(value);
-                      });
-                    },
-                    // keyboardType: TextInputType.number,
-                  ),
-                ),
-                Row(
+            SizedBox(height: 20.0),
+            Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height/4,
+              width: 350.0,
+              child: DefaultTabController(
+                length: 4,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    new Text('จังหวัด',
-                      style: TextStyle(
-                        color: Color.fromRGBO(250, 120, 186, 1),
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
-                      ),
-                    ),
-
-                    new Container(
-                      alignment: Alignment.centerRight,
-                      height: 70.0,
-                      width: 220.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(200),
-                      ),
-                      child: DropdownButton<String>(
-                        icon: const Icon(
-                          Icons.arrow_circle_down,
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                        ),
-                        //iconSize: 25,
-                        //iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
-                        elevation: 10,
-                        style: const TextStyle(
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18,
+                  children: <Widget>[
+                //////// tab bar
+                     ButtonsTabBar(
+                      backgroundColor: Color.fromRGBO(250, 120, 186, 1),
+                      unselectedBackgroundColor: Colors.grey[300],
+                      unselectedLabelStyle: TextStyle(color: Colors.white),
+                      labelStyle:
+                      TextStyle(
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                        ),
-                        underline: Container(
-                          height: 1,
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                        ),
-                        value: _ChoseValue,
-                        hint: Text(
-                          "  -- โปรดเลือก --  ",
-                          style: TextStyle(
-                              color: Color.fromRGBO(250, 120, 186, 1),
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        // value: dropdownValue1,
-
-                        items: province_th.map((item) {
-                          return DropdownMenuItem<String>(
-                            value: item.id,
-                            child: Text(item.name,
-                                style: TextStyle(
-                                    color: Color.fromRGBO(250, 120, 186, 1),
-                                    fontSize: 18)
-                            ),
-
-                            // ,style:TextStyle(color:Colors.black,fontSize: 20),),
-                          );
-                        })?.toList(),
-
-                        onChanged: (value) {
-                          setState(() {
-                            _ChoseValue = value;
-                            // print(_ChoseValue);
-                            _Amphure(_ChoseValue);
-                          });
-                        },
 
                       ),
+                      //borderWidth: 4,
+                      tabs: [
+                        Tab(icon: Icon(Icons.home),
+                          text: "ชื่อบ้าน",),
+                        Tab(icon: Icon(Icons.playlist_add_check),
+                          text: "สถานะ",),
+                        Tab(icon: Icon(Icons.pending),
+                          text: "ประเภท",),
+                        Tab(icon: Icon(Icons.add_location),
+                          text: "ตำแหน่ง",),
+                      ],
                     ),
+
+                /////// show page tab bar
+                  Expanded(
+                    child: TabBarView(
+                      children: <Widget>[
+                        Center(
+                          child: Container(
+                              alignment: Alignment.topCenter,
+                              child: Column(
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 20.0),
+                                  new Container(
+                                    alignment: Alignment.center,
+                                    height: 45.0,
+                                    width: 300.0,
+                                    child: Center(
+                                      child: TextField(
+                                        cursorColor: Color.fromRGBO(250, 120, 186, 1),
+                                        style: TextStyle(
+                                          color: Color.fromRGBO(250, 120, 186, 1),
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Kanit',
+                                        ),
+                                        decoration: InputDecoration(
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Color.fromRGBO(250, 120, 186, 1), width: 2.0),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color.fromRGBO(250, 120, 186, 1),
+                                                width: 2.0),
+                                          ),
+                                          hintText: 'search',
+                                          hintStyle: TextStyle(
+                                            color: Color.fromRGBO(250, 120, 186, 1),
+                                            fontSize: 14.0,
+                                            // fontWeight: FontWeight.bold,
+                                            fontFamily: 'Kanit',
+                                          ),
+                                          prefixIcon: Icon(Icons.search,
+                                            color: Color.fromRGBO(250, 120, 186, 1),
+                                          ),
+                                        ),
+                                        onSubmitted: (value) {
+                                          setState(() {
+                                            _searchText = value;
+                                            gethomeAll(value);
+                                          });
+                                        },
+                                      ),
+                                    ),
+
+                                    // Row(
+                                    //   mainAxisAlignment: MainAxisAlignment.center,
+                                    //   children: [
+                                    //     new Text('จังหวัด',
+                                    //       style: TextStyle(
+                                    //         color: Color.fromRGBO(250, 120, 186, 1),
+                                    //         fontSize: 18.0,
+                                    //         fontWeight: FontWeight.bold,
+                                    //         fontFamily: 'Kanit',
+                                    //       ),
+                                    //     ),
+                                    //
+                                    //     new Container(
+                                    //       alignment: Alignment.centerRight,
+                                    //       height: 70.0,
+                                    //       width: 220.0,
+                                    //       decoration: BoxDecoration(
+                                    //         borderRadius: BorderRadius.circular(200),
+                                    //       ),
+                                    //       child: DropdownButton<String>(
+                                    //         icon: const Icon(
+                                    //           Icons.arrow_circle_down,
+                                    //           color: Color.fromRGBO(250, 120, 186, 1),
+                                    //         ),
+                                    //         //iconSize: 25,
+                                    //         //iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
+                                    //         elevation: 10,
+                                    //         style: const TextStyle(
+                                    //           color: Color.fromRGBO(250, 120, 186, 1),
+                                    //           fontSize: 18,
+                                    //           fontWeight: FontWeight.bold,
+                                    //           fontFamily: 'Kanit',
+                                    //         ),
+                                    //         underline: Container(
+                                    //           height: 1,
+                                    //           color: Color.fromRGBO(250, 120, 186, 1),
+                                    //         ),
+                                    //         value: _ChoseValue,
+                                    //         hint: Text(
+                                    //           "  -- โปรดเลือก --  ",
+                                    //           style: TextStyle(
+                                    //               color: Color.fromRGBO(250, 120, 186, 1),
+                                    //               fontSize: 18,
+                                    //               fontWeight: FontWeight.bold),
+                                    //         ),
+                                    //         // value: dropdownValue1,
+                                    //
+                                    //         items: province_th.map((item) {
+                                    //           return DropdownMenuItem<String>(
+                                    //             value: item.id,
+                                    //             child: Text(item.name,
+                                    //                 style: TextStyle(
+                                    //                     color: Color.fromRGBO(250, 120, 186, 1),
+                                    //                     fontSize: 18)
+                                    //             ),
+                                    //
+                                    //             // ,style:TextStyle(color:Colors.black,fontSize: 20),),
+                                    //           );
+                                    //         })?.toList(),
+                                    //
+                                    //         onChanged: (value) {
+                                    //           setState(() {
+                                    //             _ChoseValue = value;
+                                    //             // print(_ChoseValue);
+                                    //             _Amphure(_ChoseValue);
+                                    //           });
+                                    //         },
+                                    //
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
+
+                                    // Row(
+                                    //   mainAxisAlignment: MainAxisAlignment.center,
+                                    //   children: [
+                                    //     new Text('อำเภอ',
+                                    //       style: TextStyle(
+                                    //         color: Color.fromRGBO(250, 120, 186, 1),
+                                    //         fontSize: 18.0,
+                                    //         fontWeight: FontWeight.bold,
+                                    //         fontFamily: 'Kanit',
+                                    //       ),
+                                    //     ),
+                                    //     new Container(
+                                    //       alignment: Alignment.centerRight,
+                                    //       height: 70.0,
+                                    //       width: 220.0,
+                                    //       decoration: BoxDecoration(
+                                    //         borderRadius: BorderRadius.circular(200),
+                                    //       ),
+                                    //
+                                    //       child: DropdownButton<String>(
+                                    //         icon: const Icon(
+                                    //           Icons.arrow_circle_down,
+                                    //           color: Color.fromRGBO(250, 120, 186, 1),
+                                    //         ),
+                                    //         //iconSize: 25,
+                                    //         //  iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
+                                    //         elevation: 10,
+                                    //         style: const TextStyle(
+                                    //           color: Color.fromRGBO(250, 120, 186, 1),
+                                    //           fontSize: 18,
+                                    //           fontWeight: FontWeight.bold,
+                                    //           fontFamily: 'Kanit',
+                                    //         ),
+                                    //         underline: Container(
+                                    //           height: 1,
+                                    //           color: Color.fromRGBO(250, 120, 186, 1),
+                                    //         ),
+                                    //         value: _ChoseValueAmphureThailand,
+                                    //         hint: Text(
+                                    //           "  -- โปรดเลือก --  ",
+                                    //           style: TextStyle(
+                                    //               color: Color.fromRGBO(250, 120, 186, 1),
+                                    //               fontSize: 18,
+                                    //               fontWeight: FontWeight.bold),
+                                    //         ),
+                                    //         // value: dropdownValue1,
+                                    //
+                                    //         items: Amphurethai.map((item) {
+                                    //           return DropdownMenuItem<String>(
+                                    //             value: item.id,
+                                    //             child: Text(item.name,
+                                    //                 style: TextStyle(
+                                    //                     color: Color.fromRGBO(250, 120, 186, 1),
+                                    //                     fontSize: 18)
+                                    //             ),
+                                    //
+                                    //             // ,style:TextStyle(color:Colors.black,fontSize: 20),),
+                                    //           );
+                                    //         })?.toList(),
+                                    //
+                                    //         onChanged: (value) {
+                                    //           setState(() {
+                                    //             _ChoseValueAmphureThailand = value;
+                                    //             // print(_ChoseValue);
+                                    //
+                                    //           });
+                                    //         },
+                                    //
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ),
+                        Center(
+                          child: IntrinsicHeight(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(),
+                                    );
+                                  },
+                                  child: Text(
+                                    "ว่าง",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(2, 97, 26, 1),
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Kanit',
+                                    ),
+                                  ),
+
+                                ),
+                                SizedBox(width: 20.0),
+                                Container( height: 15 ,width: 1, color: Colors.black), // This is divider
+                                SizedBox(width: 20.0),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(),
+                                    );
+                                  },
+                                  child: Text(
+                                    "ไม่ว่าง",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Kanit',
+                                    ),
+                                  ),
+
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Text("ประเภท") ,
+                        ),
+                        Center(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    new Text('จังหวัด',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(250, 120, 186, 1),
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Kanit',
+                                      ),
+                                    ),
+
+                                    new Container(
+                                      alignment: Alignment.centerRight,
+                                      height: 40.0,
+                                      width: 200.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(200),
+                                      ),
+                                      child: DropdownButton<String>(
+                                        icon: const Icon(
+                                          Icons.arrow_circle_down,
+                                          color: Color.fromRGBO(250, 120, 186, 1),
+                                        ),
+                                        //iconSize: 25,
+                                        //iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
+                                        elevation: 10,
+                                        style: const TextStyle(
+                                          color: Color.fromRGBO(250, 120, 186, 1),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Kanit',
+                                        ),
+                                        underline: Container(
+                                          height: 1,
+                                          color: Color.fromRGBO(250, 120, 186, 1),
+                                        ),
+                                        value: _ChoseValue,
+                                        hint: Text(
+                                          "  -- โปรดเลือก --  ",
+                                          style: TextStyle(
+                                              color: Color.fromRGBO(250, 120, 186, 1),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        // value: dropdownValue1,
+
+                                        items: province_th.map((item) {
+                                          return DropdownMenuItem<String>(
+                                            value: item.id,
+                                            child: Text(item.name,
+                                                style: TextStyle(
+                                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                                    fontSize: 16)
+                                            ),
+
+                                            // ,style:TextStyle(color:Colors.black,fontSize: 20),),
+                                          );
+                                        })?.toList(),
+
+                                        onChanged: (value) {
+                                          setState(() {
+                                          });
+                                        },
+
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    new Text('อำเภอ',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(250, 120, 186, 1),
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Kanit',
+                                      ),
+                                    ),
+                                    new Container(
+                                      alignment: Alignment.centerRight,
+                                      height: 40.0,
+                                      width: 200.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(200),
+                                      ),
+
+                                      child: DropdownButton<String>(
+                                        icon: const Icon(
+                                          Icons.arrow_circle_down,
+                                          color: Color.fromRGBO(250, 120, 186, 1),
+                                        ),
+                                        //iconSize: 25,
+                                        //  iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
+                                        elevation: 10,
+                                        style: const TextStyle(
+                                          color: Color.fromRGBO(250, 120, 186, 1),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Kanit',
+                                        ),
+                                        underline: Container(
+                                          height: 1,
+                                          color: Color.fromRGBO(250, 120, 186, 1),
+                                        ),
+                                        value: _ChoseValueAmphureThailand,
+                                        hint: Text(
+                                          "  -- โปรดเลือก --  ",
+                                          style: TextStyle(
+                                              color: Color.fromRGBO(250, 120, 186, 1),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        // value: dropdownValue1,
+
+                                        items: Amphurethai.map((item) {
+                                          return DropdownMenuItem<String>(
+                                            value: item.id,
+                                            child: Text(item.name,
+                                                style: TextStyle(
+                                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                                    fontSize: 16)
+                                            ),
+
+                                            // ,style:TextStyle(color:Colors.black,fontSize: 20),),
+                                          );
+                                        })?.toList(),
+
+                                        onChanged: (value) {
+                                          setState(() {
+
+                                          });
+                                        },
+
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   ],
                 ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    new Text('อำเภอ',
-                      style: TextStyle(
-                        color: Color.fromRGBO(250, 120, 186, 1),
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
-                      ),
-                    ),
-                    new Container(
-                      alignment: Alignment.centerRight,
-                      height: 70.0,
-                      width: 220.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(200),
-                      ),
-
-                      child: DropdownButton<String>(
-                        icon: const Icon(
-                          Icons.arrow_circle_down,
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                        ),
-                        //iconSize: 25,
-                        //  iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
-                        elevation: 10,
-                        style: const TextStyle(
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                        ),
-                        underline: Container(
-                          height: 1,
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                        ),
-                        value: _ChoseValueAmphureThailand,
-                        hint: Text(
-                          "  -- โปรดเลือก --  ",
-                          style: TextStyle(
-                              color: Color.fromRGBO(250, 120, 186, 1),
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        // value: dropdownValue1,
-
-                        items: Amphurethai.map((item) {
-                          return DropdownMenuItem<String>(
-                            value: item.id,
-                            child: Text(item.name,
-                                style: TextStyle(
-                                    color: Color.fromRGBO(250, 120, 186, 1),
-                                    fontSize: 18)
-                            ),
-
-                            // ,style:TextStyle(color:Colors.black,fontSize: 20),),
-                          );
-                        })?.toList(),
-
-                        onChanged: (value) {
-                          setState(() {
-                            _ChoseValueAmphureThailand = value;
-                            // print(_ChoseValue);
-
-                          });
-                        },
-
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
 
-
-          ),
-
-          FutureBuilder(
+            FutureBuilder(
               future: gethomeAll(_searchText),
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {

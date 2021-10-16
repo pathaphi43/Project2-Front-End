@@ -39,17 +39,17 @@ class _RegManagerPageState extends State<RegManagerPage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              SizedBox(height: 80.0),
+              SizedBox(height: 40.0),
               new Text(
                 ' Sign up',
                 style: TextStyle(
                   color: Color.fromRGBO(250, 120, 186, 1),
                   fontSize: 60,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'Righteous-Regular',
                 ),
               ),
-              SizedBox(height: 80.0),
+              SizedBox(height: 40.0),
 ////////// ชื่อ-สกุล
               Center(
                 child: Column(
@@ -65,13 +65,13 @@ class _RegManagerPageState extends State<RegManagerPage> {
                             borderRadius: BorderRadius.circular(200),
                           ),
                           //decoration: kBoxDecorationStyle ,
-                          height: 70.0,
+                          height:60.0,
                           width: 160.0,
                           child: TextField(
                             controller: manager_Firstname,
                             style: TextStyle(
                               color: Color.fromRGBO(250, 120, 186, 1),
-                              fontSize: 18.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Kanit',
                             ),
@@ -94,13 +94,13 @@ class _RegManagerPageState extends State<RegManagerPage> {
                             borderRadius: BorderRadius.circular(200),
                           ),
                           //decoration: kBoxDecorationStyle ,
-                          height: 70.0,
-                          width: 160.0,
+                          height: 60.0,
+                          width: 150.0,
                           child: TextField(
                             controller: manager_Lastname,
                             style: TextStyle(
                               color: Color.fromRGBO(250, 120, 186, 1),
-                              fontSize: 18.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Kanit',
                             ),
@@ -123,7 +123,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                 ),
               ),
 
-
+              SizedBox(height: 20.0),
 
 ////////// ที่อยู่สำนักงาน
               Center(
@@ -136,13 +136,13 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: manager_Office,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -160,7 +160,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                   ],
                 ),
               ),
-
+              SizedBox(height: 20.0),
 ////////// เบอร์โทร
               Center(
                 child: Column(
@@ -172,13 +172,13 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: manager_Phone,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -197,7 +197,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                   ],
                 ),
               ),
-
+              SizedBox(height: 20.0),
 ////////// Line ID
               Center(
                 child: Column(
@@ -209,13 +209,13 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: manager_LineID,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -234,6 +234,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 20.0),
 ////////// Facebook
               Center(
                 child: Column(
@@ -245,13 +246,13 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: manager_Facebook,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -270,7 +271,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                   ],
                 ),
               ),
-
+              SizedBox(height: 20.0),
 
 ////////// ชื่อผู้ใช้
               Center(
@@ -283,13 +284,13 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: manager_Username,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -307,7 +308,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                   ],
                 ),
               ),
-
+              SizedBox(height: 20.0),
 /////////////รหัสผ่าน
               Center(
                 child: Column(
@@ -319,13 +320,13 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: manager_Password,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -345,15 +346,17 @@ class _RegManagerPageState extends State<RegManagerPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 20.0),
+
 
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 60.0),
+                    SizedBox(height: 40.0),
                     Container(
-                      height: 40.0,
-                      width: 200.0,
+                      height: 45.0,
+                      width: 180.0,
                       child: new RaisedButton(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),

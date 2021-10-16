@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                                                 Align(
                                                   alignment: Alignment.centerLeft,
                                                   child:Row(children: <Widget>[
-                                                    Icon(Icons.king_bed,color: Color.fromRGBO(250, 120, 186, 1),size: 25,),Text(homeall.houseBedroom == null ? " ":homeall.houseBedroom.toString()+" ",style: TextStyle(
+                                                    Icon(Icons.king_bed,color: Color.fromRGBO(250, 120, 186, 1),size: 15,),Text(homeall.houseBedroom == null ? " ":homeall.houseBedroom.toString()+" ",style: TextStyle(
                                                       color: Color.fromRGBO(250, 120, 186, 1),
                                                       fontSize: 12,
                                                       fontWeight: FontWeight.bold,
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                                                 Align(
                                                     alignment: Alignment.centerLeft,
                                                     child:Row(children: <Widget>[
-                                                      Icon(Icons.bathtub,color: Color.fromRGBO(250, 120, 186, 1),size: 20,),Text(homeall.houseBathroom == null ? " " :homeall.houseBathroom.toString()+" ",style: TextStyle(
+                                                      Icon(Icons.bathtub,color: Color.fromRGBO(250, 120, 186, 1),size: 15,),Text(homeall.houseBathroom == null ? " " :homeall.houseBathroom.toString()+" ",style: TextStyle(
                                                         color: Color.fromRGBO(250, 120, 186, 1),
                                                         fontSize: 12,
                                                         fontWeight: FontWeight.bold,

@@ -121,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   color: Color.fromRGBO(250, 120, 186, 1),
                   fontSize: 60,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'Righteous-Regular',
                 ),
               ),
               SizedBox(height: 60.0),
@@ -136,13 +136,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: tenant_Username,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -160,6 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 20.0),
 
 /////////////รหัสผ่าน
               Center(
@@ -172,13 +173,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: tenant_Password,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -198,11 +199,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 40.0),
+
 ////////// ชื่อ-สกุล
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         SizedBox(width: 30.0, height: 40.0),
                         new Container(
                           alignment: Alignment.center,
@@ -210,13 +216,13 @@ class _RegisterPageState extends State<RegisterPage> {
                             borderRadius: BorderRadius.circular(200),
                           ),
                           //decoration: kBoxDecorationStyle ,
-                          height: 70.0,
-                          width: 300.0,
+                          height:60.0,
+                          width: 170.0,
                           child: TextField(
                             controller: tenant_Firstname,
                             style: TextStyle(
                               color: Color.fromRGBO(250, 120, 186, 1),
-                              fontSize: 18.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Kanit',
                             ),
@@ -225,12 +231,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 labelText: 'ชื่อ',
                                 labelStyle: new TextStyle(
                                     color:
-                                        const Color.fromRGBO(250, 120, 186, 1)),
+                                    const Color.fromRGBO(250, 120, 186, 1)),
                                 // hintText: 'Enter valid mail id as abc@gmail.com'
                                 enabledBorder: new UnderlineInputBorder(
                                     borderSide: new BorderSide(
                                         color:
-                                            Color.fromRGBO(250, 120, 186, 1)))),
+                                        Color.fromRGBO(250, 120, 186, 1)))),
                           ),
                         ),
                         new Container(
@@ -239,13 +245,13 @@ class _RegisterPageState extends State<RegisterPage> {
                             borderRadius: BorderRadius.circular(200),
                           ),
                           //decoration: kBoxDecorationStyle ,
-                          height: 70.0,
-                          width: 300.0,
+                          height: 60.0,
+                          width: 150.0,
                           child: TextField(
                             controller: tenant_Lastname,
                             style: TextStyle(
                               color: Color.fromRGBO(250, 120, 186, 1),
-                              fontSize: 18.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Kanit',
                             ),
@@ -254,17 +260,20 @@ class _RegisterPageState extends State<RegisterPage> {
                                 labelText: 'สกุล',
                                 labelStyle: new TextStyle(
                                     color:
-                                        const Color.fromRGBO(250, 120, 186, 1)),
+                                    const Color.fromRGBO(250, 120, 186, 1)),
                                 // hintText: 'Enter valid mail id as abc@gmail.com'
                                 enabledBorder: new UnderlineInputBorder(
                                     borderSide: new BorderSide(
                                         color:
-                                            Color.fromRGBO(250, 120, 186, 1)))),
+                                        Color.fromRGBO(250, 120, 186, 1)))),
                           ),
                         ),
+                      ],
+                    ),
                   ],
                 ),
               ),
+              SizedBox(height: 20.0),
 
 ////////// เลขบัตรประชาชน
               Center(
@@ -277,13 +286,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: tenant_IDcard,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -302,6 +311,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 20.0),
 
 ////////// ที่อยู่ตามบัตรประชาชน
               Center(
@@ -314,13 +324,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 75.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: tenant_Add,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -338,6 +348,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 20.0),
+
 /////////////////จังหวัด
               Center(
                 child: Column(
@@ -349,7 +361,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             new Text('จังหวัด',
                                 style: TextStyle(
                                   color: Color.fromRGBO(250, 120, 186, 1),
-                                  fontSize: 18.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Kanit',
                                 ),
@@ -357,7 +369,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                             new Container(
                               alignment: Alignment.centerRight,
-                              height: 70.0,
+                              height: 60.0,
                               width: 220.0,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(200),
@@ -372,7 +384,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 elevation: 10,
                                 style: const TextStyle(
                                   color: Color.fromRGBO(250, 120, 186, 1),
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Kanit',
                                 ),
@@ -385,7 +397,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   "  -- โปรดเลือก --  ",
                                   style: TextStyle(
                                       color: Color.fromRGBO(250, 120, 186, 1),
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 // value: dropdownValue1,
@@ -396,7 +408,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     child: Text(item.name,
                                         style: TextStyle(
                                             color: Color.fromRGBO(250, 120, 186, 1),
-                                            fontSize: 18)
+                                            fontSize: 16)
                                     ),
 
                                     // ,style:TextStyle(color:Colors.black,fontSize: 20),),
@@ -422,14 +434,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             new Text('อำเภอ',
                               style: TextStyle(
                                 color: Color.fromRGBO(250, 120, 186, 1),
-                                fontSize: 18.0,
+                                fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Kanit',
                               ),
                             ),
                             new Container(
                               alignment: Alignment.centerRight,
-                              height: 70.0,
+                              height: 60.0,
                               width: 220.0,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(200),
@@ -445,7 +457,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 elevation: 10,
                                 style: const TextStyle(
                                   color: Color.fromRGBO(250, 120, 186, 1),
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Kanit',
                                 ),
@@ -458,7 +470,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   "  -- โปรดเลือก --  ",
                                   style: TextStyle(
                                       color: Color.fromRGBO(250, 120, 186, 1),
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 // value: dropdownValue1,
@@ -469,7 +481,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     child: Text(item.name,
                                         style: TextStyle(
                                             color: Color.fromRGBO(250, 120, 186, 1),
-                                            fontSize: 18)
+                                            fontSize: 16)
                                     ),
 
                                     // ,style:TextStyle(color:Colors.black,fontSize: 20),),
@@ -493,6 +505,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 20.0),
+
 ////////// เบอร์โทร
               Center(
                 child: Column(
@@ -504,13 +518,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: tenant_Phone,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -529,6 +543,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 20.0),
 
 ////////// email
               Center(
@@ -541,13 +556,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(200),
                       ),
                       //decoration: kBoxDecorationStyle ,
-                      height: 70.0,
+                      height: 60.0,
                       width: 300.0,
                       child: TextField(
                         controller: tenant_Email,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
@@ -566,17 +581,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
-
+              SizedBox(height: 20.0),
 
 
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 60.0),
+                    SizedBox(height: 40.0),
                     Container(
-                      height: 40.0,
-                      width: 200.0,
+                      height: 45.0,
+                      width: 180.0,
                       child: new RaisedButton(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),

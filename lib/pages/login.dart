@@ -60,18 +60,23 @@ class _LoginPageState extends State<LoginPage> {
                       color: Color.fromRGBO(250, 120, 186, 1),
                       fontSize: 60,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Roboto',
+                      fontFamily: 'Righteous-Regular',
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 20.0),
               // Container(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                 child: TextField(
                   textInputAction: TextInputAction.next,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: TextStyle(
+                    color: const Color.fromRGBO(250, 120, 186, 1),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Kanit',
+                  ),
                   textAlign: TextAlign.start,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
@@ -84,8 +89,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       enabledBorder: new UnderlineInputBorder(
                           borderSide: new BorderSide(
-                              color: Color.fromRGBO(250, 120, 186, 1)))),
+                              color: Color.fromRGBO(250, 120, 186, 1)
+                          )
+                      )
+                  ),
                   // prefixIcon: Icon(Icons.account_circle)),
+
                   controller: _username,
                 ),
               ),
@@ -95,7 +104,12 @@ class _LoginPageState extends State<LoginPage> {
                 child: TextField(
                   textInputAction: TextInputAction.go,
                   obscureText: true,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: TextStyle(
+                    color: const Color.fromRGBO(250, 120, 186, 1),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Kanit',
+                  ),
                   textAlign: TextAlign.start,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
@@ -225,13 +239,15 @@ class _LoginPageState extends State<LoginPage> {
                                     decodedToken['status'].toString()
                                   ]);
 
-                            } else {
+                            }  else {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
+                                backgroundColor: Colors.red,
                                 content: const Text(''),
                                 duration: const Duration(seconds: 1),
                                 action: SnackBarAction(
                                   label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+                                  textColor: Colors.white,
                                   onPressed: () {
                                     print('Ok');
                                   },
@@ -240,10 +256,12 @@ class _LoginPageState extends State<LoginPage> {
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.red,
                               content: const Text(''),
                               duration: const Duration(seconds: 1),
                               action: SnackBarAction(
                                 label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+                                textColor: Colors.white,
                                 onPressed: () {
                                   print('Ok');
                                 },
@@ -270,8 +288,10 @@ class _LoginPageState extends State<LoginPage> {
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50.0),
-                                  side: BorderSide(color: Colors.red)),
-                            ))),
+                              ),
+                            )
+                        )
+                    ),
                   ],
                 ),
               ),
