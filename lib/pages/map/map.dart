@@ -1,7 +1,10 @@
 import 'dart:async';
 
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/payment.dart';
 import 'package:homealone/pages/profile.dart';
@@ -14,9 +17,22 @@ class MapPage extends StatefulWidget {
   _MapPageState createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
 
+
+class _MapPageState extends State<MapPage> {
+  LatLng currentLatLng;
   Completer<GoogleMapController> _controller = Completer();
+  @override
+  void initState(){
+    super.initState();
+    Geolocator.getCurrentPosition().then((currLocation){
+      setState((){
+        currentLatLng = new LatLng(currLocation.latitude, currLocation.longitude);
+      });
+    });
+  }
+
+
   List<Widget> showWidgets = [
     SearchPage(),
     MapPage(),
@@ -29,9 +45,9 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(child:
-    Container(child:GoogleMap(mapType: MapType.normal,
+    Container(child:currentLatLng == null ? Center(child:CircularProgressIndicator()) :GoogleMap(mapType: MapType.normal,
       initialCameraPosition: CameraPosition(
-          target: LatLng(16.199775637587717,103.2825989989716),zoom: 15),
+          target:  currentLatLng,zoom: 15),
       onMapCreated: (GoogleMapController controller){
         _controller.complete(controller);
       },

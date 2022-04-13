@@ -18,7 +18,7 @@ import 'dart:async';
 SharedPreferences prefs;
 int id,status;
 int index = 0;
-List<Manager> managerdata;
+Manager managerdata;
 List<Tenant> tenantdata;
 class ProfilePage extends StatefulWidget {
   @override
@@ -61,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<Manager> getManager(int id) async {
     final response = await http.get(
-        Uri.http('homealone.comsciproject.com', '/manager/manager/' + id.toString()));
+        Uri.http('home-alone-csproject.herokuapp.com', '/manager/id/' + id.toString()));
     setState(() {
       // print(response.statusCode);
       if (response.statusCode == 200) {
@@ -75,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<Tenant> getTenant(int id) async {
     final response = await http.get(
-        Uri.http('homealone.comsciproject.com', '/tenant/tenant/' + id.toString()));
+        Uri.http('home-alone-csproject.herokuapp.com', '/tenant/id/' + id.toString()));
     setState(() {
       print(response.statusCode);
       if (response.statusCode == 200) {
@@ -110,7 +110,7 @@ Widget managerWidget(BuildContext context){
                   child: Stack(
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: NetworkImage(managerdata[0].managerImage),
+                        backgroundImage: NetworkImage(managerdata.managerImage),
                         radius: 80.0,
                         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
                         //backgroundImage: ,
@@ -137,7 +137,7 @@ Widget managerWidget(BuildContext context){
                   Padding(
                     padding: const EdgeInsets.all(3.0),
                     child: Text(
-                      managerdata[0].managerFirstname+" "+managerdata[0].managerLastname,
+                      managerdata.managerFirstname+" "+managerdata.managerLastname,
                       style: TextStyle(
                         color: Color.fromRGBO(250, 120, 186, 1),
                         fontSize: 20,
@@ -149,7 +149,7 @@ Widget managerWidget(BuildContext context){
                   Padding(
                     padding: const EdgeInsets.all(3.0),
                     child: Text(
-                      managerdata[0].managerUsername,
+                      managerdata.managerUsername,
                       style: TextStyle(
                         color: Color.fromRGBO(250, 120, 186, 1),
                         fontSize: 20,

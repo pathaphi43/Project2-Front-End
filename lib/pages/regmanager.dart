@@ -376,11 +376,11 @@ class _RegManagerPageState extends State<RegManagerPage> {
 
                           var jsonregdata = regmanagerToJson(regdata);
                           print(jsonregdata);
-                          var response = await http.post(Uri.parse('http://homealone.comsciproject.com/user/regmanager'),
+                          var response = await http.post(Uri.parse('https://home-alone-csproject.herokuapp.com/manager/signup'),
                               body: jsonregdata,headers:{'Content-Type': 'application/json',} );
                           print(response.statusCode.toString());
 
-                          if(response.statusCode.toString() == "201"){
+                          if(response.statusCode.toString() == "200"){
                             Navigator.popUntil(context, ModalRoute.withName('/Prelogin-page'));
                           }else{
                             print("ชื่อผู้ใช้งานซ้ำกัน");

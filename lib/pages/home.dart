@@ -41,8 +41,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<House>> gethomeAll() async {
     final response = await http
-        .get(Uri.http('homealone-springcloud.azuremicroservices.io', '/house/all'));
-    print(response.statusCode);
+        .get(Uri.http('home-alone-csproject.herokuapp.com', '/house/all'));
+    // print(response.statusCode);
     if (response.statusCode == 200) {
       return homeall = houseFromJson(utf8.decode(response.bodyBytes));
     } else {
@@ -63,8 +63,10 @@ class _HomePageState extends State<HomePage> {
             if (snapshot.connectionState == ConnectionState.done) {
               print("snapshot OK");
 
-              return new RefreshIndicator(
-                      child:  SingleChildScrollView( child: Container(
+              return new
+              // RefreshIndicator(
+              //         child:
+                      SingleChildScrollView( child: Container(
                         color: Color.fromRGBO(247, 207, 205, 1),
                         margin: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.1),
                         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.15),
@@ -93,7 +95,6 @@ class _HomePageState extends State<HomePage> {
                                                     fontWeight: FontWeight.bold,
                                                     fontFamily: 'Kanit',
                                                   ),),),
-
                                                       Row(children: <Widget>[
                                                         Align(alignment: Alignment.centerLeft,
                                                           child:
@@ -142,7 +143,8 @@ class _HomePageState extends State<HomePage> {
                                                         fontFamily: 'Kanit',
                                                       ),) ],)  ),
 
-                                                Align(alignment: Alignment.centerLeft,
+                                                Align(
+                                                  alignment: Alignment.centerLeft,
                                                   child: Text(homeall.houseArea == null ? "":homeall.houseArea+" ",style: TextStyle(
                                                     color: Color.fromRGBO(250, 120, 186, 1),
                                                     fontSize: 12,
@@ -182,9 +184,10 @@ class _HomePageState extends State<HomePage> {
                           }).toList())
                           : Container()],),),
 
-                      ),
-                      onRefresh:gethomeAll
-                    );
+                      );
+            // ,
+                    //   onRefresh:gethomeAll
+                    // );
             } return LinearProgressIndicator();
           }),
     );

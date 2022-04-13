@@ -1,14 +1,12 @@
 // To parse this JSON data, do
 //
-//     final Manager = ManagerFromJson(jsonString);
+//     final manager = managerFromJson(jsonString);
 
 import 'dart:convert';
 
-List<Manager> managerFromJson(String str) =>
-    List<Manager>.from(json.decode(str).map((x) => Manager.fromJson(x)));
+Manager managerFromJson(String str) => Manager.fromJson(json.decode(str));
 
-String managerToJson(List<Manager> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String managerToJson(Manager data) => json.encode(data.toJson());
 
 class Manager {
   Manager({
@@ -37,38 +35,31 @@ class Manager {
   String managerFacebook;
   int managerStatus;
 
-  void set(int num){
-    this.managerStatus = num;
-  }
-
-  int get(){
-    return this.managerStatus;
-  }
   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
-        mid: json["Mid"],
-        managerUsername: json["manager_Username"],
-        managerPassword: json["manager_Password"],
-        managerFirstname: json["manager_Firstname"],
-        managerLastname: json["manager_Lastname"],
-        managerImage: json["manager_Image"],
-        managerPhone: json["manager_Phone"],
-        managerOffice: json["manager_Office"],
-        managerLineid: json["manager_Lineid"],
-        managerFacebook: json["manager_Facebook"],
-        managerStatus: json["manager_Status"],
-      );
+    mid: json["mid"],
+    managerUsername: json["managerUsername"],
+    managerPassword: json["managerPassword"],
+    managerFirstname: json["managerFirstname"],
+    managerLastname: json["managerLastname"],
+    managerImage: json["managerImage"],
+    managerPhone: json["managerPhone"],
+    managerOffice: json["managerOffice"],
+    managerLineid: json["managerLineid"],
+    managerFacebook: json["managerFacebook"],
+    managerStatus: json["managerStatus"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "Mid": mid,
-        "manager_Username": managerUsername,
-        "manager_Password": managerPassword,
-        "manager_Firstname": managerFirstname,
-        "manager_Lastname": managerLastname,
-        "manager_Image": managerImage,
-        "manager_Phone": managerPhone,
-        "manager_Office": managerOffice,
-        "manager_Lineid": managerLineid,
-        "manager_Facebook": managerFacebook,
-        "manager_Status": managerStatus,
-      };
+    "mid": mid,
+    "managerUsername": managerUsername,
+    "managerPassword": managerPassword,
+    "managerFirstname": managerFirstname,
+    "managerLastname": managerLastname,
+    "managerImage": managerImage,
+    "managerPhone": managerPhone,
+    "managerOffice": managerOffice,
+    "managerLineid": managerLineid,
+    "managerFacebook": managerFacebook,
+    "managerStatus": managerStatus,
+  };
 }

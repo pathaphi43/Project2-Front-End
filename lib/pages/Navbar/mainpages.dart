@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -16,9 +17,9 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
-List<Manager> managerdata;
+
 List<Tenant> tenantdata;
-List<String> args;
+List<int> args;
 SharedPreferences prefs;
 int id,status;
 
@@ -37,6 +38,7 @@ class _MainPagesState extends State<MainPages> {
   ];
   int index = 0;
   String message = ' ';
+  Manager managerdata;
 
   @override
   void initState() {
@@ -47,12 +49,14 @@ class _MainPagesState extends State<MainPages> {
 
   asyncFunc()async {
     prefs = await SharedPreferences.getInstance();
-
     if(prefs.getInt('id') != null && prefs.getInt('status') != null){
       id = prefs.getInt('id');
       status = prefs.getInt('status');
       if(status == 0){
         await  getManager(id);
+        args[0] = id;
+        args[1] = status;
+
       }else if(status == 1){
         await  getTenant(id);
       }
@@ -87,11 +91,13 @@ class _MainPagesState extends State<MainPages> {
 
   Future<Manager> getManager(int id) async {
     final response = await http.get(
-        Uri.http('homealone.comsciproject.com', '/manager/manager/' + id.toString()));
+        Uri.http('home-alone-csproject.herokuapp.com', '/manager/id/' + id.toString()));
     setState(() {
-      // print(response.statusCode);
       if (response.statusCode == 200) {
-        managerdata = managerFromJson(response.body);
+        // print(managerFromJson(utf8.decode(response.bodyBytes)));
+        // managerdata = managerFromJson(response.body.toString());
+        managerdata = managerFromJson(utf8.decode(response.bodyBytes));
+
 
       } else {
         throw Exception('Failed to load data');
@@ -101,7 +107,7 @@ class _MainPagesState extends State<MainPages> {
 
   Future<Tenant> getTenant(int id) async {
     final response = await http.get(
-        Uri.http('homealone.comsciproject.com', '/tenant/tenant/' + id.toString()));
+        Uri.http('home-alone-csproject.herokuapp.com', '/tenant/id/' + id.toString()));
     setState(() {
       print(response.statusCode);
       if (response.statusCode == 200) {
@@ -122,15 +128,15 @@ class _MainPagesState extends State<MainPages> {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  accountName: Text(managerdata[0].managerFirstname +
+                  accountName: Text(managerdata.managerFirstname +
                       "\t" +
-                      managerdata[0].managerLastname,style: TextStyle(
+                      managerdata.managerLastname,style: TextStyle(
                     color: Color.fromRGBO(250, 120, 186, 1),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Kanit',
                   ),),
-                  accountEmail: Text(managerdata[0].managerUsername,style: TextStyle(
+                  accountEmail: Text(managerdata.managerUsername,style: TextStyle(
                     color: Color.fromRGBO(247, 207, 205, 1),
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -142,7 +148,7 @@ class _MainPagesState extends State<MainPages> {
                           fit: BoxFit.cover)),
                   currentAccountPicture: CircleAvatar(
                     backgroundImage:
-                        NetworkImage(managerdata[0].managerImage.toString()),
+                        NetworkImage(managerdata.managerImage.toString()),
                   ),
 
                 ),
@@ -196,13 +202,17 @@ class _MainPagesState extends State<MainPages> {
                   onTap: () {
                     setState(() {
                     prefs.clear();
+                    managerdata = null;
+                    tenantdata = null;
+                    id = null;
+                    status = null;
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/main-page',
                       (Route<dynamic> route) => false,
                     );
-                    managerdata = null;
-                    tenantdata = null;
+
+
                     });
                   },
                 ),
@@ -223,7 +233,7 @@ class _MainPagesState extends State<MainPages> {
                         tag: 'Profile Picture',
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
-                              managerdata[0].managerImage.toString()),
+                              managerdata.managerImage.toString()),
                         ),
                       ),
                     ),

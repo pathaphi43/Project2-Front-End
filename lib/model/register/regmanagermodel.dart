@@ -27,24 +27,24 @@ class Regmanager {
   String managerFacebook;
 
   factory Regmanager.fromJson(Map<String, dynamic> json) => Regmanager(
-    managerUsername: json["manager_Username"],
-    managerPassword: json["manager_Password"],
-    managerFirstname: json["manager_Firstname"],
-    managerLastname: json["manager_Lastname"],
-    managerPhone: json["manager_Phone"],
-    managerOffice: json["manager_Office"],
-    managerLineid: json["manager_Lineid"],
-    managerFacebook: json["manager_Facebook"],
+    managerUsername: json["managerUsername"],
+    managerPassword: json["managerPassword"],
+    managerFirstname: json["managerFirstname"],
+    managerLastname: json["managerLastname"],
+    managerPhone: json["managerPhone"],
+    managerOffice: json["managerOffice"],
+    managerLineid: json["managerLineid"],
+    managerFacebook: json["managerFacebook"],
   );
 
   Map<String, dynamic> toJson() => {
-    "manager_Username": managerUsername,
-    "manager_Password": managerPassword,
-    "manager_Firstname": managerFirstname,
-    "manager_Lastname": managerLastname,
-    "manager_Phone": managerPhone,
-    "manager_Office": managerOffice,
-    "manager_Lineid": managerLineid,
-    "manager_Facebook": managerFacebook,
+    "managerUsername": managerUsername,
+    "managerPassword": managerPassword,
+    "managerFirstname": managerFirstname,
+    "managerLastname": managerLastname,
+    "managerPhone": managerPhone,
+    "managerOffice": managerOffice,
+    "managerLineid": managerLineid,
+    "managerFacebook": managerFacebook,
   };
 }

@@ -420,6 +420,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     _ChoseValue = value;
                                     // print(_ChoseValue);
                                     _Amphure(_ChoseValue);
+                                      _ChoseValueAmphureThailand = null;
+
+
                                   });
                                 },
 

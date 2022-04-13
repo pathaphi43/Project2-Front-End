@@ -22,27 +22,73 @@ class _LoginPageState extends State<LoginPage> {
   String status = '';
   var _username = TextEditingController();
   var _password = TextEditingController();
+  SharedPreferences prefs;
+ Future<ScaffoldState> _signin(String Jsonreq)async {
+     if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
+       print(Jsonreq[0]);
+       // https://homealone-springcloud.azuremicroservices.io/user/signin
+       // http://homealone.comsciproject.com/user/login
+       var response = await http.post(Uri.parse
+         ('https://home-alone-csproject.herokuapp.com/user/signin'),
+           body: Jsonreq,
+           headers: {
+             'Content-Type': 'application/json'
+             // 'Accept': 'application/json',
+             // 'Authorization': 'Bearer'+token,
+           });
+       print("Response");
+       print(response.statusCode);
+       if (response.statusCode.toString() == '200') {
 
-  void configLoading() {
-    EasyLoading.instance
-      ..displayDuration = const Duration(milliseconds: 2000)
-      ..indicatorType = EasyLoadingIndicatorType.fadingCircle
-      ..loadingStyle = EasyLoadingStyle.dark
-      ..indicatorSize = 45.0
-      ..radius = 10.0
-      ..progressColor = Colors.yellow
-      ..backgroundColor = Colors.green
-      ..indicatorColor = Colors.yellow
-      ..textColor = Colors.yellow
-      ..maskColor = Colors.blue.withOpacity(0.5)
-      ..userInteractions = true
-      ..dismissOnTap = false;
+         Map<String, dynamic> decodedToken = JwtDecoder.decode(response.body.toString());
 
+          prefs =
+             await SharedPreferences.getInstance();
+         await prefs.setInt('id', decodedToken['id']);
+         await prefs.setInt(
+             'status', decodedToken['status']);
+         print(prefs.getInt('id'));
+
+
+         // Navigator.pushNamedAndRemoveUntil(context,
+         //     '/main-page', (Route<dynamic> route) => false,
+         //     arguments: [
+         //       decodedToken['id'].toString(),
+         //       decodedToken['status'].toString()
+         //     ]);
+
+       } else {
+         ScaffoldMessenger.of(context)
+             .showSnackBar(SnackBar(
+           content: const Text(''),
+           duration: const Duration(seconds: 1),
+           action: SnackBarAction(
+             label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+             onPressed: () {
+               print('Ok');
+             },
+           ),
+         ));
+       }
+     } else {
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+         content: const Text(''),
+         duration: const Duration(seconds: 1),
+         action: SnackBarAction(
+           label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+           onPressed: () {
+             print('Ok');
+           },
+         ),
+       ));
+     }
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
       ),
@@ -133,64 +179,23 @@ class _LoginPageState extends State<LoginPage> {
                     reqlogin.password = _password.text;
                     var Jsonreq = loginToJson(reqlogin);
 
-                    if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
-                      print('JsonNotnull');
-                      // https://homealone-springcloud.azuremicroservices.io/user/signin
-                      // http://homealone.comsciproject.com/user/login
-                      var response = await http.post(Uri.parse
-                        ('https://homealone-springcloud.azuremicroservices.io/user/signin'),
-                          body: Jsonreq,
-                          headers: {
-                            'Content-Type': 'application/json; charset=UTF-8',
-                            // 'Accept': 'application/json',
-                            // 'Authorization': 'Bearer'+token,
-                          });
-                      print("Response");
-                      print(response.statusCode);
-                      if (response.statusCode.toString() == '200') {
+                    _scaffoldKey.currentState.showSnackBar(
+                        new SnackBar(duration: new Duration(seconds: 4), content:
+                        new Row(
+                          children: <Widget>[
+                            new CircularProgressIndicator(),
+                            new Text("  Signing-In...")
+                          ],
+                        ),
+                        ));
 
-                        Map<String, dynamic> decodedToken =
-                        JwtDecoder.decode(response.body.toString());
-
-                        SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                        await prefs.setInt('id', decodedToken['id']);
-                        await prefs.setInt(
-                            'status', decodedToken['status']);
-                        print(prefs.getInt('id'));
-
+                    _signin(Jsonreq).whenComplete(() =>
                         Navigator.pushNamedAndRemoveUntil(context,
                             '/main-page', (Route<dynamic> route) => false,
                             arguments: [
-                              decodedToken['id'].toString(),
-                              decodedToken['status'].toString()
-                            ]);
+                              prefs.getInt('id'),
+                              prefs.getInt('status')]));
 
-                      } else {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(
-                          content: const Text(''),
-                          duration: const Duration(seconds: 1),
-                          action: SnackBarAction(
-                            label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
-                            onPressed: () {
-                              print('Ok');
-                            },
-                          ),
-                        ));
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: const Text(''),
-                        duration: const Duration(seconds: 1),
-                        action: SnackBarAction(
-                          label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
-                          onPressed: () {
-                            print('Ok');
-                          },
-                        ),
-                      ));
-                    }
                   },
                 ),
               ),
@@ -208,67 +213,23 @@ class _LoginPageState extends State<LoginPage> {
                           reqlogin.password = _password.text;
                           var Jsonreq = loginToJson(reqlogin);
 
-                          if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
-                            print('JsonNotnull');
+                          _scaffoldKey.currentState.showSnackBar(
+                              new SnackBar(duration: new Duration(seconds: 4), content:
+                              new Row(
+                                children: <Widget>[
+                                  new CircularProgressIndicator(),
+                                  new Text("  Signing-In...")
+                                ],
+                              ),
+                              ));
 
-                            var response = await http.post(
-                                    'http://homealone.comsciproject.com/user/login',
-                                body: Jsonreq,
-                                headers: {
-                                  'Content-Type': 'application/json',
-                                  // 'Accept': 'application/json',
-                                  // 'Authorization': 'Bearer'+token,
-                                });
-                              print("Response");
-                              print(response.statusCode);
-                            if (response.statusCode.toString() == '200') {
-
-                              Map<String, dynamic> decodedToken =
-                                  JwtDecoder.decode(response.body.toString());
-
-                              SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                              await prefs.setInt('id', decodedToken['id']);
-                              await prefs.setInt(
-                                  'status', decodedToken['status']);
-                              print(prefs.getInt('id'));
-
+                          _signin(Jsonreq).whenComplete(() =>
                               Navigator.pushNamedAndRemoveUntil(context,
                                   '/main-page', (Route<dynamic> route) => false,
                                   arguments: [
-                                    decodedToken['id'].toString(),
-                                    decodedToken['status'].toString()
-                                  ]);
+                                    prefs.getInt('id'),
+                                    prefs.getInt('status')]));
 
-                            }  else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                backgroundColor: Colors.red,
-                                content: const Text(''),
-                                duration: const Duration(seconds: 1),
-                                action: SnackBarAction(
-                                  label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
-                                  textColor: Colors.white,
-                                  onPressed: () {
-                                    print('Ok');
-                                  },
-                                ),
-                              ));
-                            }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: Colors.red,
-                              content: const Text(''),
-                              duration: const Duration(seconds: 1),
-                              action: SnackBarAction(
-                                label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  print('Ok');
-                                },
-                              ),
-                            ));
-                          }
                         },
                         child: Text('Sing in'.toUpperCase(),
                             style: TextStyle(
@@ -320,6 +281,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
 }
 
 

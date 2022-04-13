@@ -47,7 +47,7 @@ class _SearchPageState extends State<SearchPage> {
     // http://homealone.comsciproject.com/searchhouse/name/ส
     // print('homealone.comsciproject.com/searchhouse/name/'+search);
     final response = await http
-        .get(Uri.http('homealone.comsciproject.com','/searchhouse/name/'+search));
+        .get(Uri.http('home-alone-csproject.herokuapp.com','/house/search/'+search));
     print(response.statusCode);
 
     if (response.statusCode == 200) {
@@ -148,7 +148,6 @@ class _SearchPageState extends State<SearchPage> {
                       TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-
                       ),
                       //borderWidth: 4,
                       tabs: [
