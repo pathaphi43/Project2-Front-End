@@ -39,7 +39,6 @@ class _LoginPageState extends State<LoginPage> {
        print("Response");
        print(response.statusCode);
        if (response.statusCode.toString() == '200') {
-
          Map<String, dynamic> decodedToken = JwtDecoder.decode(response.body.toString());
 
           prefs =
@@ -188,14 +187,12 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                         ));
-
                     _signin(Jsonreq).whenComplete(() =>
                         Navigator.pushNamedAndRemoveUntil(context,
                             '/main-page', (Route<dynamic> route) => false,
                             arguments: [
                               prefs.getInt('id'),
                               prefs.getInt('status')]));
-
                   },
                 ),
               ),

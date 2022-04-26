@@ -7,12 +7,15 @@ import 'package:homealone/pages/adduser.dart';
 
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/house/edithouse.dart';
+import 'package:homealone/pages/house/homeInfo.dart';
 import 'package:homealone/pages/house/myhouse.dart';
 import 'package:homealone/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/pages/map/map.dart';
 import 'package:homealone/pages/payment/elecpay.dart';
+import 'package:homealone/pages/payment/elecpay_tenant.dart';
 import 'package:homealone/pages/payment/rentpay.dart';
+import 'package:homealone/pages/payment/rentpay_tenant.dart';
 import 'package:homealone/pages/payment/waterpay.dart';
 import 'package:homealone/pages/prelogin.dart';
 import 'package:homealone/pages/profile.dart';
@@ -59,7 +62,8 @@ class MyApp extends StatelessWidget {
         '/Review-page': (context) => ReviewPage(),
         '/Myhouse-page': (context) => MyHouse(),
         '/Editmanager-page': (context) => EditManager(),
-        '/Edithouse-page': (context) => EditHouse()
+        '/Edithouse-page': (context) => EditHouse(),
+        '/Homeinfo-page': (context) => InfoPage(),
 
       },
     );

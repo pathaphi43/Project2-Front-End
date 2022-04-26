@@ -43,7 +43,7 @@ class _SearchPageState extends State<SearchPage> {
   String _searchText = "";
   List<House> homedata;
 
-  Future<House> gethomeAll(String search) async {
+  Future<List<House>> gethomeAll(String search) async {
     // http://homealone.comsciproject.com/searchhouse/name/ส
     // print('homealone.comsciproject.com/searchhouse/name/'+search);
     final response = await http
@@ -51,12 +51,12 @@ class _SearchPageState extends State<SearchPage> {
     print(response.statusCode);
 
     if (response.statusCode == 200) {
-      homedata = houseFromJson(utf8.decode(response.bodyBytes));
+     return homedata = houseFromJson(utf8.decode(response.bodyBytes));
       print(homedata[0].houseName);
     } else {
       throw Exception('Failed to load homedata');
     }
-    return homeall.first;
+    // return homeall.first;
   }
 
 
@@ -601,14 +601,14 @@ class _SearchPageState extends State<SearchPage> {
                                             Expanded(
                                                 child: Column(
                                                   children: <Widget>[
-                                                    Align(
-                                                      alignment: Alignment.centerLeft,
-                                                      child:Text(homeall.houseAddress == null ?"" :homeall.houseAddress,style: TextStyle(
-                                                        color: Color.fromRGBO(250, 120, 186, 1),
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Kanit',
-                                                      ),),),
+                                                    // Align(
+                                                    //   alignment: Alignment.centerLeft,
+                                                    //   child:Text(homeall.houseAddress == null ?"" :homeall.houseAddress,style: TextStyle(
+                                                    //     color: Color.fromRGBO(250, 120, 186, 1),
+                                                    //     fontSize: 16,
+                                                    //     fontWeight: FontWeight.bold,
+                                                    //     fontFamily: 'Kanit',
+                                                    //   ),),),
                                                     Row(children: <Widget>[
                                                       Align(alignment: Alignment.centerLeft,
                                                         child:

@@ -15,7 +15,7 @@ import 'package:homealone/model/Thailand.dart';
 import 'dart:convert' show utf8;
 import 'dart:async';
 
-String args;
+
 
 
 class EditHouse extends StatefulWidget {
@@ -26,7 +26,7 @@ class EditHouse extends StatefulWidget {
 }
 
 class _EditHouseState extends State<EditHouse> {
-
+  List<int> args;
   @override
   void initState() {
     // TODO: implement initState
@@ -90,8 +90,9 @@ class _EditHouseState extends State<EditHouse> {
     super.didChangeDependencies();
     print("didChangeDependencies");
    args =  ModalRoute.of(context).settings.arguments;
-   await gethomeAll(args);
+   await gethomeAll(args[0].toString());
   }
+
   List<House> homeall;
   Future<House> gethomeAll(String id) async {
     final response = await http

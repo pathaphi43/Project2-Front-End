@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:homealone/model/homemodel.dart';
 import 'package:homealone/model/managermodel.dart';
 import 'package:homealone/model/tenantmodel.dart';
 import 'package:homealone/pages/home.dart';
@@ -22,6 +24,7 @@ List<Tenant> tenantdata;
 List<int> args;
 SharedPreferences prefs;
 int id,status;
+String firstName,lastName,userName,imageProfile;
 
 class MainPages extends StatefulWidget {
   @override
@@ -44,7 +47,47 @@ class _MainPagesState extends State<MainPages> {
   void initState() {
     super.initState();
     asyncFunc();
+    _determinePosition();
     print("initState");
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      // Permissions are denied forever, handle appropriately.
+      // print(position.latitude + position.longitude);
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
   asyncFunc()async {
@@ -54,8 +97,18 @@ class _MainPagesState extends State<MainPages> {
       status = prefs.getInt('status');
       if(status == 0){
         await  getManager(id);
-        args[0] = id;
-        args[1] = status;
+
+        prefs.setString("imageprofile", managerdata.managerImage);
+        prefs.setString("firstname", managerdata.managerFirstname);
+        prefs.setString("lastname", managerdata.managerLastname);
+        prefs.setString("username", managerdata.managerUsername);
+
+        firstName = prefs.getString('firstname');
+        lastName = prefs.getString('lastname');
+        userName = prefs.getString('username');
+        imageProfile = prefs.getString('imageprofile');
+        // args[0] = id;
+        // args[1] = status;
 
       }else if(status == 1){
         await  getTenant(id);
@@ -66,6 +119,10 @@ class _MainPagesState extends State<MainPages> {
         tenantdata = null;
         id = null;
         status = null;
+        firstName = null;
+        lastName = null;
+        imageProfile = null;
+        userName = null;
       });
     }
 
@@ -96,9 +153,7 @@ class _MainPagesState extends State<MainPages> {
       if (response.statusCode == 200) {
         // print(managerFromJson(utf8.decode(response.bodyBytes)));
         // managerdata = managerFromJson(response.body.toString());
-        managerdata = managerFromJson(utf8.decode(response.bodyBytes));
-
-
+        return managerdata = managerFromJson(utf8.decode(response.bodyBytes));
       } else {
         throw Exception('Failed to load data');
       }
@@ -128,15 +183,15 @@ class _MainPagesState extends State<MainPages> {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  accountName: Text(managerdata.managerFirstname +
+                  accountName: Text(firstName +
                       "\t" +
-                      managerdata.managerLastname,style: TextStyle(
+                      lastName,style: TextStyle(
                     color: Color.fromRGBO(250, 120, 186, 1),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Kanit',
                   ),),
-                  accountEmail: Text(managerdata.managerUsername,style: TextStyle(
+                  accountEmail: Text(userName,style: TextStyle(
                     color: Color.fromRGBO(247, 207, 205, 1),
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -165,7 +220,7 @@ class _MainPagesState extends State<MainPages> {
                   title: Text('แก้ไขข้อมูลส่วนตัว'),
                   onTap: () {
                     Navigator.pushNamed(context, '/Editmanager-page',
-                        arguments: args);
+                        arguments: [ prefs.getInt("id"),prefs.getInt("status") ]);
                   },
                 ),
                 ListTile(
@@ -189,7 +244,7 @@ class _MainPagesState extends State<MainPages> {
                   title: Text('ข้อมูลบ้านเช่า'),
                   onTap: () {
                     Navigator.pushNamed(context, '/Myhouse-page',
-                        arguments: args);
+                        arguments:  prefs.getInt("id").toString());
                   },
                 ),
                 ListTile(
@@ -400,7 +455,7 @@ class _MainPagesState extends State<MainPages> {
           Icons.home,
           // size: 20,
         ),
-        title: Text('หน้าแรก'));
+        label:'หน้าแรก');
   }
 
   BottomNavigationBarItem searchNav() {
@@ -409,8 +464,7 @@ class _MainPagesState extends State<MainPages> {
         Icons.search,
         // size: 20,
       ),
-      title: Text('ค้นหา'),
-    );
+      label:'ค้นหา');
   }
 
   BottomNavigationBarItem mapNav() {
@@ -419,7 +473,7 @@ class _MainPagesState extends State<MainPages> {
         Icons.map,
         // size: 20,
       ),
-      title: Text('แผนที่'),
+      label: 'แผนที่',
     );
   }
 
@@ -429,7 +483,7 @@ class _MainPagesState extends State<MainPages> {
         Icons.payment,
         // size: 20,
       ),
-      title: Text('การเงิน'),
+      label: 'การเงิน',
     );
   }
 
@@ -439,7 +493,7 @@ class _MainPagesState extends State<MainPages> {
         Icons.account_box_rounded,
         // size: 20,
       ),
-      title: Text('โปรไฟล์'),
+      label: 'โปรไฟล์',
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:homealone/model/homemodel.dart';
@@ -41,10 +42,10 @@ class _MyHouseState extends State<MyHouse> {
   }
   Future<House> gethomeAll(String id) async {
     final response = await http
-        .get(Uri.http('homealone.comsciproject.com', '/searchhouse/managers/'+id));
+        .get(Uri.http('home-alone-csproject.herokuapp.com', '/house/manager/'+id));
     print(response.statusCode);
     if (response.statusCode == 200) {
-      homeall = houseFromJson(response.body);
+       homeall = houseFromJson(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Failed to load homedata');
     }
@@ -53,6 +54,7 @@ class _MyHouseState extends State<MyHouse> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
@@ -88,14 +90,14 @@ class _MyHouseState extends State<MyHouse> {
                                         Expanded(
                                             child: Column(
                                               children: <Widget>[
-                                                Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child:Text(homeall.houseAddress == null ?"" :homeall.houseAddress,style: TextStyle(
-                                                    color: Color.fromRGBO(250, 120, 186, 1),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'Kanit',
-                                                  ),),),
+                                                // Align(
+                                                //   alignment: Alignment.centerLeft,
+                                                //   child:Text(homeall.houseAddress == null ?"" :homeall.houseAddress,style: TextStyle(
+                                                //     color: Color.fromRGBO(250, 120, 186, 1),
+                                                //     fontSize: 16,
+                                                //     fontWeight: FontWeight.bold,
+                                                //     fontFamily: 'Kanit',
+                                                //   ),),),
                                                 Row(children: <Widget>[
                                                   Align(alignment: Alignment.centerLeft,
                                                     child:
@@ -115,9 +117,6 @@ class _MyHouseState extends State<MyHouse> {
                                                     ),),
                                                   ),
                                                 ],),
-
-
-
                                                 Row(children: <Widget>[
                                                   Align(alignment: Alignment.centerLeft,
                                                     child: Text(homeall.houseType == null ? "":homeall.houseType+" ",style: TextStyle(

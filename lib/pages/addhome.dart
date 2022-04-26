@@ -104,6 +104,7 @@ class _AddHomeState extends State<AddHome> {
   var house_Insurance = TextEditingController();
   var house_Status = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
     List<String> args = ModalRoute.of(context).settings.arguments;
@@ -417,32 +418,61 @@ class _AddHomeState extends State<AddHome> {
                         ),
 
                         ///////// ตำแหน่งที่ตั้ง
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              new Container(
-                                child :
-                                new FlatButton (
-                                  minWidth: 200.0,
-                                  height: 50.0,
-                                  color: Color.fromRGBO(247, 207, 205, 1),
-                                  onPressed: () {},
-                                  child: Text(" ตำแหน่งที่ตั้ง ",
-                                    style: TextStyle(
-                                      color: Color.fromRGBO(250, 120, 186, 1),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Kanit',
-                                    ),),
-                                  shape: StadiumBorder(
-                                      side: BorderSide(width: 3.0,color: Color.fromRGBO(247, 207, 205, 1))
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Center(
+                        //   child: Column(
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: [
+                        //       new Container(
+                        //         child :
+                        //         new FlatButton (
+                        //           minWidth: 200.0,
+                        //           height: 50.0,
+                        //           color: Color.fromRGBO(247, 207, 205, 1),
+                        //           onPressed: () {},
+                        //           child: Text(" ตำแหน่งที่ตั้ง ",
+                        //             style: TextStyle(
+                        //               color: Color.fromRGBO(250, 120, 186, 1),
+                        //               fontSize: 16,
+                        //               fontWeight: FontWeight.bold,
+                        //               fontFamily: 'Kanit',
+                        //             ),),
+                        //           shape: StadiumBorder(
+                        //               side: BorderSide(width: 3.0,color: Color.fromRGBO(247, 207, 205, 1))
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+//                     Center(
+//                       child: Column(
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         children: <Widget>[
+//                           RaisedButton(
+//                             onPressed: () async {
+//                               LocationResult result = await showLocationPicker(
+//                                 context,
+//                                 apiKey,
+//                                 initialCenter: LatLng(31.1975844, 29.9598339),
+// //                      automaticallyAnimateToCurrentLocation: true,
+// //                      mapStylePath: 'assets/mapStyle.json',
+//                                 myLocationButtonEnabled: true,
+//                                 // requiredGPS: true,
+//                                 layersButtonEnabled: true,
+//                                 // countries: ['AE', 'NG']
+//
+// //                      resultCardAlignment: Alignment.bottomCenter,
+//                                 desiredAccuracy: LocationAccuracy.best,
+//                               );
+//                               print("result = $result");
+//                               setState(() => _pickedLocation = result);
+//                             },
+//                             child: Text('Pick location'),
+//                           ),
+//                           Text(_pickedLocation.toString()),
+//                         ],
+//                       ),
+//                     ),
 
                       ],
                     ),

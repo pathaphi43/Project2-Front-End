@@ -3,11 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:homealone/model/managermodel.dart';
 import 'package:homealone/model/tenantmodel.dart';
 import 'package:homealone/pages/Navbar/mainpages.dart';
-import 'package:homealone/pages/home.dart';
-import 'package:homealone/pages/map/map.dart';
-import 'package:homealone/pages/payment.dart';
-import 'package:homealone/pages/search/search.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:convert' show utf8;
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +15,7 @@ int id,status;
 int index = 0;
 Manager managerdata;
 List<Tenant> tenantdata;
+
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -33,18 +29,19 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-      asyncFunc();
+        asyncFunc();
   }
 
 
   asyncFunc()async {
      prefs = await SharedPreferences.getInstance();
-
      if(prefs.getInt('id') != null && prefs.getInt('status') != null){
        id = prefs.getInt('id');
        status = prefs.getInt('status');
        if(status == 0){
-       await  getManager(id);
+         // await  getManager(id);
+         // setState(() {
+         // });
        }else if(status == 1){
        await  getTenant(id);
        }
@@ -54,6 +51,10 @@ class _ProfilePageState extends State<ProfilePage> {
        tenantdata = null;
        id = null;
        status = null;
+       firstName = null;
+       lastName = null;
+       imageProfile = null;
+       userName = null;
        });
      }
 
@@ -62,36 +63,37 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<Manager> getManager(int id) async {
     final response = await http.get(
         Uri.http('home-alone-csproject.herokuapp.com', '/manager/id/' + id.toString()));
-    setState(() {
+
       // print(response.statusCode);
       if (response.statusCode == 200) {
         managerdata = managerFromJson(response.body);
-
       } else {
         throw Exception('Failed to load data');
       }
-    });
+    // setState(() {});
   }
 
   Future<Tenant> getTenant(int id) async {
     final response = await http.get(
         Uri.http('home-alone-csproject.herokuapp.com', '/tenant/id/' + id.toString()));
-    setState(() {
+
       print(response.statusCode);
       if (response.statusCode == 200) {
         tenantdata = tenantFromJson(response.body);
       } else {
         throw Exception('Failed to load data');
       }
-    });
+    // setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
 
-      if(managerdata != null){
+      if(status == 0){
         return managerWidget(context);
-      }else return notloginWidget(context);
+      }else if(status == 1){
+        return Container(child: Text("Tenant"),);
+  }else return notloginWidget(context);
   }
 }
 
@@ -110,7 +112,7 @@ Widget managerWidget(BuildContext context){
                   child: Stack(
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: NetworkImage(managerdata.managerImage),
+                        backgroundImage: NetworkImage(imageProfile),
                         radius: 80.0,
                         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
                         //backgroundImage: ,
@@ -136,8 +138,7 @@ Widget managerWidget(BuildContext context){
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(3.0),
-                    child: Text(
-                      managerdata.managerFirstname+" "+managerdata.managerLastname,
+                    child: Text( firstName +" "+lastName,
                       style: TextStyle(
                         color: Color.fromRGBO(250, 120, 186, 1),
                         fontSize: 20,
@@ -149,7 +150,7 @@ Widget managerWidget(BuildContext context){
                   Padding(
                     padding: const EdgeInsets.all(3.0),
                     child: Text(
-                      managerdata.managerUsername,
+                      userName,
                       style: TextStyle(
                         color: Color.fromRGBO(250, 120, 186, 1),
                         fontSize: 20,

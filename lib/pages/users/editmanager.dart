@@ -94,7 +94,7 @@ class _EditManagerState extends State<EditManager> {
     setState(() {
       print(response.statusCode);
       if (response.statusCode == 200) {
-        tenantdata = tenantFromJson(response.body);
+        tenantdata = tenantFromJson(utf8.decode(response.bodyBytes));
       } else {
         throw Exception('Failed to load data');
       }
@@ -107,7 +107,7 @@ class _EditManagerState extends State<EditManager> {
     setState(() {
       // print(response.statusCode);
       if (response.statusCode == 200) {
-        managerdata = managerFromJson(response.body);
+        managerdata = managerFromJson(utf8.decode(response.bodyBytes));
         // managerdata = null;
       } else {
         throw Exception('Failed to load data');
