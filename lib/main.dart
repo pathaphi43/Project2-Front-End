@@ -23,6 +23,7 @@ import 'package:homealone/pages/register.dart';
 import 'package:homealone/pages/regmanager.dart';
 import 'package:homealone/pages/reviewhome/reviewpage.dart';
 import 'package:homealone/pages/search/search.dart';
+import 'package:homealone/pages/users/ManagerEditProfile.dart';
 import 'package:homealone/pages/users/editmanager.dart';
 
 import 'pages/Navbar/mainpages.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         '/Editmanager-page': (context) => EditManager(),
         '/Edithouse-page': (context) => EditHouse(),
         '/Homeinfo-page': (context) => InfoPage(),
+        '/ManagerEditProfile-page':(context) => ManagerEditProfile(),
 
       },
     );

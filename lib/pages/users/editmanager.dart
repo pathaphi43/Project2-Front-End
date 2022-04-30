@@ -1,18 +1,16 @@
+
+
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:homealone/model/Edit/editmanagermodel.dart';
 import 'package:homealone/model/managermodel.dart';
-import 'package:homealone/model/register/regmanagermodel.dart';
 import 'package:homealone/model/tenantmodel.dart';
-import 'package:homealone/pages/home.dart';
 import 'dart:convert' show utf8;
 import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'package:homealone/model/register/provincesmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 var encoded = utf8.encode('Lorem ipsum dolor sit amet, consetetur...');
 var decoded = utf8.decode(encoded);
@@ -409,7 +407,7 @@ class _EditManagerState extends State<EditManager> {
                             var response = await http.post(
                                 Uri.parse(
                                     'http://homealone.comsciproject.com/manager/editmanager'),
-                                body: jsonregdata,
+                                body: jsonregdata ,
                                 headers: {
                                   'Content-Type': 'application/json',
                                 });

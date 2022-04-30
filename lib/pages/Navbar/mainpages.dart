@@ -26,6 +26,8 @@ SharedPreferences prefs;
 int id,status;
 String firstName,lastName,userName,imageProfile;
 
+
+
 class MainPages extends StatefulWidget {
   @override
   _MainPagesState createState() => _MainPagesState();
@@ -90,14 +92,14 @@ class _MainPagesState extends State<MainPages> {
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
-  asyncFunc()async {
+  asyncFunc() async {
+    print("Main Page AsyncFunc");
     prefs = await SharedPreferences.getInstance();
     if(prefs.getInt('id') != null && prefs.getInt('status') != null){
       id = prefs.getInt('id');
       status = prefs.getInt('status');
       if(status == 0){
         await  getManager(id);
-
         prefs.setString("imageprofile", managerdata.managerImage);
         prefs.setString("firstname", managerdata.managerFirstname);
         prefs.setString("lastname", managerdata.managerLastname);
@@ -109,6 +111,9 @@ class _MainPagesState extends State<MainPages> {
         imageProfile = prefs.getString('imageprofile');
         // args[0] = id;
         // args[1] = status;
+        ProfilePage().createState().asyncFunc();
+
+
 
       }else if(status == 1){
         await  getTenant(id);
@@ -149,15 +154,12 @@ class _MainPagesState extends State<MainPages> {
   Future<Manager> getManager(int id) async {
     final response = await http.get(
         Uri.http('home-alone-csproject.herokuapp.com', '/manager/id/' + id.toString()));
-    setState(() {
       if (response.statusCode == 200) {
-        // print(managerFromJson(utf8.decode(response.bodyBytes)));
-        // managerdata = managerFromJson(response.body.toString());
+        print("Main Page Get Manager");
         return managerdata = managerFromJson(utf8.decode(response.bodyBytes));
       } else {
         throw Exception('Failed to load data');
       }
-    });
   }
 
   Future<Tenant> getTenant(int id) async {
@@ -203,7 +205,7 @@ class _MainPagesState extends State<MainPages> {
                           fit: BoxFit.cover)),
                   currentAccountPicture: CircleAvatar(
                     backgroundImage:
-                        NetworkImage(managerdata.managerImage.toString()),
+                        NetworkImage(imageProfile),
                   ),
 
                 ),
@@ -288,7 +290,7 @@ class _MainPagesState extends State<MainPages> {
                         tag: 'Profile Picture',
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
-                              managerdata.managerImage.toString()),
+                              imageProfile),
                         ),
                       ),
                     ),

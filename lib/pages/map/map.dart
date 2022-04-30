@@ -47,10 +47,6 @@ class _MapPageState extends State<MapPage> {
 
 
 
-
-
-
-
   List<Widget> showWidgets = [
     SearchPage(),
     MapPage(),

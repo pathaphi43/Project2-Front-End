@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:homealone/model/managermodel.dart';
 import 'package:homealone/model/tenantmodel.dart';
 import 'package:homealone/pages/Navbar/mainpages.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert' show utf8;
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,15 +28,17 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
-
-
-
   @override
   void initState() {
     super.initState();
-        asyncFunc();
+        // asyncFunc();
   }
 
+  @override
+  void didChangeDependencies() async{
+    super.didChangeDependencies();
+    asyncFunc();
+  }
 
   asyncFunc()async {
      prefs = await SharedPreferences.getInstance();
@@ -86,9 +93,26 @@ class _ProfilePageState extends State<ProfilePage> {
     // setState(() {});
   }
 
+
+  File image;
+  Future pickImage(BuildContext context) async {
+    try{
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return null;
+      final imageTemporary = File(image.path);
+      // setState(() {
+        this.image = imageTemporary;
+      // });
+      return Navigator.pushNamed(context, '/ManagerEditProfile-page',
+          arguments: imageTemporary);
+    }on PlatformException catch (e){
+      print('Failed to pick image $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
+// print("profile Status"+status.toString());
       if(status == 0){
         return managerWidget(context);
       }else if(status == 1){
@@ -98,6 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 Widget managerWidget(BuildContext context){
+  File image;
   return Scaffold(
       body: Center(
         child: Container(
@@ -112,19 +137,22 @@ Widget managerWidget(BuildContext context){
                   child: Stack(
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: NetworkImage(imageProfile),
+                        backgroundImage:NetworkImage(imageProfile == null?"http://homealone.comsciproject.com/img/local_avatar.png" :imageProfile),
                         radius: 80.0,
                         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
                         //backgroundImage: ,
                         child: IconButton(
                           padding: EdgeInsets.all(110),
-                          icon: const Icon(Icons.camera_alt),
+                          icon: const Icon(Icons.edit),
                           color: Colors.white,
-                          onPressed: () => print('Open file OK'),
-                          //async {
-                          //   var image = await ImagePicker()
-                          //       .pickImage(source: ImageSource.gallery);
-                          // },
+                          onPressed: () {
+                            if(_ProfilePageState().pickImage(context) != null){
+                              _ProfilePageState().pickImage(context);
+                            }
+
+                               // image = _ProfilePageState().image;
+                          },
+
                         ),
                       ),
                       // (image != null) ? Image.file(image) : Container()
@@ -138,7 +166,7 @@ Widget managerWidget(BuildContext context){
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(3.0),
-                    child: Text( firstName +" "+lastName,
+                    child: Text(firstName +" "+lastName,
                       style: TextStyle(
                         color: Color.fromRGBO(250, 120, 186, 1),
                         fontSize: 20,
@@ -271,6 +299,7 @@ Widget managerWidget(BuildContext context){
                         );
                         managerdata = null;
                         tenantdata = null;
+                        ProfilePage().createState().didChangeDependencies();
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -302,6 +331,7 @@ Widget managerWidget(BuildContext context){
         ),
       ));
 }
+
 
 Widget tenantWidget(BuildContext context){
   return Scaffold(
@@ -621,6 +651,7 @@ Widget notloginWidget(BuildContext context){
       ),
     ),
   );
+
 }
 
 //// หน้า pro file
