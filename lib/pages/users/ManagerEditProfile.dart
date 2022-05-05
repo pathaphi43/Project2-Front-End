@@ -25,8 +25,6 @@ class _ManagerEditProfileState extends State<ManagerEditProfile> {
     super.didChangeDependencies();
     args =  ModalRoute.of(context).settings.arguments;
     prefs = await SharedPreferences.getInstance();
-
-
     print("Editprofile:" + args.toString());
   }
 
@@ -68,17 +66,17 @@ class _ManagerEditProfileState extends State<ManagerEditProfile> {
                     onPressed: () async{
                       String fileName = args.path.split('/').last;
                       print(fileName);
-                      var postUri = Uri.parse("https://home-alone-csproject.herokuapp.com/manager/upload/profile");
+                      var postUri = Uri.parse("https://home-alone-csproject.herokuapp.com/user/upload/profile");
                       var request = http.MultipartRequest('POST', postUri)
-                        ..fields['managerId'] = prefs.getInt('id').toString()
+                        ..fields['username'] = prefs.getString('username')
                         ..files.add( await http.MultipartFile.fromBytes('file', await File.fromUri(args.uri).readAsBytes(),filename: fileName,
-                            contentType: MediaType('ContentType','multipart/form-data')));
-
-                      var response = await request.send();
-
-
+                            contentType: MediaType('ContentType','application/json')));
+                      var streamedResponse = await request.send();
+                      var response = await http.Response.fromStream(streamedResponse);
                       // request.send().then((response) {
                         if (response.statusCode == 200){
+                          print(response.body);
+                          imageProfile = response.body;
                           MainPages home = new MainPages();
                          home.createState().asyncFunc();
                         ProfilePage().createState().asyncFunc();

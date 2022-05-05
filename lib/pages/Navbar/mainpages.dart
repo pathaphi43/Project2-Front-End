@@ -20,7 +20,7 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-List<Tenant> tenantdata;
+
 List<int> args;
 SharedPreferences prefs;
 int id,status;
@@ -44,6 +44,7 @@ class _MainPagesState extends State<MainPages> {
   int index = 0;
   String message = ' ';
   Manager managerdata;
+  Tenant tenantdata;
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _MainPagesState extends State<MainPages> {
     _determinePosition();
     print("initState");
   }
+
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -100,6 +102,7 @@ class _MainPagesState extends State<MainPages> {
       status = prefs.getInt('status');
       if(status == 0){
         await  getManager(id);
+        setState(() {
         prefs.setString("imageprofile", managerdata.managerImage);
         prefs.setString("firstname", managerdata.managerFirstname);
         prefs.setString("lastname", managerdata.managerLastname);
@@ -112,11 +115,26 @@ class _MainPagesState extends State<MainPages> {
         // args[0] = id;
         // args[1] = status;
         ProfilePage().createState().asyncFunc();
-
+        });
 
 
       }else if(status == 1){
         await  getTenant(id);
+
+        setState(() {
+          prefs.setString("imageprofile", tenantdata.tenantImage);
+          prefs.setString("firstname", tenantdata.tenantFirstname);
+          prefs.setString("lastname", tenantdata.tenantLastname);
+          prefs.setString("username", tenantdata.tenantUsername);
+
+          firstName = prefs.getString('firstname');
+          lastName = prefs.getString('lastname');
+          userName = prefs.getString('username');
+          imageProfile = prefs.getString('imageprofile');
+          // args[0] = id;
+          // args[1] = status;
+          ProfilePage().createState().asyncFunc();
+        });
       }
     }else{
       setState(() {
@@ -168,7 +186,7 @@ class _MainPagesState extends State<MainPages> {
     setState(() {
       print(response.statusCode);
       if (response.statusCode == 200) {
-        tenantdata = tenantFromJson(response.body);
+        tenantdata = tenantFromJson(utf8.decode(response.bodyBytes));
       } else {
         throw Exception('Failed to load data');
       }
@@ -209,14 +227,6 @@ class _MainPagesState extends State<MainPages> {
                   ),
 
                 ),
-                // ListTile(
-                //   leading: Icon(Icons.person_add_outlined),
-                //   title: Text('เพิ่มสมาชิก'),
-                //   onTap: () {
-                //     Navigator.pushNamed(context, '/Adduser-page',
-                //         arguments: null);
-                //   },
-                // ),
                 ListTile(
                   leading: Icon(Icons.edit),
                   title: Text('แก้ไขข้อมูลส่วนตัว'),
@@ -230,15 +240,15 @@ class _MainPagesState extends State<MainPages> {
                   title: Text('เพิ่มบ้านเช่า'),
                   onTap: () {
                     Navigator.pushNamed(context, '/Addhome-page',
-                        arguments: args);
+                        arguments: id);
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.attachment_rounded),
                   title: Text('เพิ่มการเช่า'),
                   onTap: () {
-                    Navigator.pushNamed(context, '/Addrent-page',
-                        arguments: null);
+                    Navigator.pushNamed(context, '/PreRent-page',
+                        arguments: id);
                   },
                 ),
                 ListTile(
@@ -316,15 +326,15 @@ class _MainPagesState extends State<MainPages> {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  accountName: Text(tenantdata[0].tenantFirstname +
+                  accountName: Text(firstName +
                       "\t" +
-                      tenantdata[0].tenantLastname,style: TextStyle(
+                     lastName,style: TextStyle(
               color: Color.fromRGBO(250, 120, 186, 1),
               fontSize: 20,
               fontWeight: FontWeight.bold,
               fontFamily: 'Kanit',
             ),),
-                  accountEmail: Text(tenantdata[0].tenantUsername,style: TextStyle(
+                  accountEmail: Text(userName,style: TextStyle(
                     color: Color.fromRGBO(250, 120, 186, 1),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -336,7 +346,7 @@ class _MainPagesState extends State<MainPages> {
                           fit: BoxFit.cover)),
                   currentAccountPicture: CircleAvatar(
                     backgroundImage: NetworkImage(
-                        tenantdata[0].tenantImage
+                        imageProfile
                             .toString()),
                   ),
                 ),
@@ -375,7 +385,7 @@ class _MainPagesState extends State<MainPages> {
                         tag: 'Profile Picture',
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
-                              tenantdata[0].tenantImage.toString()),
+                              imageProfile),
                         ),
                       ),
                     ),

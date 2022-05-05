@@ -6,6 +6,7 @@ import 'package:homealone/pages/addrent.dart';
 import 'package:homealone/pages/adduser.dart';
 
 import 'package:homealone/pages/home.dart';
+import 'package:homealone/pages/house/HouseListForRent.dart';
 import 'package:homealone/pages/house/edithouse.dart';
 import 'package:homealone/pages/house/homeInfo.dart';
 import 'package:homealone/pages/house/myhouse.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         '/home-page': (context) => HomePage(),
         '/login-page': (context) => LoginPage(),
         '/main-page': (context) => MainPages(),
-        // '/Addrent-page': (context) => AddRent(),
+        '/Addrent-page': (context) => AddRent(),
         '/Adduser-page': (context) => AddUser(),
         '/Addhome-page': (context) => AddHome(),
         '/Profile-page': (context) => ProfilePage(),
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
         '/Edithouse-page': (context) => EditHouse(),
         '/Homeinfo-page': (context) => InfoPage(),
         '/ManagerEditProfile-page':(context) => ManagerEditProfile(),
+        '/PreRent-page':(context) => PreRent(),
 
       },
     );

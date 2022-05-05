@@ -2,111 +2,115 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:homealone/model/homemodel.dart';
 import 'package:homealone/model/house/HouseAndImageModel.dart';
 import 'package:homealone/model/house/ReviewsModel.dart';
 import 'package:homealone/pages/Navbar/appBar.dart';
+import 'package:homealone/pages/Navbar/mainpages.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:async';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 final String imgList = "http://homealone.comsciproject.com/img/home.jpg";
-final List<String> imgLists = ["http://homealone.comsciproject.com/img/home.jpg","http://homealone.comsciproject.com/img/home.jpg","http://homealone.comsciproject.com/img/home.jpg"];
+final List<String> imgLists = [
+  "http://homealone.comsciproject.com/img/home.jpg",
+  "http://homealone.comsciproject.com/img/home.jpg",
+  "http://homealone.comsciproject.com/img/home.jpg"
+];
 
-List<Widget> photoList(HouseAndImageModel img){
+List<Widget> photoList(HouseAndImageModel img) {
   List<Widget> imageSliders;
-  if(img.houseImageList.isNotEmpty && img.houseImageList != null) {
-      imageSliders = img.houseImageList
-      .map((item) =>  Container(
-    child: Container(
-      margin: EdgeInsets.all(5.0),
-      child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          child: Stack(
-            children: <Widget>[
-              Image.network(item.imageHousePath, fit: BoxFit.cover, width: 1000.0),
-              Positioned(
-                bottom: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color.fromARGB(200, 0, 0, 0),
-                        Color.fromARGB(0, 0, 0, 0)
+  if (img.houseImageList.isNotEmpty && img.houseImageList != null) {
+    imageSliders = img.houseImageList
+        .map((item) => Container(
+              child: Container(
+                margin: EdgeInsets.all(5.0),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.network(item.imageHousePath,
+                            fit: BoxFit.cover, width: 1000.0),
+                        Positioned(
+                          bottom: 0.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color.fromARGB(200, 0, 0, 0),
+                                  Color.fromARGB(0, 0, 0, 0)
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 20.0),
+                            child: Text(
+                              'No. ${item.hid} image',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  child: Text(
-                    'No. ${item.hid} image',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                    )),
               ),
-            ],
-          )),
-    ),
-  )).toList();
-
-  }else {
+            ))
+        .toList();
+  } else {
     imageSliders = imgLists
-        .map((item) =>  Container(
-      child: Container(
-        margin: EdgeInsets.all(5.0),
-        child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            child: Stack(
-              children: <Widget>[
-                Image.network(item, fit: BoxFit.cover, width: 1000.0),
-                Positioned(
-                  bottom: 0.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color.fromARGB(200, 0, 0, 0),
-                          Color.fromARGB(0, 0, 0, 0)
-                        ],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                      ),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 20.0),
-                    child: Text(
-                      'No.  image',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )),
-      ),
-    )).toList();
-
+        .map((item) => Container(
+              child: Container(
+                margin: EdgeInsets.all(5.0),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                        Positioned(
+                          bottom: 0.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color.fromARGB(200, 0, 0, 0),
+                                  Color.fromARGB(0, 0, 0, 0)
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 20.0),
+                            child: Text(
+                              'No.  image',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+            ))
+        .toList();
   }
-  return   imageSliders;
-
+  return imageSliders;
 }
-
-
 
 final List<String> message = <String>[
   "message1",
@@ -136,6 +140,7 @@ class _InfoPageState extends State<InfoPage> {
     // gethomeAll();
     // args = ModalRoute.of(context).settings.arguments;
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -150,18 +155,20 @@ class _InfoPageState extends State<InfoPage> {
         '/house/HouseAndImage/' + args[0].toString()));
     if (response.statusCode == 200) {
       print(houseAndImageFromJson(utf8.decode(response.bodyBytes)));
-      return homeall =  houseAndImageFromJson(utf8.decode(response.bodyBytes));
+      return homeall = houseAndImageFromJson(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Failed to load homedata');
     }
   }
+
   List<ReviewsModel> reviews;
+
   Future<List<ReviewsModel>> getReviewsByHid() async {
     final response = await http.get(Uri.http(
         'home-alone-csproject.herokuapp.com',
         '/review/AndImage/' + args[0].toString()));
     if (response.statusCode == 200) {
-      return reviews =  reviewsModelFromJson(utf8.decode(response.bodyBytes));
+      return reviews = reviewsModelFromJson(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Failed to load homedata');
     }
@@ -263,7 +270,69 @@ class _InfoPageState extends State<InfoPage> {
                     SizedBox(
                       height: 4,
                     ),
-                    showReview(context)
+                    showReview(context),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding:  const EdgeInsets.all(8.0),
+                          child: status == 1 ? new FlatButton(
+                            minWidth: 100.0,
+                            height: 40.0,
+                            onPressed: ()  => showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text('ยืนยัน'),
+                                content: Text('ยืนยันการจองบ้าน '+snapshot.data.houseName),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                                    child: const Text('ยกเลิก'),
+                                  ),
+                                  TextButton(
+                                    onPressed: ()async {
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      Map<String,String> data ={
+                                        'hid' : snapshot.data.hid.toString(),
+                                        'tid' : prefs.getInt('id').toString()
+                                      };
+                                      var body = json.encode(data);
+                                      var response = await http.post(
+                                          Uri.parse('https://home-alone-csproject.herokuapp.com/house/rent'),
+                                          body: body,
+                                          headers: {
+                                            'Content-Type': 'application/json'
+                                          });
+                                      if (response.statusCode == 200){
+                                        Navigator.pop(context, 'ยืนยัน');
+                                      }else print("Upload fail"+ response.statusCode.toString());
+                                    },
+                                    child: const Text('ยืนยัน'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            child: Text(
+                              "จองเลย",
+                              style: TextStyle(
+                                color: Color.fromRGBO(250, 120, 186, 1),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Kanit',
+                              ),
+                            ),
+                            shape: StadiumBorder(
+                              side: BorderSide(
+                                width: 1.0,
+                                color: Color.fromRGBO(250, 120, 186, 1),
+                              ),
+                            ),
+                          ): Container(),
+                        ),
+
+                      ],
+                    )
+
                   ],
                 ));
               } else
@@ -285,9 +354,9 @@ class _InfoPageState extends State<InfoPage> {
 
     return FutureBuilder(
         future: getReviewsByHid(),
-    builder: (BuildContext context,
-    AsyncSnapshot<List<ReviewsModel>> snapshot) {
-          if(snapshot.hasData){
+        builder:
+            (BuildContext context, AsyncSnapshot<List<ReviewsModel>> snapshot) {
+          if (snapshot.hasData) {
             return Container(
                 width: mqWidth / 0.2,
                 height: mqHeight / 3.5,
@@ -303,8 +372,8 @@ class _InfoPageState extends State<InfoPage> {
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             return Container(
-                              padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 20),
                               margin: EdgeInsets.symmetric(vertical: 1),
                               decoration: BoxDecoration(
                                 color: Color.fromRGBO(247, 207, 205, 1),
@@ -319,21 +388,24 @@ class _InfoPageState extends State<InfoPage> {
                                     ],
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
                                     child: Row(
                                       children: [
                                         RatingBar.builder(
                                           itemSize: 25,
-                                          initialRating: snapshot.data[index].reviewsScore,
+                                          initialRating:
+                                              snapshot.data[index].reviewsScore,
                                           minRating: 1,
                                           direction: Axis.horizontal,
                                           // allowHalfRating: true,
                                           itemCount: 5,
-                                          itemPadding:
-                                          EdgeInsets.symmetric(horizontal: 4.0),
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 4.0),
                                           itemBuilder: (context, _) => Icon(
                                             Icons.star,
-                                            color: Color.fromRGBO(250, 120, 186, 1),
+                                            color: Color.fromRGBO(
+                                                250, 120, 186, 1),
                                           ),
                                           // onRatingUpdate: (rating) {
                                           //   print(rating);
@@ -353,7 +425,8 @@ class _InfoPageState extends State<InfoPage> {
                     ],
                   ),
                 ));
-          }else return LinearProgressIndicator();
-    });
+          } else
+            return LinearProgressIndicator();
+        });
   }
 }

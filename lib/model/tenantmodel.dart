@@ -4,9 +4,9 @@
 
 import 'dart:convert';
 
-List<Tenant> tenantFromJson(String str) => List<Tenant>.from(json.decode(str).map((x) => Tenant.fromJson(x)));
+Tenant tenantFromJson(String str) => Tenant.fromJson(json.decode(str));
 
-String tenantToJson(List<Tenant> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String tenantToJson(Tenant data) => json.encode(data.toJson());
 
 class Tenant {
   Tenant({
@@ -16,8 +16,8 @@ class Tenant {
     this.tenantFirstname,
     this.tenantLastname,
     this.tenantPhone,
-    this.tenantIDcard,
-    this.tenantAdd,
+    this.tenantIdCard,
+    this.tenantAddress,
     this.tenantProvince,
     this.tenantDistrict,
     this.tenantEmail,
@@ -31,8 +31,8 @@ class Tenant {
   String tenantFirstname;
   String tenantLastname;
   String tenantPhone;
-  String tenantIDcard;
-  String tenantAdd;
+  String tenantIdCard;
+  String tenantAddress;
   String tenantProvince;
   String tenantDistrict;
   String tenantEmail;
@@ -40,34 +40,34 @@ class Tenant {
   int tenantStatus;
 
   factory Tenant.fromJson(Map<String, dynamic> json) => Tenant(
-    tid: json["Tid"],
-    tenantUsername: json["tenant_Username"],
-    tenantPassword: json["tenant_Password"],
-    tenantFirstname: json["tenant_Firstname"],
-    tenantLastname: json["tenant_Lastname"],
-    tenantPhone: json["tenant_Phone"],
-    tenantIDcard: json["tenant_IDcard"],
-    tenantAdd: json["tenant_Add"],
-    tenantProvince: json["tenant_Province"],
-    tenantDistrict: json["tenant_District"] == null ? null : json["tenant_District"],
-    tenantEmail: json["tenant_Email"],
-    tenantImage: json["tenant_Image"],
-    tenantStatus: json["tenant_Status"],
+    tid: json["tid"],
+    tenantUsername: json["tenantUsername"],
+    tenantPassword: json["tenantPassword"],
+    tenantFirstname: json["tenantFirstname"],
+    tenantLastname: json["tenantLastname"],
+    tenantPhone: json["tenantPhone"],
+    tenantIdCard: json["tenantIdCard"],
+    tenantAddress: json["tenantAddress"],
+    tenantProvince: json["tenantProvince"],
+    tenantDistrict: json["tenantDistrict"],
+    tenantEmail: json["tenantEmail"],
+    tenantImage: json["tenantImage"],
+    tenantStatus: json["tenantStatus"],
   );
 
   Map<String, dynamic> toJson() => {
-    "Tid": tid,
-    "tenant_Username": tenantUsername,
-    "tenant_Password": tenantPassword,
-    "tenant_Firstname": tenantFirstname,
-    "tenant_Lastname": tenantLastname,
-    "tenant_Phone": tenantPhone,
-    "tenant_IDcard": tenantIDcard,
-    "tenant_Add": tenantAdd,
-    "tenant_Province": tenantProvince,
-    "tenant_District": tenantDistrict == null ? null : tenantDistrict,
-    "tenant_Email": tenantEmail,
-    "tenant_Image": tenantImage,
-    "tenant_Status": tenantStatus,
+    "tid": tid,
+    "tenantUsername": tenantUsername,
+    "tenantPassword": tenantPassword,
+    "tenantFirstname": tenantFirstname,
+    "tenantLastname": tenantLastname,
+    "tenantPhone": tenantPhone,
+    "tenantIdCard": tenantIdCard,
+    "tenantAddress": tenantAddress,
+    "tenantProvince": tenantProvince,
+    "tenantDistrict": tenantDistrict,
+    "tenantEmail": tenantEmail,
+    "tenantImage": tenantImage,
+    "tenantStatus": tenantStatus,
   };
 }

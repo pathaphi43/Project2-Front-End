@@ -22,13 +22,14 @@ class EditManager extends StatefulWidget {
   _EditManagerState createState() => _EditManagerState();
 }
 
-Manager managerdata;
-List<Tenant> tenantdata;
+
 List<int> args;
 SharedPreferences prefs;
 int id, status;
 
 class _EditManagerState extends State<EditManager> {
+  Manager managerdata;
+  Tenant tenantdata;
   var manager_Username = TextEditingController();
   var manager_Password = TextEditingController();
   var manager_Firstname = TextEditingController();

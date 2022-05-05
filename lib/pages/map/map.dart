@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:homealone/model/house/HouseAndImageModel.dart';
 import 'package:map_pin_picker/map_pin_picker.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/payment.dart';
@@ -9,6 +12,8 @@ import 'package:homealone/pages/profile.dart';
 import 'package:homealone/pages/search/search.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+
+
 class MapPage extends StatefulWidget {
   static final kInitialPosition = LatLng(-33.8567844, 151.213108);
   @override
@@ -24,28 +29,91 @@ class _MapPageState extends State<MapPage> {
   // final _controller = Completer<GoogleMapController>();
   MapPickerController mapPickerController = MapPickerController();
 
-
-
+  final Set<Marker> markers = new Set();
+  List<HouseAndImageModel> homeMark;
   CameraPosition cameraPosition;
+  BitmapDescriptor customIcon;
+
   @override
-  void initState(){
-    super.initState();
+  void initState() {
     print("Map Page");
     // _getUserLocation();
     // _determinePosition();
-    Geolocator.getCurrentPosition().then((currLocation){
-      setState((){
+    Geolocator.getCurrentPosition().then((currLocation) async {
+
+        homeMark = homeall;
         currentLatLng = new LatLng(currLocation.latitude, currLocation.longitude);
-        print( "Lat: "+currLocation.latitude.toString() +"Lng:"+currentLatLng.longitude.toString() );
+        // print( "Lat: "+currLocation.latitude.toString() +"Lng:"+currentLatLng.longitude.toString() );
        cameraPosition  =  CameraPosition(
           target: LatLng(currLocation.latitude, currentLatLng.longitude),
           zoom: 14.4746,
         );
+        print(markers.length.toString());
+      for(HouseAndImageModel home in homeall){
+        Uint8List markerIcon = await getBytesFromCanvas(home.houseRent, 150, 100);
+        markers.add(Marker(markerId:MarkerId(home.hid.toString()),
+          position: LatLng(double.parse(home.houseLatitude) ,double.parse(home.houseLongitude)),
+          infoWindow: InfoWindow(
+            onTap: () {
+              Navigator.pushNamed(context, '/Homeinfo-page',
+                  arguments: [ home.hid ]);
+            },
+            title: home.houseName,
+            snippet: home.houseRent == null ? "":home.houseRent.toString(),
+          ),icon:  BitmapDescriptor.fromBytes(markerIcon),
+        ));
+      }
+      setState(() {
+
       });
     });
+
+    super.initState();
   }
 
 
+  // void currency() {
+  //   Locale locale = Localizations.localeOf(context);
+
+  //   var format = NumberFormat.simpleCurrency(locale: locale.toString());
+  //   print("CURRENCY SYMBOL ${format.currencySymbol}"); // $
+  //   print("CURRENCY NAME ${format.currencyName}"); // USD
+  // }
+  Future<Uint8List> getBytesFromCanvas(int customNum, int width, int height) async  {
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = Color.fromRGBO(250,120, 186, 1);
+    final Radius radius = Radius.circular(width/2);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(0.0, 0.0, width.toDouble(),  height.toDouble()),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        paint);
+
+    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+    painter.text = TextSpan(
+      children: [TextSpan(
+        text: customNum.toString() +" บาท", // your custom number here
+        style: TextStyle( color: Colors.white,
+            fontSize: 25,fontWeight:
+            FontWeight.bold
+        ),
+      ),
+     ],);
+
+    painter.layout();
+    painter.paint(
+        canvas,
+        Offset((width * 0.5) - painter.width * 0.5,
+            (height * .5) - painter.height * 0.5));
+    final img = await pictureRecorder.endRecording().toImage(width, height);
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    return data.buffer.asUint8List();
+  }
 
   List<Widget> showWidgets = [
     SearchPage(),
@@ -59,102 +127,26 @@ class _MapPageState extends State<MapPage> {
 
   var textController = TextEditingController();
 
+
+
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: cameraPosition == null ? Center(child:CircularProgressIndicator()) : Stack(
-        alignment: Alignment.topCenter,
-        children: [
+      body: cameraPosition == null ? Center(child:CircularProgressIndicator()) :
           MapPicker(
-
-            // pass icon widget
-            iconWidget: Icon(Icons.location_on_outlined,size: 20) ,
-            //add map picker controller
-            mapPickerController: mapPickerController,
             child: GoogleMap(
               myLocationEnabled: true,
-              zoomControlsEnabled: false,
-              // hide location button
-              myLocationButtonEnabled: false,
+              zoomControlsEnabled: true,
+              myLocationButtonEnabled: true,
               mapType: MapType.normal,
-              //  camera position
               initialCameraPosition: cameraPosition,
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
-              onCameraMoveStarted: () {
-                // notify map is moving
-                mapPickerController.mapMoving();
-                textController.text = "checking ...";
-              },
-              onCameraMove: (cameraPosition) {
-                this.cameraPosition = cameraPosition;
-              },
-              onCameraIdle: () async {
-                // notify map stopped moving
-                mapPickerController.mapFinishedMoving();
-                //get address name from camera position
-                List<Placemark> placemarks = await placemarkFromCoordinates(
-                  cameraPosition.target.latitude,
-                  cameraPosition.target.longitude,
-                );
-
-                // update the ui with the address
-                textController.text =
-                '${placemarks.first.name}, ${placemarks.first.administrativeArea}, ${placemarks.first.country}';
-              },
+              markers:markers,
             ),
           ),
-          Positioned(
-            top: MediaQuery.of(context).viewPadding.top + 20,
-            width: MediaQuery.of(context).size.width - 50,
-            height: 50,
-            child: TextFormField(
-              maxLines: 3,
-              textAlign: TextAlign.center,
-              readOnly: true,
-              decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.zero, border: InputBorder.none),
-              controller: textController,
-            ),
-          ),
-          Positioned(
-            bottom: 24,
-            left: 24,
-            right: 24,
-            child: SizedBox(
-              height: 50,
-              child: TextButton(
-                child: const Text(
-                  "Submit",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    color: Color(0xFFFFFFFF),
-                    fontSize: 19,
-                    // height: 19/19,
-                  ),
-                ),
-                onPressed: () {
-                  print(
-                      "Location ${cameraPosition.target.latitude} ${cameraPosition.target.longitude}");
-                  print("Address: ${textController.text}");
-                },
-                style: ButtonStyle(
-                  backgroundColor:
-                  MaterialStateProperty.all<Color>(const Color(0xFFA3080C)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
     );
 
   }

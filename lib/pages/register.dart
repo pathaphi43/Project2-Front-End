@@ -45,12 +45,6 @@ class _RegisterPageState extends State<RegisterPage> {
     _Thailand();
   }
 
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
   List<Thailand> province_th =[];
   List<AmphureThailand> Amphurethai =[];
 
@@ -58,10 +52,6 @@ class _RegisterPageState extends State<RegisterPage> {
     var list = await ProvinceProvider.all();
     ProvinceDao province ;
     for(province in list){
-      // province.nameTh;
-      // province.nameEn;
-      // province.id;
-      print("111111111111111111111111111");
       province_th.add(new Thailand(
         name: province.nameTh.toString(),
           id: province.id.toString(),
@@ -82,15 +72,13 @@ class _RegisterPageState extends State<RegisterPage> {
     Amphurethai.removeRange(0,Amphurethai.length);
 
     for(AmphureDao amphure in list){
-      // amphure.id;
-      // amphure.provinceId;
-      // amphure.nameTh;
-      // amphure.nameEn;
-      Amphurethai.add(new AmphureThailand(
-        name: amphure.nameTh.toString(),
-        id: amphure.id.toString(),
-      ));
-      print(amphure.nameTh);
+      if(amphure.nameTh[0]!= "*") {
+        Amphurethai.add(new AmphureThailand(
+          name: amphure.nameTh.toString(),
+          id: amphure.id.toString(),
+        ));
+        print(amphure.nameTh);
+      }
     }
 
     setState(() {

@@ -54,7 +54,6 @@ class _MyHouseState extends State<MyHouse> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(247, 207, 205, 1),

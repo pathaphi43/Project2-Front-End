@@ -16,10 +16,10 @@ import 'package:http/http.dart' as http;
 
 import 'dart:async';
 SharedPreferences prefs;
-int id,status;
+// int id,status;
 int index = 0;
 Manager managerdata;
-List<Tenant> tenantdata;
+Tenant tenantdata;
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -27,6 +27,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
 
   @override
   void initState() {
@@ -42,28 +43,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   asyncFunc()async {
      prefs = await SharedPreferences.getInstance();
-     if(prefs.getInt('id') != null && prefs.getInt('status') != null){
-       id = prefs.getInt('id');
-       status = prefs.getInt('status');
-       if(status == 0){
-         // await  getManager(id);
-         // setState(() {
-         // });
-       }else if(status == 1){
-       await  getTenant(id);
-       }
-      }else{
-       setState(() {
-       managerdata = null;
-       tenantdata = null;
-       id = null;
-       status = null;
-       firstName = null;
-       lastName = null;
-       imageProfile = null;
-       userName = null;
-       });
-     }
+
+     MainPages().createState().asyncFunc();
 
   }
 
@@ -116,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
       if(status == 0){
         return managerWidget(context);
       }else if(status == 1){
-        return Container(child: Text("Tenant"),);
+        return tenantWidget(context);
   }else return notloginWidget(context);
   }
 }
@@ -348,15 +329,19 @@ Widget tenantWidget(BuildContext context){
                   child: Stack(
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: NetworkImage(tenantdata[0].tenantImage),
+                        backgroundImage: NetworkImage((imageProfile == null?"http://homealone.comsciproject.com/img/local_avatar.png" :imageProfile)),
                         radius: 80.0,
                         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
                         //backgroundImage: ,
                         child: IconButton(
                           padding: EdgeInsets.all(110),
-                          icon: const Icon(Icons.camera_alt),
+                          icon: const Icon(Icons.edit),
                           color: Colors.white,
-                          onPressed: () => print('Open file OK'),
+                          onPressed: () {
+                            if(_ProfilePageState().pickImage(context) != null){
+                              _ProfilePageState().pickImage(context);
+                            }
+                          },
                           //async {
                           //   var image = await ImagePicker()
                           //       .pickImage(source: ImageSource.gallery);
@@ -375,7 +360,7 @@ Widget tenantWidget(BuildContext context){
                   Padding(
                     padding: const EdgeInsets.all(3.0),
                     child: Text(
-                      tenantdata[0].tenantFirstname+" "+tenantdata[0].tenantLastname,
+                      firstName +" "+lastName,
                       style: TextStyle(
                         color: Color.fromRGBO(250, 120, 186, 1),
                         fontSize: 20,
@@ -387,7 +372,7 @@ Widget tenantWidget(BuildContext context){
                   Padding(
                     padding: const EdgeInsets.all(3.0),
                     child: Text(
-                      tenantdata[0].tenantUsername,
+                      userName,
                       style: TextStyle(
                         color: Color.fromRGBO(250, 120, 186, 1),
                         fontSize: 20,

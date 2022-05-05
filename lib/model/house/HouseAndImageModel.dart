@@ -10,6 +10,10 @@ HouseAndImageModel houseAndImageFromJson(String str) => HouseAndImageModel.fromJ
 
 String houseAndImageModelToJson(List<HouseAndImageModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+String houseAndImageToJson(HouseAndImageModel data) => json.encode(data.toJson());
+
+
+
 class HouseAndImageModel {
   HouseAndImageModel({
     this.hid,
@@ -91,14 +95,14 @@ class HouseAndImageModel {
   );
 
   Map<String, dynamic> toJson() => {
-    "hid": hid,
-    "mid": mid,
-    "houseName": houseName,
-    "houseAddress": houseAddress,
+    "hid": hid== null ? null :hid,
+    "mid": mid == null ? null :mid,
+    "houseName":houseName == null ? null :houseName,
+    "houseAddress": houseAddress == null ? null :houseAddress,
     "houseProvince": houseProvince == null ? null : houseProvince,
     "houseDistrict": houseDistrict == null ? null : houseDistrict,
     "houseZipcode": houseZipcode == null ? null : houseZipcode,
-    "houseImage": houseImage,
+    "houseImage": houseImage == null ? null :houseImage,
     "houseType": houseType == null ? null : houseType,
     "houseFloors": houseFloors == null ? null : houseFloors,
     "houseBedroom": houseBedroom == null ? null : houseBedroom,
@@ -113,8 +117,8 @@ class HouseAndImageModel {
     "houseRent": houseRent == null ? null : houseRent,
     "houseDeposit": houseDeposit == null ? null : houseDeposit,
     "houseInsurance": houseInsurance == null ? null : houseInsurance,
-    "houseStatus": houseStatus,
-    "houseImageList": List<dynamic>.from(houseImageList.map((x) => x.toJson())),
+    "houseStatus":houseStatus == null ? null :houseStatus,
+    "houseImageList":houseImageList == null ? null : List<dynamic>.from(houseImageList.map((x) => x.toJson())),
   };
 }
 

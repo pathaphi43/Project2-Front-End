@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:ui';
 
-import 'package:carousel_slider/carousel_controller.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:homealone/model/homemodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +15,14 @@ import 'dart:async';
 
 List<HouseAndImageModel> homeall;
 List<House> homedata;
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
+
 }
 
 class _HomePageState extends State<HomePage> {
+
   TextStyle _textStyle() {
     TextStyle(
       color: Color.fromRGBO(250, 120, 186, 1),
@@ -32,42 +32,82 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  // }
+
   @override
-  void initState() {
-    super.initState();
-    // gethomeAll();
+  void didChangeDependencies() async{
+    await gethomeAll();
+    super.didChangeDependencies();
+
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final _blueFont = const TextStyle(color: Colors.blueAccent);
 
+
+   Stream<List<HouseAndImageModel>> bids = (() {
+     StreamController<List<HouseAndImageModel>> controller = new StreamController<List<HouseAndImageModel>>.broadcast();
+    controller = StreamController<List<HouseAndImageModel>>(
+      onListen: () async {
+        final response = await http.get(
+            Uri.http('home-alone-csproject.herokuapp.com', '/house/AllAndImageAndStatus'));
+        if (response.statusCode == 200) {
+          homeall = houseAndImageModelFromJson(utf8.decode(response.bodyBytes));
+          controller.sink.add(homeall);
+          // await controller.close();
+        } else {
+          throw Exception('Failed to load homedata');
+        }
+      },
+    );
+    return controller.stream;
+  })();
+
+
+
+  Stream<List<HouseAndImageModel>> onCurrentUserChanged;
+  final StreamController<List<HouseAndImageModel>> currentUserStreamCtrl = StreamController<List<HouseAndImageModel>>();
+
+
+  Future<void> onRefresh () {
+    setState(() {
+       gethomeAll();
+    });
+  return Future.delayed(Duration(seconds: 1));
+  }
+
   Future<List<HouseAndImageModel>> gethomeAll() async {
     final response = await http.get(
-        Uri.http('home-alone-csproject.herokuapp.com', '/house/AllAndImage'));
-    // print(response.statusCode);
+        Uri.http('home-alone-csproject.herokuapp.com', '/house/AllAndImageAndStatus'));
+    print(response.statusCode);
     if (response.statusCode == 200) {
+      currentUserStreamCtrl.sink.add(houseAndImageModelFromJson(utf8.decode(response.bodyBytes)));
       return homeall =
           houseAndImageModelFromJson(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Failed to load homedata');
     }
-
-    print(homeall[0].houseName);
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: FutureBuilder(
-          future: gethomeAll(),
+      body: RefreshIndicator(
+        triggerMode: RefreshIndicatorTriggerMode.anywhere,
+        onRefresh: onRefresh,
+        child:  StreamBuilder(
+          stream: currentUserStreamCtrl.stream,
+          // initialData: homeall,
           builder: (BuildContext context,
               AsyncSnapshot<List<HouseAndImageModel>> snapshot) {
             List<Widget> children;
             if (snapshot.hasData) {
-              return RefreshIndicator(
-                  child: SingleChildScrollView(
+              return SingleChildScrollView(
                     child: Container(
                       color: Color.fromRGBO(247, 207, 205, 1),
                       margin:
@@ -76,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                           EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.15),
                       child: Column(
                         children: <Widget>[
-                          (snapshot.connectionState == ConnectionState.done)
+                          (snapshot.connectionState == ConnectionState.active)
                               ? Column(
                                   children: snapshot.data.map((e) {
                                     return InkWell(onTap: () {
@@ -207,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                                                           size: 12.0,
                                                         ),
                                                         Text(
-                                                            " อ." +
+                                                            " " +
                                                                 e.houseDistrict +
                                                                 " จ." +
                                                                 e.houseProvince,
@@ -376,10 +416,10 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                  ),
-                  onRefresh: gethomeAll);
+                  );
+
             } else
-              return LinearProgressIndicator();
+              return Center(child:CircularProgressIndicator(),);
 
             // else if (snapshot.hasError) {
             //   children = <Widget>[
@@ -415,7 +455,7 @@ class _HomePageState extends State<HomePage> {
             //   ),
             // );
           }),
-    );
+    ));
   }
 }
 

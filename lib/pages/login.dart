@@ -1,4 +1,3 @@
-
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:homealone/model/loginmodel.dart';
@@ -23,71 +22,57 @@ class _LoginPageState extends State<LoginPage> {
   var _username = TextEditingController();
   var _password = TextEditingController();
   SharedPreferences prefs;
- Future<ScaffoldState> _signin(String Jsonreq)async {
-     if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
-       print(Jsonreq[0]);
-       // https://homealone-springcloud.azuremicroservices.io/user/signin
-       // http://homealone.comsciproject.com/user/login
-       var response = await http.post(Uri.parse
-         ('https://home-alone-csproject.herokuapp.com/user/signin'),
-           body: Jsonreq,
-           headers: {
-             'Content-Type': 'application/json'
-             // 'Accept': 'application/json',
-             // 'Authorization': 'Bearer'+token,
-           });
-       print("Response");
-       print(response.statusCode);
-       if (response.statusCode.toString() == '200') {
-         Map<String, dynamic> decodedToken = JwtDecoder.decode(response.body.toString());
 
-          prefs =
-             await SharedPreferences.getInstance();
-         await prefs.setInt('id', decodedToken['id']);
-         await prefs.setInt(
-             'status', decodedToken['status']);
-         print(prefs.getInt('id'));
-
-
-         // Navigator.pushNamedAndRemoveUntil(context,
-         //     '/main-page', (Route<dynamic> route) => false,
-         //     arguments: [
-         //       decodedToken['id'].toString(),
-         //       decodedToken['status'].toString()
-         //     ]);
-
-       } else {
-         ScaffoldMessenger.of(context)
-             .showSnackBar(SnackBar(
-           content: const Text(''),
-           duration: const Duration(seconds: 1),
-           action: SnackBarAction(
-             label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
-             onPressed: () {
-               print('Ok');
-             },
-           ),
-         ));
-       }
-     } else {
-       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-         content: const Text(''),
-         duration: const Duration(seconds: 1),
-         action: SnackBarAction(
-           label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
-           onPressed: () {
-             print('Ok');
-           },
-         ),
-       ));
-     }
+  Future<ScaffoldState> _signin(String Jsonreq) async {
+    if (Jsonreq[1].isNotEmpty && Jsonreq[2].isNotEmpty) {
+      var response = await http.post(
+          Uri.parse('https://home-alone-csproject.herokuapp.com/user/signin'),
+          body: Jsonreq,
+          headers: {
+            'Content-Type': 'application/json'
+            // 'Accept': 'application/json',
+            // 'Authorization': 'Bearer'+token,
+          });
+      if (response.statusCode == 200) {
+        Map<String, dynamic> decodedToken =
+            JwtDecoder.decode(response.body.toString());
+        prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('id', decodedToken['id']);
+        await prefs.setInt('status', decodedToken['status']);
+        print(prefs.getInt('id'));
+      } else {
+        // ScaffoldMessenger.of(context)
+        //     .showSnackBar(SnackBar(
+        //   content: const Text(''),
+        //   duration: const Duration(seconds: 1),
+        //   action: SnackBarAction(
+        //     label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+        //     onPressed: () {
+        //       print('Ok');
+        //     },
+        //   ),
+        // ));
+      }
+    } else {
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: const Text(''),
+      //   duration: const Duration(seconds: 1),
+      //   action: SnackBarAction(
+      //     label: 'ชื่อผู้ใช้หรือรหัสผ่านผิด',
+      //     onPressed: () {
+      //       print('Ok');
+      //     },
+      //   ),
+      // ));
+    }
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
       ),
@@ -134,10 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       enabledBorder: new UnderlineInputBorder(
                           borderSide: new BorderSide(
-                              color: Color.fromRGBO(250, 120, 186, 1)
-                          )
-                      )
-                  ),
+                              color: Color.fromRGBO(250, 120, 186, 1)))),
                   // prefixIcon: Icon(Icons.account_circle)),
 
                   controller: _username,
@@ -171,28 +153,40 @@ class _LoginPageState extends State<LoginPage> {
                   // prefixIcon: Icon(Icons.lock_outline_sharp)),
                   controller: _password,
                   onSubmitted: (value) async {
-
                     var reqlogin = Login();
                     // reqlogin.isUsers = "manager";
                     reqlogin.username = _username.text;
                     reqlogin.password = _password.text;
                     var Jsonreq = loginToJson(reqlogin);
-
-                    _scaffoldKey.currentState.showSnackBar(
-                        new SnackBar(duration: new Duration(seconds: 4), content:
-                        new Row(
-                          children: <Widget>[
-                            new CircularProgressIndicator(),
-                            new Text("  Signing-In...")
-                          ],
-                        ),
-                        ));
-                    _signin(Jsonreq).whenComplete(() =>
+                    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+                      duration: new Duration(seconds: 4),
+                      content: new Row(
+                        children: <Widget>[
+                          new CircularProgressIndicator(),
+                          new Text("  Signing-In...")
+                        ],
+                      ),
+                    ));
+                    _signin(Jsonreq).whenComplete(() {
+                      if (prefs != null) {
                         Navigator.pushNamedAndRemoveUntil(context,
                             '/main-page', (Route<dynamic> route) => false,
                             arguments: [
                               prefs.getInt('id'),
-                              prefs.getInt('status')]));
+                              prefs.getInt('status')
+                            ]);
+                      }else {
+                        _scaffoldKey.currentState.showSnackBar(new SnackBar(
+                          duration: new Duration(seconds: 4),
+                          backgroundColor: Color.fromRGBO(250, 120, 186, 1),
+                          content: new Row(
+                            children: <Widget>[
+                              new Text("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
+                            ],
+                          ),
+                        ));
+                      }
+                    });
                   },
                 ),
               ),
@@ -210,23 +204,36 @@ class _LoginPageState extends State<LoginPage> {
                           reqlogin.password = _password.text;
                           var Jsonreq = loginToJson(reqlogin);
 
-                          _scaffoldKey.currentState.showSnackBar(
-                              new SnackBar(duration: new Duration(seconds: 4), content:
-                              new Row(
-                                children: <Widget>[
-                                  new CircularProgressIndicator(),
-                                  new Text("  Signing-In...")
-                                ],
-                              ),
-                              ));
+                          _scaffoldKey.currentState.showSnackBar(new SnackBar(
+                            duration: new Duration(seconds: 4),
+                            content: new Row(
+                              children: <Widget>[
+                                new CircularProgressIndicator(),
+                                new Text("  Signing-In...")
+                              ],
+                            ),
+                          ));
 
-                          _signin(Jsonreq).whenComplete(() =>
+                          _signin(Jsonreq).whenComplete(() {
+                            if (prefs != null) {
                               Navigator.pushNamedAndRemoveUntil(context,
                                   '/main-page', (Route<dynamic> route) => false,
                                   arguments: [
                                     prefs.getInt('id'),
-                                    prefs.getInt('status')]));
-
+                                    prefs.getInt('status')
+                                  ]);
+                            }else {
+                              _scaffoldKey.currentState.showSnackBar(new SnackBar(
+                                duration: new Duration(seconds: 4),
+                                backgroundColor: Color.fromRGBO(250, 120, 186, 1),
+                                content: new Row(
+                                  children: <Widget>[
+                                    new Text("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
+                                  ],
+                                ),
+                              ));
+                            }
+                          });
                         },
                         child: Text('Sing in'.toUpperCase(),
                             style: TextStyle(
@@ -246,11 +253,9 @@ class _LoginPageState extends State<LoginPage> {
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50.0),
+                                borderRadius: BorderRadius.circular(50.0),
                               ),
-                            )
-                        )
-                    ),
+                            ))),
                   ],
                 ),
               ),
@@ -278,16 +283,14 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
 }
 
+//                         Future<bool> setToken(String value) async {
+//   final SharedPreferences prefs = await SharedPreferences.getInstance();
+//   return prefs.setString('token', value);
+// }
 
- //                         Future<bool> setToken(String value) async {
-                          //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-                          //   return prefs.setString('token', value);
-                          // }
-
-                          // Future<String> getToken() async {
-                          //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-                          //   return prefs.getString('token');
-                          // }
+// Future<String> getToken() async {
+//   final SharedPreferences prefs = await SharedPreferences.getInstance();
+//   return prefs.getString('token');
+// }
