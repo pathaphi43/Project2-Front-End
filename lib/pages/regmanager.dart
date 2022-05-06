@@ -7,6 +7,7 @@ import 'dart:convert' show utf8;
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:homealone/model/register/provincesmodel.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 var encoded = utf8.encode('Lorem ipsum dolor sit amet, consetetur...');
 var decoded = utf8.decode(encoded);
@@ -27,6 +28,8 @@ class _RegManagerPageState extends State<RegManagerPage> {
   var manager_LineID = TextEditingController();
   var manager_Facebook = TextEditingController();
 
+  var maskPhoneFormatter = new MaskTextInputFormatter(
+      mask: '### ### ####', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +53,81 @@ class _RegManagerPageState extends State<RegManagerPage> {
                 ),
               ),
               SizedBox(height: 40.0),
+
+////////// ชื่อผู้ใช้
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    new Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(200),
+                      ),
+                      //decoration: kBoxDecorationStyle ,
+                      height: 60.0,
+                      width: 300.0,
+                      child: TextField(
+                        controller: manager_Username,
+                        style: TextStyle(
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanit',
+                        ),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'ชื่อผู้ใช้',
+                            labelStyle: new TextStyle(
+                                color: const Color.fromRGBO(250, 120, 186, 1)),
+                            // hintText: 'Enter valid mail id as abc@gmail.com'
+                            enabledBorder: new UnderlineInputBorder(
+                                borderSide: new BorderSide(
+                                    color: Color.fromRGBO(250, 120, 186, 1)))),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20.0),
+/////////////รหัสผ่าน
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    new Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(200),
+                      ),
+                      //decoration: kBoxDecorationStyle ,
+                      height: 60.0,
+                      width: 300.0,
+                      child: TextField(
+                        controller: manager_Password,
+                        style: TextStyle(
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanit',
+                        ),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'รหัสผ่าน',
+                            labelStyle: new TextStyle(
+                                color: const Color.fromRGBO(250, 120, 186, 1)),
+                            // hintText: 'Enter valid mail id as abc@gmail.com'
+                            enabledBorder: new UnderlineInputBorder(
+                                borderSide: new BorderSide(
+                                    color: Color.fromRGBO(250, 120, 186, 1)))),
+                        autofocus: false,
+                        obscureText: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+               SizedBox(height: 20.0),
 ////////// ชื่อ-สกุล
               Center(
                 child: Column(
@@ -192,6 +270,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                                 borderSide: new BorderSide(
                                     color: Color.fromRGBO(250, 120, 186, 1)))),
                         keyboardType: TextInputType.number,
+                        inputFormatters: [maskPhoneFormatter],
                       ),
                     ),
                   ],
@@ -273,79 +352,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
               ),
               SizedBox(height: 20.0),
 
-////////// ชื่อผู้ใช้
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    new Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(200),
-                      ),
-                      //decoration: kBoxDecorationStyle ,
-                      height: 60.0,
-                      width: 300.0,
-                      child: TextField(
-                        controller: manager_Username,
-                        style: TextStyle(
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                        ),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'ชื่อผู้ใช้',
-                            labelStyle: new TextStyle(
-                                color: const Color.fromRGBO(250, 120, 186, 1)),
-                            // hintText: 'Enter valid mail id as abc@gmail.com'
-                            enabledBorder: new UnderlineInputBorder(
-                                borderSide: new BorderSide(
-                                    color: Color.fromRGBO(250, 120, 186, 1)))),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20.0),
-/////////////รหัสผ่าน
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    new Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(200),
-                      ),
-                      //decoration: kBoxDecorationStyle ,
-                      height: 60.0,
-                      width: 300.0,
-                      child: TextField(
-                        controller: manager_Password,
-                        style: TextStyle(
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                        ),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'รหัสผ่าน',
-                            labelStyle: new TextStyle(
-                                color: const Color.fromRGBO(250, 120, 186, 1)),
-                            // hintText: 'Enter valid mail id as abc@gmail.com'
-                            enabledBorder: new UnderlineInputBorder(
-                                borderSide: new BorderSide(
-                                    color: Color.fromRGBO(250, 120, 186, 1)))),
-                        autofocus: false,
-                        obscureText: true,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
               SizedBox(height: 20.0),
 
 

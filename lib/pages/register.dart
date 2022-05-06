@@ -17,6 +17,7 @@ import 'package:homealone/model/register/provincesmodel.dart';
 import 'package:homealone/model/register/regtenantmodel.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 var encoded = utf8.encode('Lorem ipsum dolor sit amet, consetetur...');
 var decoded = utf8.decode(encoded);
@@ -69,6 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
     // AmphureDao amphure ;
     var list = await AmphureProvider.all(provinceId: int.parse(value));
 
+
     Amphurethai.removeRange(0,Amphurethai.length);
 
     for(AmphureDao amphure in list){
@@ -88,6 +90,11 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   String dropdownValue1 = 'กรุงเทพฯ';
+  var maskIDcardFormatter = new MaskTextInputFormatter(
+      mask: '# #### ##### ## #', filter: {"#": RegExp(r'[0-9]')});
+  
+  var maskPhoneFormatter = new MaskTextInputFormatter(
+      mask: '### ### ####', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +204,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(width: 30.0, height: 40.0),
+                        SizedBox(width: 10.0, height: 40.0),
                         new Container(
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
@@ -205,7 +212,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           //decoration: kBoxDecorationStyle ,
                           height:60.0,
-                          width: 170.0,
+                          width: 160.0,
                           child: TextField(
                             controller: tenant_Firstname,
                             style: TextStyle(
@@ -283,8 +290,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
+                          
                         ),
                         decoration: InputDecoration(
+                          
                             border: OutlineInputBorder(),
                             labelText: 'เลขบัตรประชาชน',
                             labelStyle: new TextStyle(
@@ -294,6 +303,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 borderSide: new BorderSide(
                                     color: Color.fromRGBO(250, 120, 186, 1)))),
                         keyboardType: TextInputType.number,
+                        inputFormatters: [maskIDcardFormatter],
                       ),
                     ),
                   ],
@@ -341,155 +351,168 @@ class _RegisterPageState extends State<RegisterPage> {
 /////////////////จังหวัด
               Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            new Text('จังหวัด',
+                        Container(
+                          width: MediaQuery.of(context).size.width ,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              new Text('จังหวัด',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Kanit',
+                                  ),
+                              ),
+
+                              new Container(
+                                alignment: Alignment.centerRight,
+                                height: 60.0,
+                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /1.2,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(200),
+                                ),
+                                child: DropdownButton<String>(
+                                  icon: const Icon(
+                                    Icons.arrow_circle_down,
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    size: 20,
+                                  ),
+                                  //iconSize: 25,
+                                  //iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
+                                  elevation: 10,
+                                  style: const TextStyle(
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Kanit',
+                                  ),
+                                  underline: Container(
+                                    height: 1,
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                  ),
+                                  value: _ChoseValue,
+                                  hint: Text(
+                                    "  -- โปรดเลือก --  ",
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(250, 120, 186, 1),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  // value: dropdownValue1,
+
+                                  items: province_th.map((item) {
+                                    return DropdownMenuItem<String>(
+                                      value: item.id,
+                                      child: Text(item.name,
+                                          style: TextStyle(
+                                              color: Color.fromRGBO(250, 120, 186, 1),
+                                              fontSize: 16)
+                                      ),
+
+                                      // ,style:TextStyle(color:Colors.black,fontSize: 20),),
+                                    );
+                                  })?.toList(),
+
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _ChoseValue = value;
+                                      // print(_ChoseValue);
+                                      _Amphure(_ChoseValue);
+                                        _ChoseValueAmphureThailand = null;
+
+
+                                    });
+                                  },
+
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Container(
+                          width: MediaQuery.of(context).size.width ,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              new Text('อำเภอ',
                                 style: TextStyle(
                                   color: Color.fromRGBO(250, 120, 186, 1),
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Kanit',
                                 ),
-                            ),
-
-                            new Container(
-                              alignment: Alignment.centerRight,
-                              height: 60.0,
-                              width: 220.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(200),
                               ),
-                              child: DropdownButton<String>(
-                                icon: const Icon(
-                                  Icons.arrow_circle_down,
-                                  color: Color.fromRGBO(250, 120, 186, 1),
+                             
+                              new Container(
+                                alignment: Alignment.centerRight,
+                                height: 60.0,
+                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /1.3,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(200),
                                 ),
-                                //iconSize: 25,
-                                //iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
-                                elevation: 10,
-                                style: const TextStyle(
-                                  color: Color.fromRGBO(250, 120, 186, 1),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Kanit',
+
+                                child: DropdownButton<String>(
+                                  icon: const Icon(
+                                    Icons.arrow_circle_down,
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    size: 20,
+                                  ),
+                                  //iconSize: 25,
+                                //  iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
+                                  elevation: 10,
+                                  style: const TextStyle(
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Kanit',
+                                  ),
+                                  underline: Container(
+                                    height: 1,
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                  ),
+                                  value: _ChoseValueAmphureThailand,
+                                  hint: Text(
+                                    "  -- โปรดเลือก --  ",
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(250, 120, 186, 1),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  // value: dropdownValue1,
+
+                                  items: Amphurethai.map((item) {
+                                    return DropdownMenuItem<String>(
+                                      value: item.id,
+                                      child: Text(item.name,
+                                          style: TextStyle(
+                                              color: Color.fromRGBO(250, 120, 186, 1),
+                                              fontSize: 16)
+                                      ),
+
+                                      // ,style:TextStyle(color:Colors.black,fontSize: 20),),
+                                    );
+                                  })?.toList(),
+
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _ChoseValueAmphureThailand = value;
+                                      // print(_ChoseValue);
+
+                                    });
+                                  },
+
                                 ),
-                                underline: Container(
-                                  height: 1,
-                                  color: Color.fromRGBO(250, 120, 186, 1),
-                                ),
-                                value: _ChoseValue,
-                                hint: Text(
-                                  "  -- โปรดเลือก --  ",
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(250, 120, 186, 1),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                // value: dropdownValue1,
-
-                                items: province_th.map((item) {
-                                  return DropdownMenuItem<String>(
-                                    value: item.id,
-                                    child: Text(item.name,
-                                        style: TextStyle(
-                                            color: Color.fromRGBO(250, 120, 186, 1),
-                                            fontSize: 16)
-                                    ),
-
-                                    // ,style:TextStyle(color:Colors.black,fontSize: 20),),
-                                  );
-                                })?.toList(),
-
-                                onChanged: (value) {
-                                  setState(() {
-                                    _ChoseValue = value;
-                                    // print(_ChoseValue);
-                                    _Amphure(_ChoseValue);
-                                      _ChoseValueAmphureThailand = null;
-
-
-                                  });
-                                },
-
                               ),
-                            ),
-                          ],
-                        ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            new Text('อำเภอ',
-                              style: TextStyle(
-                                color: Color.fromRGBO(250, 120, 186, 1),
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Kanit',
-                              ),
-                            ),
-                            new Container(
-                              alignment: Alignment.centerRight,
-                              height: 60.0,
-                              width: 220.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(200),
-                              ),
-
-                              child: DropdownButton<String>(
-                                icon: const Icon(
-                                  Icons.arrow_circle_down,
-                                  color: Color.fromRGBO(250, 120, 186, 1),
-                                ),
-                                //iconSize: 25,
-                              //  iconDisabledColor: Color.fromRGBO(250, 120, 186, 1),
-                                elevation: 10,
-                                style: const TextStyle(
-                                  color: Color.fromRGBO(250, 120, 186, 1),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Kanit',
-                                ),
-                                underline: Container(
-                                  height: 1,
-                                  color: Color.fromRGBO(250, 120, 186, 1),
-                                ),
-                                value: _ChoseValueAmphureThailand,
-                                hint: Text(
-                                  "  -- โปรดเลือก --  ",
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(250, 120, 186, 1),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                // value: dropdownValue1,
-
-                                items: Amphurethai.map((item) {
-                                  return DropdownMenuItem<String>(
-                                    value: item.id,
-                                    child: Text(item.name,
-                                        style: TextStyle(
-                                            color: Color.fromRGBO(250, 120, 186, 1),
-                                            fontSize: 16)
-                                    ),
-
-                                    // ,style:TextStyle(color:Colors.black,fontSize: 20),),
-                                  );
-                                })?.toList(),
-
-                                onChanged: (value) {
-                                  setState(() {
-                                    _ChoseValueAmphureThailand = value;
-                                    // print(_ChoseValue);
-
-                                  });
-                                },
-
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
 
 
@@ -529,6 +552,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 borderSide: new BorderSide(
                                     color: Color.fromRGBO(250, 120, 186, 1)))),
                         keyboardType: TextInputType.number,
+                        inputFormatters: [maskPhoneFormatter],
                       ),
                     ),
                   ],
