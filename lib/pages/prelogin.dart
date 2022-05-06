@@ -12,180 +12,229 @@ class PreLogin extends StatefulWidget {
 class _PreLoginState extends State<PreLogin> {
   @override
   Widget build(BuildContext context) {
+    final mqHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(247, 207, 205, 1),
       ),
       body: Container(
-        decoration: new BoxDecoration(color: Colors.white),
+        decoration: new BoxDecoration(
+          color: Color.fromRGBO(247, 207, 205, 1.0),
+        ),
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Image.asset('img/biglogo.png'),
-                new Padding(
-                  child: new FlatButton(
-                    minWidth: 300.0,
-                    height: 60.0,
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/login-page');
-                    },
-                    child: Text(
-                      "ลงชื่อเข้าใช้",
-                      style: TextStyle(
-                        color: Color.fromRGBO(2, 97, 26, 1),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
+            child: Container(
+                height: mqHeight * 0.8,
+                child: Card(
+                  elevation: 20,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'img/biglogo.png',
+                        width: 300,
+                        height: 150,
                       ),
-                    ),
-                    shape: StadiumBorder(
-                        side: BorderSide(
-                            width: 3.0,
-                            color: Color.fromRGBO(247, 207, 205, 1))),
-                  ),
-                  padding: const EdgeInsets.all(20.0),
-                ),
-                new Padding(
-                  child: new FlatButton(
-                    minWidth: 300.0,
-                    height: 60.0,
-                    onPressed: () => showDialog(context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          backgroundColor: Color.fromRGBO(247, 207, 205, 1.0),
-                          title:  Center(
-                            child: Text("สมัครสมาชิก",
-                            style: TextStyle(
-                              color: Color.fromRGBO(2, 97, 26, 1),
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Kanit',
-                            ),),
-                          ),
-                          content:Container(
-                            height: MediaQuery.of(context).size.height *0.20,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextButton(
-                                        child:   FlatButton(
-                                          onPressed: () => {
-                                            Navigator.pushNamed(context, '/Regmanager-page',arguments: null)
-                                          },
-                                          color: Color.fromRGBO(250, 120, 186, 1),
-                                          padding: EdgeInsets.all(5.0),
-                                          child: Column( // Replace with a Row for horizontal icon + text
-                                            children: <Widget>[
-                                              Icon(Icons.home,
-                                                color: Color.fromRGBO(247, 207, 205, 1.0),
-                                                size: 40,
-                                              ),
-                                              Text("ผู้จัดการ",
-                                                  style: TextStyle(
-                                                    color: Color.fromRGBO(247, 207, 205, 1.0),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'Kanit',)
-                                              ),
-                                            ],
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        child: Column(
+                          children: [
+                            FlatButton(
+                              minWidth: 300.0,
+                              height: 60.0,
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/login-page');
+                              },
+                              child: Text(
+                                "ลงชื่อเข้าใช้",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(2, 97, 26, 1),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Kanit',
+                                ),
+                              ),
+                              shape: StadiumBorder(
+                                  side: BorderSide(
+                                      width: 3.0,
+                                      color: Color.fromRGBO(247, 207, 205, 1))),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            FlatButton(
+                              minWidth: 300.0,
+                              height: 60.0,
+                              onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                        backgroundColor:
+                                            Color.fromRGBO(247, 207, 205, 1.0),
+                                        title: Center(
+                                          child: Text(
+                                            "สมัครสมาชิก",
+                                            style: TextStyle(
+                                              color:
+                                                  Color.fromRGBO(2, 97, 26, 1),
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Kanit',
+                                            ),
                                           ),
                                         ),
-                                        style: ButtonStyle(
-                                            padding: MaterialStateProperty.all<EdgeInsets>(
-                                                EdgeInsets.all(10)),
-                                            foregroundColor: MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(250, 120, 186, 1)),
-                                            backgroundColor: MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(250, 120, 186, 1)),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10.0),
-                                              ),
-                                            )
-                                        )
-                                    ),
-
-                                    TextButton(
-                                      child:   FlatButton(
-                                        onPressed: () => {
-                                          Navigator.pushNamed(context, '/Register-page',arguments: null)
-                                        },
-                                        color: Color.fromRGBO(250, 120, 186, 1),
-                                        padding: EdgeInsets.all(5.0),
-                                        child: Column( // Replace with a Row for horizontal icon + text
-                                          children: <Widget>[
-                                            Icon(Icons.account_box,
-                                              color: Color.fromRGBO(247, 207, 205, 1.0),
-                                              size: 40,
-                                            ),
-                                            Text("ผู้เช่า",
-                                                style: TextStyle(
-                                                  color: Color.fromRGBO(247, 207, 205, 1.0),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Kanit',)
-                                            ),
-                                          ],
+                                        content: Container(
+                                          alignment: Alignment.center,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.20,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.20,
+                                          child: GridView.count(
+                                              primary: false,
+                                              padding: const EdgeInsets.all(8),
+                                              crossAxisSpacing: 10,
+                                              mainAxisSpacing: 10,
+                                              crossAxisCount: 2,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () => {
+                                                    Navigator.pushNamed(context,
+                                                        '/Regmanager-page',
+                                                        arguments: null)
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Column(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.home,
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    247,
+                                                                    207,
+                                                                    205,
+                                                                    1.0),
+                                                            size: 40,
+                                                          ),
+                                                          Text("ผู้จัดการ",
+                                                              style: TextStyle(
+                                                                color: Color
+                                                                    .fromRGBO(
+                                                                        247,
+                                                                        207,
+                                                                        205,
+                                                                        1.0),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    'Kanit',
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    color: Color.fromRGBO(
+                                                        250, 120, 186, 1),
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () => {
+                                                    Navigator.pushNamed(context,
+                                                        '/Register-page',
+                                                        arguments: null)
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Column(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.account_box,
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    247,
+                                                                    207,
+                                                                    205,
+                                                                    1.0),
+                                                            size: 40,
+                                                          ),
+                                                          Text("ผู้เช่า",
+                                                              style: TextStyle(
+                                                                color: Color
+                                                                    .fromRGBO(
+                                                                        247,
+                                                                        207,
+                                                                        205,
+                                                                        1.0),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    'Kanit',
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    color: Color.fromRGBO(
+                                                        250, 120, 186, 1),
+                                                  ),
+                                                )
+                                              ]),
                                         ),
-                                      ),
-                                        style: ButtonStyle(
-                                            padding: MaterialStateProperty.all<EdgeInsets>(
-                                                EdgeInsets.all(10)),
-                                            foregroundColor: MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(250, 120, 186, 1)),
-                                            backgroundColor: MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(250, 120, 186, 1)),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10.0),
-                                              ),
-                                            ),
-                                        )
-                                    ),
-                                   ],
-                                  ),
-
-                              ],
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  context, 'Cancel'),
+                                              child: const Text(
+                                                'Cancel',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Kanit',
+                                                ),
+                                              ))
+                                        ],
+                                      )),
+                              child: Text(
+                                "สมัครสมาชิก",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(2, 97, 26, 1),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Kanit',
+                                ),
+                              ),
+                              shape: StadiumBorder(
+                                  side: BorderSide(
+                                      width: 3.0,
+                                      color: Color.fromRGBO(247, 207, 205, 1))),
                             ),
-                          ),
-                          actions: [
-                            TextButton(onPressed:  () => Navigator.pop(context, 'Cancel'),
-                                child: const Text('Cancel', style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Kanit',
-                            ),))
+                            SizedBox(
+                              height: 5,
+                            )
                           ],
-                        )
-                    )
-
-
-                    ,
-                    child: Text(
-                      "สมัครสมาชิก",
-                      style: TextStyle(
-                        color: Color.fromRGBO(2, 97, 26, 1),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
-                      ),
-                    ),
-                    shape: StadiumBorder(
-                        side: BorderSide(
-                            width: 3.0,
-                            color: Color.fromRGBO(247, 207, 205, 1))),
+                        ),
+                      )
+                    ],
                   ),
-                  padding: const EdgeInsets.all(5.0),
-                ),
-              ],
-            ),
+                )),
           ),
         ),
       ),
