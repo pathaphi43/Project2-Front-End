@@ -58,7 +58,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(width: 30.0, height: 40.0),
+                        SizedBox(width: 10.0, height: 40.0),
                         new Container(
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
