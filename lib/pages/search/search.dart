@@ -373,7 +373,7 @@ class _SearchPageState extends State<SearchPage> {
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(),
+                                      MaterialPageRoute(builder: (BuildContext context) {  }),
                                     );
                                   },
                                   child: Text(
@@ -394,7 +394,7 @@ class _SearchPageState extends State<SearchPage> {
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(),
+                                      MaterialPageRoute(builder: (BuildContext context) {  }),
                                     );
                                   },
                                   child: Text(

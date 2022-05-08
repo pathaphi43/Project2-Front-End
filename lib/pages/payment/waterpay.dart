@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:homealone/pages/Navbar/appBar.dart';
 
 class WaterpayPage extends StatefulWidget {
@@ -17,20 +18,8 @@ class _WaterpayPageState extends State<WaterpayPage> {
   int selectedCard = -1;
   // ignore: unused_field
   int _counter = 0;
-  List<Exercise> monthexercises = [
-    Exercise(name: 'มกราคม'),
-    Exercise(name: 'กุมภาพันธ์'),
-    Exercise(name: 'มีนาคม'),
-    Exercise(name: 'เมษายน'),
-    Exercise(name: 'พฤษภาคม'),
-    Exercise(name: 'มิถุนายน'),
-    Exercise(name: 'กรกฎาคม'),
-    Exercise(name: 'สิงหาคม'),
-    Exercise(name: 'กันยายน'),
-    Exercise(name: 'ตุลาคม'),
-    Exercise(name: 'พฤศจิกายน'),
-    Exercise(name: 'ธันวาคม'),
-  ];
+
+  DateTime _selectedDate;
 
   List<Exercise> statusexercises = [
     Exercise(name: 'ชำระแล้ว'),
@@ -49,11 +38,19 @@ class _WaterpayPageState extends State<WaterpayPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NavAppBar(), body: waterBody(context)
+       body: waterBody(context)
     );
   }
 
  Widget waterBody(BuildContext context) {
+    final mqHeight = MediaQuery.of(context).size.height;
+    final mqWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+           appBar: NavAppBar(), body: rentBody(context)
+    );
+  }
+
+    Widget rentBody(BuildContext context) {
     final mqHeight = MediaQuery.of(context).size.height;
     final mqWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -73,7 +70,7 @@ class _WaterpayPageState extends State<WaterpayPage> {
             height: 14,
           ),
           Container(
-            child: watersearch(context),
+            child: rentsearch(context),
           ),
           Container(
             width: mqWidth,
@@ -124,7 +121,7 @@ class _WaterpayPageState extends State<WaterpayPage> {
                             DataCell(Center(child: Text('นิรมัย'))),
                             DataCell(Center(child: Text('บ้านลักษณาวดี'))),
                             DataCell(Center(child: Text('มกราคม'))),
-                            DataCell(Center(child: Text('2,500'))),
+                            DataCell(Center(child: Text('5,500'))),
                             DataCell(Center(
                               child: Text(
                                 'เสร็จสิ้น',
@@ -141,7 +138,7 @@ class _WaterpayPageState extends State<WaterpayPage> {
     ));
   }
 
-  Widget watersearch(BuildContext context) {
+   Widget rentsearch(BuildContext context) {
     return Container(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -164,8 +161,27 @@ class _WaterpayPageState extends State<WaterpayPage> {
     ));
   }
 
-  // ignore: non_constant_identifier_names
-  Widget Menusearch(BuildContext context) {
+selectDate(BuildContext context) async {
+  // ignore: unnecessary_statements, unused_label
+  context: context;
+              var datePicked = await DatePicker.showSimpleDatePicker(
+                context,
+                initialDate: _selectedDate!= null ? _selectedDate:DateTime.now(),
+                firstDate: DateTime(2000),
+                dateFormat: "dd-MMMM-yyyy",
+                locale: DateTimePickerLocale.th,
+                textColor: Color.fromRGBO(250, 120, 186, 1),
+                looping: true,
+              );
+       
+              final snackBar =
+              SnackBar(content: Text("$datePicked",style: TextStyle(fontSize: 18,fontFamily: 'Kanit',),));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+ }
+ 
+
+   Widget Menusearch(BuildContext context) {
     return Container(
       alignment: Alignment.center,
       child: PopupMenuButton(
@@ -185,97 +201,7 @@ class _WaterpayPageState extends State<WaterpayPage> {
                   onTap: () {
                     Future<void>.delayed(
                       const Duration(), // OR const Duration(milliseconds: 500),
-                      () => showDialog(
-                        context: context,
-                        barrierColor: Colors.black26,
-                        builder: (context) => AlertDialog(
-                          title: Text(
-                            "เดือน",
-                            style: TextStyle(
-                                color: Color.fromRGBO(250, 120, 186, 1)),
-                          ),
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: const Text('ยกเลิก',
-                                  style: TextStyle(color: Colors.red)),
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              textColor: Theme.of(context).accentColor,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            FlatButton(
-                              child: const Text(
-                                'ยืนยัน',
-                                style: TextStyle(color: Colors.green),
-                              ),
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              textColor: Theme.of(context).accentColor,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                          content: SingleChildScrollView(
-                            child: Container(
-                              width: double.maxFinite,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Divider(),
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxHeight:
-                                          MediaQuery.of(context).size.height *
-                                              0.4,
-                                    ),
-                                    child: GridView.builder(
-                                        gridDelegate:
-                                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                                                maxCrossAxisExtent: 110,
-                                                childAspectRatio: 4 / 2,
-                                                crossAxisSpacing: 15,
-                                                mainAxisSpacing: 15),
-                                        itemCount: monthexercises.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                // ontap of each card, set the defined int to the grid view index
-                                                selectedCard = index;
-                                              });
-                                            },
-                                            child: Card(
-                                              // ignore: unrelated_type_equality_checks
-                                              color: selectedCard == index
-                                                  ? Color.fromRGBO(
-                                                      247, 207, 205, 1)
-                                                  : Color.fromRGBO(
-                                                      250, 120, 186, 1),
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  monthexercises[index].name,
-                                                  style:
-                                                      TextStyle(fontSize: 12),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      () {selectDate(context);}
                     );
                   },
                   value: 1,
@@ -305,19 +231,9 @@ class _WaterpayPageState extends State<WaterpayPage> {
                                   BorderRadius.all(Radius.circular(10))),
                           actions: <Widget>[
                             FlatButton(
-                              child: const Text('ยกเลิก',
-                                  style: TextStyle(color: Colors.red)),
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              textColor: Theme.of(context).accentColor,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            FlatButton(
                               child: const Text(
-                                'ยืนยัน',
-                                style: TextStyle(color: Colors.green),
+                                'OK',
+                                style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontWeight: FontWeight.bold,),
                               ),
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
@@ -326,9 +242,21 @@ class _WaterpayPageState extends State<WaterpayPage> {
                                 Navigator.pop(context);
                               },
                             ),
+                            SizedBox(width: 2,),
+                            FlatButton(
+                              child: const Text('Cancel',
+                                  style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontWeight: FontWeight.bold,)),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              textColor: Theme.of(context).accentColor,
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            
                           ],
                           content: Container(
-                            height: 250,
+                            height: 150,
                             width: double.maxFinite,
                             child: SingleChildScrollView(
                               child: Column(

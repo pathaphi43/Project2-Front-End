@@ -203,27 +203,39 @@ class _MainPagesState extends State<MainPages> {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  accountName: Text(firstName +
-                      "\t" +
-                      lastName,style: TextStyle(
-                    color: Color.fromRGBO(250, 120, 186, 1),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Kanit',
-                  ),),
-                  accountEmail: Text(userName,style: TextStyle(
-                    color: Color.fromRGBO(247, 207, 205, 1),
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Kanit',
-                  ),),
+                  accountName: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                     Text(firstName +
+                        "\t" +
+                        lastName,style: TextStyle(
+                      color: Color.fromRGBO(250, 120, 186, 1),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Kanit',
+                    ),),],
+                  ),
+                  accountEmail: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Text(userName,style: TextStyle(
+                      color: Colors.blueGrey[600],
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Kanit',
+                    ),),],
+                  ),
+                  currentAccountPictureSize: Size(MediaQuery.of(context).size.width * 0.75, 80),
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: ExactAssetImage('images/back.jpg'.toString()),
+                          image: ExactAssetImage('images/background_drawer.jpg'.toString()),
                           fit: BoxFit.cover)),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(imageProfile),
+                  currentAccountPicture: Center(
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundImage:
+                          NetworkImage(imageProfile),
+                    ),
                   ),
 
                 ),
@@ -294,21 +306,21 @@ class _MainPagesState extends State<MainPages> {
               Builder(
                 builder: (BuildContext context) {
                   return IconButton(
-                    // icon: const Icon(Icons.access_alarm_rounded),
-                    icon: Container(
-                      child: Hero(
-                        tag: 'Profile Picture',
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              imageProfile),
-                        ),
-                      ),
-                    ),
+                     icon: const Icon(Icons.filter_list_alt,color: Color.fromRGBO(250, 120, 186, 1), ),
+                    // icon: Container(
+                    //   child: Hero(
+                    //     tag: 'Profile Picture',
+                    //     child: CircleAvatar(
+                    //       backgroundImage: NetworkImage(
+                    //           imageProfile),
+                    //     ),
+                    //   ),
+                    // ),
                     onPressed: () {
                       Scaffold.of(context).openEndDrawer();
                     },
-                    tooltip:
-                        MaterialLocalizations.of(context).openAppDrawerTooltip,
+                    // tooltip:
+                    //     MaterialLocalizations.of(context).openAppDrawerTooltip,
                   );
                 },
               ),

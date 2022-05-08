@@ -68,6 +68,7 @@ dependencies:
   location_platform_interface: ^2.0.0
   plugin_platform_interface: ^2.1.1
   mask_text_input_formatter: ^2.3.0
+  flutter_holo_date_picker: ^1.0.3
 
 
 #  location_web: ^2.0.0
@@ -110,6 +111,7 @@ flutter:
 #      - Json/thai_provinces.json
       - images/back.jpg
       - images/nong.jpg
+      - images/background_drawer.jpg
       - img/logo.png
       - img/biglogo.png
       - img/PEAlogo.png
@@ -117,6 +119,7 @@ flutter:
       - img/PEApay.jpg
       - img/rentpay.png
       - img/PWApay.jpg
+     
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

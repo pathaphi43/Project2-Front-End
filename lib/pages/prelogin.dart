@@ -116,6 +116,7 @@ class _PreLoginState extends State<PreLogin> {
                                                       alignment:
                                                           Alignment.center,
                                                       child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                         children: [
                                                           Icon(
                                                             Icons.home,
@@ -162,6 +163,7 @@ class _PreLoginState extends State<PreLogin> {
                                                       alignment:
                                                           Alignment.center,
                                                       child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                         children: [
                                                           Icon(
                                                             Icons.account_box,
