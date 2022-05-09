@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homealone/pages/Navbar/appBar.dart';
 
 class IncomePage extends StatefulWidget {
   IncomePage({key}) : super(key: key);
@@ -10,6 +11,12 @@ class IncomePage extends StatefulWidget {
 class _IncomePageState extends State<IncomePage> {
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: NavAppBar(),
+    );
+  }
+
+  Widget bodyIncome(){
     return Container();
   }
 }

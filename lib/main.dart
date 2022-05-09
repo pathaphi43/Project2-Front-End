@@ -28,6 +28,7 @@ import 'package:homealone/pages/users/ManagerEditProfile.dart';
 import 'package:homealone/pages/users/editmanager.dart';
 
 import 'pages/Navbar/mainpages.dart';
+import 'pages/income.dart';
 
 
 void main() async {
@@ -68,7 +69,8 @@ class MyApp extends StatelessWidget {
         '/Homeinfo-page': (context) => InfoPage(),
         '/ManagerEditProfile-page':(context) => ManagerEditProfile(),
         '/PreRent-page':(context) => PreRent(),
-
+        '/Income-page':(context) => IncomePage(),
+// IncomePage
       },
     );
   }

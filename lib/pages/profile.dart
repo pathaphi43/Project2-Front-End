@@ -110,7 +110,7 @@ Widget managerWidget(BuildContext context){
           child: ListView(
             children: <Widget>[
               SizedBox(
-                height: 70.0,
+                height: 40.0,
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -124,8 +124,8 @@ Widget managerWidget(BuildContext context){
                         //backgroundImage: ,
                         child: IconButton(
                           padding: EdgeInsets.all(110),
-                          icon: const Icon(Icons.edit),
-                          color: Colors.white,
+                          icon: const Icon(Icons.camera_alt),
+                          color: Colors.blueGrey[200],
                           onPressed: () {
                             if(_ProfilePageState().pickImage(context) != null){
                               _ProfilePageState().pickImage(context);
@@ -143,169 +143,152 @@ Widget managerWidget(BuildContext context){
               ),
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////ชื่อ-สกุล , Username/////////////////////////////////////
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(3.0),
-                    child: Text(firstName +" "+lastName,
-                      style: TextStyle(
-                        color: Color.fromRGBO(250, 120, 186, 1),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
+              Container(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(firstName +" "+lastName,
+                              style: TextStyle(
+                                color: Color.fromRGBO(250, 120, 186, 1),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Kanit',
+                              ),
+                            ),
+                             IconButton(
+                              icon: const Icon(Icons.edit),
+                              color: Colors.blueGrey[200],
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/Editmanager-page',
+                                arguments: [
+                                  id.toString(),
+                                  status.toString()
+                                ]);
+                              },
+
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(3.0),
-                    child: Text(
-                      userName,
-                      style: TextStyle(
-                        color: Color.fromRGBO(250, 120, 186, 1),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Kanit',
-                      ),
-                    ),
-                  )
-                ],
-              ),
-////////////////////////////////////////////////////////////////////////////////
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: new FlatButton(
-                      minWidth: 100.0,
-                      height: 40.0,
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/Editmanager-page',
-                            arguments: [
-                              id.toString(),
-                              status.toString()
-                            ]);
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
                       child: Text(
-                        "แก้ไขข้อมูลส่วนตัว",
+                        userName,
                         style: TextStyle(
                           color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 14,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
                         ),
                       ),
-                      shape: StadiumBorder(
-                        side: BorderSide(
-                          width: 1.0,
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                        ),
-                      ),
+                    )
+                  ],
+                ),
+              ),
+////////////////////////////////////////////////////////////////////////////////
+              
+              Container(
+                height: MediaQuery.of(context).size.height/1.5,
+                // color: Colors.blueGrey[50],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        FlatButton(
+                            color: Color.fromRGBO(247, 207, 205, 1),
+                            minWidth: MediaQuery.of(context).size.height/3.5,
+                            height: 100.0,
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/Myhouse-page',arguments: id.toString());
+                            },
+                            child: Text(
+                              "ข้อมูลบ้านเช่า",
+                              style: TextStyle(
+                                color: Color.fromRGBO(250, 120, 186, 1),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Kanit',
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                                side: BorderSide(
+                                    width: 2.0,
+                                    color: Color.fromRGBO(250, 120, 186, 1))),
+                          ),
+                          FlatButton(
+                            color: Color.fromRGBO(247, 207, 205, 1),
+                            minWidth: MediaQuery.of(context).size.height/3.5,
+                            height: 100.0,
+                            onPressed: () {
+                             Navigator.pushNamed(context, '/Income-page',arguments: id.toString());
+                            },
+                            child: Text(
+                              "ข้อมูลรายได้",
+                              style: TextStyle(
+                                color: Color.fromRGBO(250, 120, 186, 1),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Kanit',
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                                side: BorderSide(
+                                    width: 2.0,
+                                    color: Color.fromRGBO(250, 120, 186, 1))),
+                          ),
+                      ],
                     ),
-                  ),
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: new FlatButton(
-                          color: Color.fromRGBO(247, 207, 205, 1),
-                          minWidth: 30.0,
-                          height: 90.0,
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/Myhouse-page',arguments: id.toString());
-                          },
-                          child: Text(
-                            "ข้อมูลบ้านเช่า",
-                            style: TextStyle(
-                              color: Color.fromRGBO(250, 120, 186, 1),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Kanit',
+                    
+                  FlatButton(
+                        minWidth: MediaQuery.of(context).size.height/5.5,
+                        height: 55.0,
+                        color: Colors.red,
+                        onPressed: () {
+                          prefs.clear();
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            '/main-page',
+                                (Route<dynamic> route) => false,
+                          );
+                          managerdata = null;
+                          tenantdata = null;
+                          ProfilePage().createState().didChangeDependencies();
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "ออกจากระบบ  ",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Kanit',
+                              ),
                             ),
-                          ),
-                          shape: StadiumBorder(
-                              side: BorderSide(
-                                  width: 2.0,
-                                  color: Color.fromRGBO(250, 120, 186, 1))),
-                        ),
-                      ),
-
-                      ////////////////////////////////////////////////////////////////////////////////
-
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: new FlatButton(
-                          color: Color.fromRGBO(247, 207, 205, 1),
-                          minWidth: 60.0,
-                          height: 90.0,
-                          onPressed: () {
-                           print("OK");
-                          },
-                          child: Text(
-                            "ข้อมูลรายได้",
-                            style: TextStyle(
-                              color: Color.fromRGBO(250, 120, 186, 1),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Kanit',
-                            ),
-                          ),
-                          shape: StadiumBorder(
-                              side: BorderSide(
-                                  width: 2.0,
-                                  color: Color.fromRGBO(250, 120, 186, 1))),
-                        ),
-                      ),
-                    ],
-                  ),
-
-////////////////////////////////////////////////////////////////////////////////
-
-                  Padding(
-                    padding: const EdgeInsets.all(60.0),
-                    child: new FlatButton(
-                      //minWidth: 200.0,
-                      height: 70.0,
-                      color: Colors.red,
-                      onPressed: () {
-                        prefs.clear();
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          '/main-page',
-                              (Route<dynamic> route) => false,
-                        );
-                        managerdata = null;
-                        tenantdata = null;
-                        ProfilePage().createState().didChangeDependencies();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "ออกจากระบบ  ",
-                            style: TextStyle(
+                            Icon(
+                              Icons.exit_to_app,
                               color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Kanit',
+                              size: 22,
                             ),
-                          ),
-                          Icon(
-                            Icons.exit_to_app,
-                            color: Colors.white,
-                            size: 22,
-                          ),
-                        ],
+                          ],
+                        ),
+                        shape: StadiumBorder(
+                            side: BorderSide(width: 1.0, color: Colors.red)),
                       ),
-                      shape: StadiumBorder(
-                          side: BorderSide(width: 1.0, color: Colors.red)),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               )
             ],
           ),
