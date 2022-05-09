@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
-      home: MainPages(),
+      home: IncomePage(),
       title: 'Home Alone',
       routes: {
         '/home-page': (context) => HomePage(),
