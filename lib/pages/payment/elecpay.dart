@@ -62,8 +62,21 @@ DateTime _selectedDate;
           ),
           Container(
             alignment: Alignment.center,
-            child: Text("ค่าไฟฟ้า",
-                style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontSize: 20)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("ค่าไฟฟ้า",
+                    style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontSize: 20)),
+              IconButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, '/addelec-page',arguments: null);
+                }, 
+                icon: Icon(Icons.add_box_rounded,size: 30.0),
+                  color: Color.fromRGBO(247, 207, 205, 1),
+                  )
+              ],
+            ),
           ),
           SizedBox(
             height: 14,
@@ -131,7 +144,8 @@ DateTime _selectedDate;
                         )))
               ],
             ),
-          )
+          ),
+          
         ],
       ),
     ));
@@ -310,4 +324,16 @@ selectDate(BuildContext context) async {
               ]),
     );
   }
+
+  // Widget addButton (){
+  //   return FloatingActionButton(
+  //       onPressed: () {
+  //         // Add your onPressed code here!
+  //       },
+  //       backgroundColor: Colors.green,
+  //       child: const Icon(Icons.navigation),
+        
+     
+  //   );
+  // }
 }

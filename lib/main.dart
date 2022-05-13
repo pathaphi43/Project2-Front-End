@@ -13,6 +13,7 @@ import 'package:homealone/pages/house/myhouse.dart';
 import 'package:homealone/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/pages/map/map.dart';
+import 'package:homealone/pages/payment.dart';
 import 'package:homealone/pages/payment/elecpay.dart';
 import 'package:homealone/pages/payment/elecpay_tenant.dart';
 import 'package:homealone/pages/payment/rentpay.dart';
@@ -29,6 +30,10 @@ import 'package:homealone/pages/users/editmanager.dart';
 
 import 'pages/Navbar/mainpages.dart';
 import 'pages/income.dart';
+import 'pages/payment/addelec.dart';
+import 'pages/payment/addrent.dart';
+import 'pages/payment/addwater.dart';
+import 'pages/payment/waterpay_tenant.dart';
 
 
 void main() async {
@@ -44,7 +49,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
-      home: IncomePage(),
+      home: MainPages(),
       title: 'Home Alone',
       routes: {
         '/home-page': (context) => HomePage(),
@@ -70,6 +75,9 @@ class MyApp extends StatelessWidget {
         '/ManagerEditProfile-page':(context) => ManagerEditProfile(),
         '/PreRent-page':(context) => PreRent(),
         '/Income-page':(context) => IncomePage(),
+        '/addelec-page':(context) => AddElecPage(),
+        '/addrent-page':(context) => addRentPage(),
+        '/addwater-page':(context) => addWaterPage(),
 // IncomePage
       },
     );
