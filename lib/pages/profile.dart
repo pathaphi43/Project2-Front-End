@@ -107,6 +107,7 @@ Widget managerWidget(BuildContext context){
   return Scaffold(
       body: Center(
         child: Container(
+          width: MediaQuery.of(context).size.width,
           child: ListView(
             children: <Widget>[
               SizedBox(
@@ -195,6 +196,7 @@ Widget managerWidget(BuildContext context){
               
               Container(
                 height: MediaQuery.of(context).size.height/1.5,
+                width: MediaQuery.of(context).size.width,
                 // color: Colors.blueGrey[50],
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -205,7 +207,7 @@ Widget managerWidget(BuildContext context){
                       children: [
                         FlatButton(
                             color: Color.fromRGBO(247, 207, 205, 1),
-                            minWidth: MediaQuery.of(context).size.height/3.5,
+                            minWidth: MediaQuery.of(context).size.width/2.3,
                             height: 100.0,
                             onPressed: () {
                               Navigator.pushNamed(context, '/Myhouse-page',arguments: id.toString());
@@ -227,7 +229,7 @@ Widget managerWidget(BuildContext context){
                           ),
                           FlatButton(
                             color: Color.fromRGBO(247, 207, 205, 1),
-                            minWidth: MediaQuery.of(context).size.height/3.5,
+                            minWidth: MediaQuery.of(context).size.width/2.3,
                             height: 100.0,
                             onPressed: () {
                              Navigator.pushNamed(context, '/Income-page',arguments: id.toString());
@@ -292,6 +294,7 @@ Widget managerWidget(BuildContext context){
               )
             ],
           ),
+
         ),
       ));
 }

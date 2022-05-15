@@ -218,7 +218,7 @@ class _AddHomeState extends State<AddHome> {
             height: 50,
             child: TextButton(
               child: const Text(
-                "Submit",
+                "ยืนยัน",
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontStyle: FontStyle.normal,

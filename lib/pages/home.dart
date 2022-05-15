@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
 
 
   Stream<List<HouseAndImageModel>> onCurrentUserChanged;
-  final StreamController<List<HouseAndImageModel>> currentUserStreamCtrl = StreamController<List<HouseAndImageModel>>();
+  StreamController<List<HouseAndImageModel>> currentUserStreamCtrl = new StreamController<List<HouseAndImageModel>>.broadcast();
 
 
   Future<void> onRefresh () {
@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
         Uri.http('home-alone-csproject.herokuapp.com', '/house/AllAndImageAndStatus'));
     print(response.statusCode);
     if (response.statusCode == 200) {
+      // print("Body"+utf8.decode(response.bodyBytes));
       currentUserStreamCtrl.sink.add(houseAndImageModelFromJson(utf8.decode(response.bodyBytes)));
       return homeall =
           houseAndImageModelFromJson(utf8.decode(response.bodyBytes));
@@ -118,7 +119,9 @@ class _HomePageState extends State<HomePage> {
                         children: <Widget>[
                           (snapshot.connectionState == ConnectionState.active)
                               ? Column(
+
                                   children: snapshot.data.map((e) {
+                                    // print('${e.houseProvince} ${e.houseDistrict}');
                                     return InkWell(onTap: () {
                                       Navigator.pushNamed(context, '/Homeinfo-page',
                                           arguments: [ e.hid ]);
@@ -247,9 +250,8 @@ class _HomePageState extends State<HomePage> {
                                                           size: 12.0,
                                                         ),
                                                         Text(
-                                                            " " +
-                                                                e.houseDistrict +
-                                                                " จ." +
+                                                           e.houseDistrict == null ? "null" :" อ.${e.houseDistrict}"+
+                                                                " จ."+
                                                                 e.houseProvince,
                                                             style: TextStyle(
                                                               color: Color

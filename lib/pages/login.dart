@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                       content: new Row(
                         children: <Widget>[
                           new CircularProgressIndicator(),
-                          new Text("  Signing-In...")
+                          new Text("  กำลังโหลด...")
                         ],
                       ),
                     ));
@@ -209,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                             content: new Row(
                               children: <Widget>[
                                 new CircularProgressIndicator(),
-                                new Text("  Signing-In...")
+                                new Text("  กำลังโหลด...")
                               ],
                             ),
                           ));
