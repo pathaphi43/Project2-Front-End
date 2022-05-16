@@ -46,12 +46,15 @@ class _MainPagesState extends State<MainPages> {
   Manager managerdata;
   Tenant tenantdata;
 
+
   @override
   void initState() {
     super.initState();
     asyncFunc();
     _determinePosition();
     print("initState");
+
+
   }
 
 

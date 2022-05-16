@@ -32,11 +32,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //
-  // }
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
 
   @override
   void didChangeDependencies() async{
@@ -119,7 +120,6 @@ class _HomePageState extends State<HomePage> {
                         children: <Widget>[
                           (snapshot.connectionState == ConnectionState.active)
                               ? Column(
-
                                   children: snapshot.data.map((e) {
                                     // print('${e.houseProvince} ${e.houseDistrict}');
                                     return InkWell(onTap: () {
@@ -417,6 +417,7 @@ class _HomePageState extends State<HomePage> {
                               : Container()
                         ],
                       ),
+
                     ),
                   );
 

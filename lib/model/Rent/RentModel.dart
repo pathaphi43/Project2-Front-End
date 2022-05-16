@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+
 RentModel rentModelFromJson(String str) => RentModel.fromJson(json.decode(str));
 
 String rentModelToJson(RentModel data) => json.encode(data.toJson());
@@ -40,14 +42,15 @@ class RentModel {
     this.tenantDistrict,
     this.tenantImage,
     this.tenantStatus,
+    this.file
   });
 
   int rid;
   int hid;
   int tid;
-  DateTime rentingBook;
-  DateTime rentingCheckIn;
-  DateTime rentingCheckOut;
+  String rentingBook;
+  String rentingCheckIn;
+  String rentingCheckOut;
   String rentingImage;
   int rentingStatus;
   int mid;
@@ -72,14 +75,15 @@ class RentModel {
   String tenantDistrict;
   String tenantImage;
   int tenantStatus;
+  MultipartFile file;
 
   factory RentModel.fromJson(Map<String, dynamic> json) => RentModel(
     rid: json["rid"],
     hid: json["hid"],
     tid: json["tid"],
-    rentingBook: json["rentingBook"] == null ? null : DateTime.parse(json["rentingBook"]),
-    rentingCheckIn: json["rentingCheckIn"] == null ? null : DateTime.parse(json["rentingCheckIn"]),
-    rentingCheckOut: json["rentingCheckOut"] == null ? null : DateTime.parse(json["rentingCheckOut"]),
+    rentingBook: json["rentingBook"] == null ? null : json["rentingBook"],
+    rentingCheckIn: json["rentingCheckIn"] == null ? null : json["rentingCheckIn"],
+    rentingCheckOut: json["rentingCheckOut"] == null ? null : json["rentingCheckOut"],
     rentingImage: json["rentingImage"] == null ? null : json["rentingImage"],
     rentingStatus: json["rentingStatus"] == null ? null : json["rentingStatus"],
     mid: json["mid"] == null ? null : json["mid"],
@@ -104,15 +108,17 @@ class RentModel {
     tenantDistrict: json["tenantDistrict"] == null ? null : json["tenantDistrict"],
     tenantImage: json["tenantImage"] == null ? null : json["tenantImage"],
     tenantStatus: json["tenantStatus"],
+    file: json['file']
+
   );
 
   Map<String, dynamic> toJson() => {
     "rid": rid,
     "hid": hid,
     "tid": tid,
-    "rentingBook": rentingBook == null ? null : rentingBook.toIso8601String(),
-    "rentingCheckIn": rentingCheckIn == null ? null : rentingCheckIn.toIso8601String(),
-    "rentingCheckOut": rentingCheckOut == null ? null : rentingCheckOut.toIso8601String(),
+    "rentingBook": rentingBook == null ? null : rentingBook,
+    "rentingCheckIn": rentingCheckIn == null ? null : rentingCheckIn,
+    "rentingCheckOut": rentingCheckOut == null ? null : rentingCheckOut,
     "rentingImage": rentingImage == null ? null : rentingImage,
     "rentingStatus": rentingStatus == null ? null : rentingStatus,
     "mid": mid == null ? null : mid,
@@ -137,5 +143,6 @@ class RentModel {
     "tenantDistrict": tenantDistrict == null ? null : tenantDistrict,
     "tenantImage": tenantImage == null ? null : tenantImage,
     "tenantStatus": tenantStatus,
+    "file":file
   };
 }

@@ -13,7 +13,7 @@ class NavAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _NavAppBarState extends State<NavAppBar> {
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return  AppBar(
           backgroundColor: Color.fromRGBO(247, 207, 205, 1),
           centerTitle: true,
           title: Image.asset('img/logo.png'),
