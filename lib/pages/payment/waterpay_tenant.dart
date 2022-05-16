@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:homealone/pages/Navbar/appBar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ class waterTenant extends StatefulWidget {
   State<waterTenant> createState() => _waterTenantState();
 }
 
+var formatter = new DateFormat('dd-MM-yyyy');
 class _waterTenantState extends State<waterTenant> {
   var image;
 
@@ -191,20 +193,33 @@ class _waterTenantState extends State<waterTenant> {
     );
   }
 
-  String _selectedDate = '01/01/2015';
+  DateTime showeDateNow =
+      DateTime(DateTime.now().year, DateTime.now().month,DateTime.now().day);
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime d = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2015),
-      lastDate: DateTime.now(),
-    );
-    if (d != null)
-      setState(() {
-        _selectedDate = new DateFormat('dd/MM/yyyy').format(d);
-      });
-  }
+// ignore: dead_code
+Future   selectDate(BuildContext context, DateTime _selectedDate) async {
+  // ignore: unnecessary_statements, unused_label
+  context: context;
+              var datePicked = await DatePicker.showSimpleDatePicker(
+                context,
+                initialDate: _selectedDate!= null ? _selectedDate:DateTime.now(),
+                firstDate: DateTime(2000),
+                dateFormat: "dd-MMMM-yyyy",
+                locale: DateTimePickerLocale.th,
+                textColor: Color.fromRGBO(250, 120, 186, 1),
+                looping: true,
+              );
+              if (datePicked != null) {
+                _selectedDate = datePicked;
+              }
+              return _selectedDate;
+       
+              // ignore: dead_code
+              final snackBar =
+              SnackBar(content: Text("$datePicked",style: TextStyle(fontSize: 18,fontFamily: 'Kanit',),));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+ }
 
   Widget datepay(BuildContext context) {
     return Row(
@@ -214,21 +229,16 @@ class _waterTenantState extends State<waterTenant> {
           "วันที่ชำระเงินตามหลักฐาน",
           style: TextStyle(fontSize: 16),
         ),
-        InkWell(
-          child: Text(_selectedDate,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF000000))),
-          onTap: () {
-            _selectDate(context);
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.calendar_today),
-          // tooltip: '',
-          onPressed: () {
-            _selectDate(context);
-          },
-        ),
+        TextButton.icon(
+                icon: Icon(Icons.date_range_rounded,size: 24,),
+                 onPressed: () async {
+                        showeDateNow = await selectDate(context, showeDateNow);
+                        setState(() {});
+                      },label: Text("${formatter.format(showeDateNow)}" ,style: TextStyle(fontSize: 18),),
+                         style: TextButton.styleFrom(
+                         primary: Color.fromRGBO(247, 207, 205, 1),),
+                         
+              ),
       ],
     );
   }

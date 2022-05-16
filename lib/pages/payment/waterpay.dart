@@ -63,8 +63,20 @@ class _WaterpayPageState extends State<WaterpayPage> {
           ),
           Container(
             alignment: Alignment.center,
-            child: Text("ค่าน้ำประปา",
-                style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontSize: 20)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("ค่าน้ำประปา",
+                    style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontSize: 20)),
+              IconButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, '/addwater-page',arguments: null);
+                }, 
+                icon: Icon(Icons.add_box_rounded,size: 30.0),
+                  color: Color.fromRGBO(247, 207, 205, 1),
+                  )
+              ],
+            ),
           ),
           SizedBox(
             height: 14,
