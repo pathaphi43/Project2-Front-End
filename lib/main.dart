@@ -10,6 +10,8 @@ import 'package:homealone/pages/house/HouseListForRent.dart';
 import 'package:homealone/pages/house/edithouse.dart';
 import 'package:homealone/pages/house/homeInfo.dart';
 import 'package:homealone/pages/house/myhouse.dart';
+import 'package:homealone/pages/house/payment/PreAddTransaction.dart';
+import 'package:homealone/pages/house/payment/Transaction.dart';
 import 'package:homealone/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/pages/map/map.dart';
@@ -70,6 +72,8 @@ class MyApp extends StatelessWidget {
         '/ManagerEditProfile-page':(context) => ManagerEditProfile(),
         '/PreRent-page':(context) => PreRent(),
         '/Income-page':(context) => IncomePage(),
+        '/PreTransaction-page':(context) => PreAddTransactions(),
+        '/Transaction-page':(context) => Transactions()
 // IncomePage
       },
     );

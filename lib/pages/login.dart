@@ -235,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                             }
                           });
                         },
-                        child: Text('Sing in'.toUpperCase(),
+                        child: Text('Sign in'.toUpperCase(),
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

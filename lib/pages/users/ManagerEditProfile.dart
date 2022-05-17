@@ -30,7 +30,6 @@ class _ManagerEditProfileState extends State<ManagerEditProfile> {
 
   @override
   Widget build(BuildContext context){
-
     return Scaffold(
       appBar: NavAppBar(),
         body: Center(

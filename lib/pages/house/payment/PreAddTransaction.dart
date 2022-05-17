@@ -1,22 +1,19 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:homealone/model/house/HouseAndImageModel.dart';
-
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'dart:async';
 
-class PreRent extends StatefulWidget {
-  const PreRent({Key key}) : super(key: key);
+class PreAddTransactions extends StatefulWidget {
+  const PreAddTransactions({Key key}) : super(key: key);
 
   @override
-  State<PreRent> createState() => _PreRentState();
+  State<PreAddTransactions> createState() => _PreAddTransactionsState();
 }
 
-class _PreRentState extends State<PreRent> {
+class _PreAddTransactionsState extends State<PreAddTransactions> {
   int args;
   List<HouseAndImageModel> homes;
 
@@ -38,14 +35,13 @@ class _PreRentState extends State<PreRent> {
   Future<List<HouseAndImageModel>> getHome() async {
     var model = HouseAndImageModel();
     model.mid = args;
-    model.houseStatus = 2;
+    model.houseStatus = 1;
     var jsonModel = houseAndImageToJson(model);
     final response = await http.post(
         Uri.parse('https://home-alone-csproject.herokuapp.com/house/prerent'),
         body: jsonModel,
         headers: {
           'Content-Type': 'application/json',
-          // 'Content-Type':  'application/x-www-form-urlencoded'
         });
 
     if (response.statusCode == 200) {
@@ -57,6 +53,7 @@ class _PreRentState extends State<PreRent> {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,89 +71,80 @@ class _PreRentState extends State<PreRent> {
                   color: Color.fromRGBO(247, 207, 205, 1),
                   margin: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.1),
                   padding:
-                      EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.15),
+                  EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.15),
                   // height: MediaQuery.of(context).size.height * 0.25,
                   child: Column(
                     children: <Widget>[
                       (snapshot.hasData)
                           ? Column(
-                              children: snapshot.data.map((e) {
-                              return Slidable(
-                                closeOnScroll: true,
-                                // key:ValueKey(e.hid),
-                                key: Key(e.hid.toString()),
-                                actionPane: SlidableDrawerActionPane(),
-                                // actionExtentRatio: 0.1,
-                                secondaryActions: <Widget>[
-                                  IconSlideAction(
-                                    caption: 'ยืนยัน',
-                                    color: Colors.green,
-                                    icon: Icons.check,
-                                    onTap: () {
-                                      print(e.houseName);
-                                      Navigator.pushNamed(context, '/Addrent-page',
-                                          arguments: [e.hid, e.houseStatus]);
-                                    },
-                                  ),
-                                  IconSlideAction(
-                                    caption: 'ยกเลิก',
-                                    color: Colors.red,
-                                    icon: Icons.delete,
-                                    onTap: () => showDialog<String>(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (BuildContext context) => AlertDialog(
-                                        title: const Text('ยืนยันการยกเลิก '),
-                                        content: Text('ยืนยันการยกเลิก '+e.houseName),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                                            child: const Text('ยกเลิก'),
-                                          ),
-                                          TextButton(
-                                            onPressed: ()async {
-                                              ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-                                                duration: new Duration(seconds: 4),
-                                                content: new Row(
-                                                  children: <Widget>[
-                                                    new CircularProgressIndicator(),
-                                                    new Text("กำลังโหลด...")
-                                                  ],
-                                                ),
-                                              ));
-                                              // _scaffoldKey.currentState.showSnackBar(new SnackBar(
-                                              //   duration: new Duration(seconds: 4),
-                                              //   content: new Row(
-                                              //     children: <Widget>[
-                                              //       new CircularProgressIndicator(),
-                                              //       new Text("กำลังโหลด...")
-                                              //     ],
-                                              //   ),
-                                              // ));
+                          children: snapshot.data.map((e) {
+                            return Slidable(
+                              closeOnScroll: true,
+                              // key:ValueKey(e.hid),
+                              key: Key(e.hid.toString()),
+                              actionPane: SlidableDrawerActionPane(),
+                              // actionExtentRatio: 0.1,
+                              secondaryActions: <Widget>[
+                                IconSlideAction(
+                                  caption: 'ยืนยัน',
+                                  color: Colors.green,
+                                  icon: Icons.check,
+                                  onTap: () {
+                                    print(e.houseName);
+                                    Navigator.pushNamed(context, '/Transaction-page',
+                                        arguments: [e.hid, e.houseStatus]);
+                                  },
+                                ),
+                                IconSlideAction(
+                                  caption: 'ยกเลิก',
+                                  color: Colors.red,
+                                  icon: Icons.delete,
+                                  onTap: () => showDialog<String>(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (BuildContext context) => AlertDialog(
+                                      title: const Text('ยืนยันการยกเลิก '),
+                                      content: Text('ยืนยันการยกเลิก '+e.houseName),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, 'Cancel'),
+                                          child: const Text('ยกเลิก'),
+                                        ),
+                                        TextButton(
+                                          onPressed: ()async {
+                                            ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                                              duration: new Duration(seconds: 4),
+                                              content: new Row(
+                                                children: <Widget>[
+                                                  new CircularProgressIndicator(),
+                                                  new Text("กำลังโหลด...")
+                                                ],
+                                              ),
+                                            ));
 
-                                              print("ยืนยัน"+e.hid.toString());
-                                              var response = await http.get(
-                                                  Uri.parse('https://home-alone-csproject.herokuapp.com/house/cancelrent/'+e.hid.toString()),
-                                                  headers: {
-                                                    'Content-Type': 'application/json'
-                                                  });
-                                              if (response.statusCode == 200){
-                                                setState(() {
-                                                  getHome();
-                                                });
-                                                Navigator.pop(context, 'ยืนยัน');
-                                              }else print("Upload fail"+ response.statusCode.toString());
-                                            },
-                                            child: const Text('ยืนยัน'),
-                                          ),
-                                        ],
-                                      ),
+                                            print("ยืนยัน"+e.hid.toString());
+                                            // var response = await http.get(
+                                            //     Uri.parse('https://home-alone-csproject.herokuapp.com/house/cancelrent/'+e.hid.toString()),
+                                            //     headers: {
+                                            //       'Content-Type': 'application/json'
+                                            //     });
+                                            // if (response.statusCode == 200){
+                                            //   setState(() {
+                                            //     getHome();
+                                            //   });
+                                              Navigator.pop(context, 'ยืนยัน');
+                                            // }else print("Upload fail"+ response.statusCode.toString());
+                                          },
+                                          child: const Text('ยืนยัน'),
+                                        ),
+                                      ],
                                     ),
-                                  )
-                                ],
-                                child: _getSlidableWithLists(e),
-                              );
-                            }).toList())
+                                  ),
+                                )
+                              ],
+                              child: _getSlidableWithLists(e),
+                            );
+                          }).toList())
                           : Container()
                     ],
                   ),
@@ -169,33 +157,33 @@ class _PreRentState extends State<PreRent> {
   }
 
   Widget _getSlidableWithLists(HouseAndImageModel e) => Builder(
-      builder: (context) =>  Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          child: ListTile(
-            onTap: () {
-              final slidable = Slidable.of(context);
-              final isClosed = slidable.renderingMode == SlidableRenderingMode.none;
-              if(isClosed){
-                Future.delayed(Duration.zero,(){
-                  if(slidable.mounted){
-                    slidable.open(actionType: SlideActionType.secondary);
-                  }
-                });
+    builder: (context) =>  Card(
+      shape:
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      child: ListTile(
+        onTap: () {
+          final slidable = Slidable.of(context);
+          final isClosed = slidable.renderingMode == SlidableRenderingMode.none;
+          if(isClosed){
+            Future.delayed(Duration.zero,(){
+              if(slidable.mounted){
+                slidable.open(actionType: SlideActionType.secondary);
+              }
+            });
 
-              }
-              else{
-                slidable.close();
-              }
-            },
-            leading: Image.network(e.houseImage),
-            title: Text(
-              e.houseName,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Row(children: <Widget>[
-              Expanded(
-                  child: Column(
+          }
+          else{
+            slidable.close();
+          }
+        },
+        leading: Image.network(e.houseImage),
+        title: Text(
+          e.houseName,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Row(children: <Widget>[
+          Expanded(
+              child: Column(
                 children: <Widget>[
                   // Align(
                   //   alignment: Alignment.centerLeft,
@@ -307,27 +295,27 @@ class _PreRentState extends State<PreRent> {
                   ])
                 ],
               )),
-            ]),
-            trailing: Text(
-              (e.houseStatus == 0)
-                  ? 'ว่าง'
-                  : (e.houseStatus == 1)
-                      ? 'กำลังเช่า'
-                      : (e.houseStatus == 2)
-                          ? 'ติดจอง'
-                          : 'ยกเลิก',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: (e.houseStatus == 0)
-                    ? Colors.green
-                    : (e.houseStatus == 1)
-                        ? Colors.yellow[600]
-                        : (e.houseStatus == 2)
-                            ? Colors.orange
-                            : Colors.red,
-              ),
-            ),
+        ]),
+        trailing: Text(
+          (e.houseStatus == 0)
+              ? 'ว่าง'
+              : (e.houseStatus == 1)
+              ? 'กำลังเช่า'
+              : (e.houseStatus == 2)
+              ? 'ติดจอง'
+              : 'ยกเลิก',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: (e.houseStatus == 0)
+                ? Colors.green
+                : (e.houseStatus == 1)
+                ? Colors.yellow[600]
+                : (e.houseStatus == 2)
+                ? Colors.orange
+                : Colors.red,
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

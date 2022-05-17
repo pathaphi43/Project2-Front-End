@@ -249,6 +249,13 @@ class _MainPagesState extends State<MainPages> {
                     Navigator.pushNamed(context, '/Editmanager-page',
                         arguments: [ prefs.getInt("id"),prefs.getInt("status") ]);
                   },
+                ),ListTile(
+                  leading: Icon(Icons.apartment),
+                  title: Text('ข้อมูลบ้านเช่า'),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/Myhouse-page',
+                        arguments:  prefs.getInt("id").toString());
+                  },
                 ),
                 ListTile(
                   leading: Icon(Icons.add_business_outlined),
@@ -266,12 +273,11 @@ class _MainPagesState extends State<MainPages> {
                         arguments: id);
                   },
                 ),
-                ListTile(
-                  leading: Icon(Icons.apartment),
-                  title: Text('ข้อมูลบ้านเช่า'),
+                 ListTile(
+                  leading: Icon(Icons.account_balance_wallet_outlined),
+                  title: Text('การเงิน'),
                   onTap: () {
-                    Navigator.pushNamed(context, '/Myhouse-page',
-                        arguments:  prefs.getInt("id").toString());
+                    Navigator.pushNamed(context,'/PreTransaction-page',arguments: id);
                   },
                 ),
                 ListTile(

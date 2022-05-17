@@ -84,6 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
       // setState(() {
         this.image = imageTemporary;
       // });
+
       return Navigator.pushNamed(context, '/ManagerEditProfile-page',
           arguments: imageTemporary);
     }on PlatformException catch (e){
@@ -193,7 +194,7 @@ Widget managerWidget(BuildContext context){
                 ),
               ),
 ////////////////////////////////////////////////////////////////////////////////
-              
+
               Container(
                 height: MediaQuery.of(context).size.height/1.5,
                 width: MediaQuery.of(context).size.width,
@@ -251,7 +252,7 @@ Widget managerWidget(BuildContext context){
                           ),
                       ],
                     ),
-                    
+
                   FlatButton(
                         minWidth: MediaQuery.of(context).size.height/5.5,
                         height: 55.0,

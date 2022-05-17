@@ -118,7 +118,7 @@ final List<String> message = <String>[
   "message3",
   "message4"
 ];
-
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 HouseAndImageModel homeall;
 List<House> homedata;
 
@@ -271,6 +271,7 @@ class _InfoPageState extends State<InfoPage> {
                       height: 4,
                     ),
                     showReview(context),
+                    (snapshot.data.houseStatus == 0)?
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -280,6 +281,8 @@ class _InfoPageState extends State<InfoPage> {
                             minWidth: 100.0,
                             height: 40.0,
                             onPressed: ()  => showDialog<String>(
+
+                              barrierDismissible: false,
                               context: context,
                               builder: (BuildContext context) => AlertDialog(
                                 title: const Text('ยืนยัน'),
@@ -291,6 +294,15 @@ class _InfoPageState extends State<InfoPage> {
                                   ),
                                   TextButton(
                                     onPressed: ()async {
+                                      ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                                        duration: new Duration(seconds: 4),
+                                        content: new Row(
+                                          children: <Widget>[
+                                            new CircularProgressIndicator(),
+                                            new Text("กำลังโหลด...")
+                                          ],
+                                        ),
+                                      ));
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                       Map<String,String> data ={
                                         'hid' : snapshot.data.hid.toString(),
@@ -304,7 +316,27 @@ class _InfoPageState extends State<InfoPage> {
                                             'Content-Type': 'application/json'
                                           });
                                       if (response.statusCode == 200){
-                                        Navigator.pop(context, 'ยืนยัน');
+                                        setState(() {
+                                          gethomeAll().whenComplete(() {
+                                            if (prefs != null) {
+                                              Navigator.pop(context,'ยืนยัน');
+                                            }else {
+                                              _scaffoldKey.currentState.showSnackBar(new SnackBar(
+                                                duration: new Duration(seconds: 4),
+                                                backgroundColor: Color.fromRGBO(250, 120, 186, 1),
+                                                content: new Row(
+                                                  children: <Widget>[
+                                                    new Text("เกิดข้อผิดพลาดในการโหลดข้อมูล!!")
+                                                  ],
+                                                ),
+                                              ));
+                                              Navigator.pop(context,'ยืนยัน');
+                                            }
+                                          });
+
+
+                                        });
+                                        // Navigator.pushNamed(context, '/main-page');
                                       }else print("Upload fail"+ response.statusCode.toString());
                                     },
                                     child: const Text('ยืนยัน'),
@@ -331,7 +363,7 @@ class _InfoPageState extends State<InfoPage> {
                         ),
 
                       ],
-                    )
+                    ):Container()
 
                   ],
                 ));
