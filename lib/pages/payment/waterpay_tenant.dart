@@ -13,7 +13,7 @@ class waterTenant extends StatefulWidget {
   State<waterTenant> createState() => _waterTenantState();
 }
 
-var formatter = new DateFormat('dd-MM-yyyy');
+var formatter = new DateFormat('MM-yyyy');
 class _waterTenantState extends State<waterTenant> {
   var image;
 

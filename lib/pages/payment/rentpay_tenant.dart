@@ -13,7 +13,7 @@ class rentTenant extends StatefulWidget {
   @override
   State<rentTenant> createState() => _rentTenantState();
 }
-var formatter = new DateFormat('dd-MM-yyyy');
+var formatter = new DateFormat('MM-yyyy');
 class _rentTenantState extends State<rentTenant> {
   File image;
 

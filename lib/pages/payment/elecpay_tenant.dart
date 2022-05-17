@@ -13,7 +13,7 @@ class elecTenant extends StatefulWidget {
   State<elecTenant> createState() => _elecTenantState();
 }
 
-var formatter = new DateFormat('dd-MM-yyyy');
+var formatter = new DateFormat('MM-yyyy');
 class _elecTenantState extends State<elecTenant> {
   File image;
   DateTime showDate =
