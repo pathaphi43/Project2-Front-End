@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    'Login',
+                    'HomeAlone',
                     style: TextStyle(
                       color: Color.fromRGBO(250, 120, 186, 1),
                       fontSize: 60,
@@ -235,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                             }
                           });
                         },
-                        child: Text('Sign in'.toUpperCase(),
+                        child: Text('เข้าสู่ระบบ'.toUpperCase(),
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -264,7 +264,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   TextButton(
                     onPressed: null,
-                    child: Text('Forgot Password?'),
+                    child: Text('ลืมรหัสผ่าน?'),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),

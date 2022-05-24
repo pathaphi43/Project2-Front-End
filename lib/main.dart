@@ -5,6 +5,8 @@ import 'package:homealone/pages/addrent.dart';
 import 'package:homealone/pages/adduser.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/house/HouseListForRent.dart';
+import 'package:homealone/pages/house/addimages.dart';
+import 'package:homealone/pages/house/editImage.dart';
 import 'package:homealone/pages/house/edithouse.dart';
 import 'package:homealone/pages/house/homeInfo.dart';
 import 'package:homealone/pages/house/myhouse.dart';
@@ -98,6 +100,8 @@ class MyApp extends StatelessWidget {
         '/EditPayment-page':(context) => EditPayment(),
          '/Review-page': (context) => ReviewPage(),
         '/PreReview-page':(context) => PreReview(),
+        '/EditImageHouse-page':(context) => EditImageHouse(),
+        '/AddImages-page':(context) => AddImages()
 
       },
     );

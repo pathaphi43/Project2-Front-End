@@ -32,15 +32,15 @@ class Editmanager {
   int mid;
 
   factory Editmanager.fromJson(Map<String, dynamic> json) => Editmanager(
-    managerFirstname: json["manager_Firstname"],
-    managerLastname: json["manager_Lastname"],
-    managerImage: json["manager_Image"],
-    managerPhone: json["manager_Phone"],
-    managerOffice: json["manager_Office"],
-    managerLineid: json["manager_Lineid"],
-    managerFacebook: json["manager_Facebook"],
-    managerStatus: json["manager_Status"],
-    mid: json["Mid"],
+    managerFirstname: json["managerFirstname"],
+    managerLastname: json["managerLastname"],
+    managerImage: json["managerImage"],
+    managerPhone: json["managerPhone"],
+    managerOffice: json["managerOffice"],
+    managerLineid: json["managerLineid"],
+    managerFacebook: json["managerFacebook"],
+    managerStatus: json["managerStatus"],
+    mid: json["mid"],
   );
 
   Map<String, dynamic> toJson() => {

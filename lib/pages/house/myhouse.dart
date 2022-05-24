@@ -83,7 +83,7 @@ class _MyHouseState extends State<MyHouse> {
                               actionPane: SlidableDrawerActionPane(),
                               // actionExtentRatio: 0.1,
                               secondaryActions: <Widget>[
-                                IconSlideAction(
+                               if(e.houseStatus == 0 || e.houseStatus == 1 || e.houseStatus == 2) IconSlideAction(
                                   caption: 'แก้ไข',
                                   color: Colors.green,
                                   icon: Icons.check,
@@ -103,6 +103,7 @@ class _MyHouseState extends State<MyHouse> {
                                         ),
                                         TextButton(
                                           onPressed: ()async {
+                                            Navigator.pushNamed(context, '/EditImageHouse-page',arguments: e);
                                           },
                                           child: const Text('แก้ไขรูป'),
                                         ),
@@ -114,7 +115,7 @@ class _MyHouseState extends State<MyHouse> {
                                     ),
                                   ),
                                 ),
-                                IconSlideAction(
+                               if(e.houseStatus == 0) IconSlideAction(
                                   caption: 'ลบบ้านเช่า',
                                   color: Colors.red,
                                   icon: Icons.delete,
@@ -271,18 +272,18 @@ class _MyHouseState extends State<MyHouse> {
                             )
                           ],
                         )),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        e.houseArea == null ? "" : e.houseArea + " ",
-                        style: TextStyle(
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                        ),
-                      ),
-                    ),
+                    // Align(
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text(
+                    //     e.houseArea == null ? "" : e.houseArea + " ",
+                    //     style: TextStyle(
+                    //       color: Color.fromRGBO(250, 120, 186, 1),
+                    //       fontSize: 12,
+                    //       fontWeight: FontWeight.bold,
+                    //       fontFamily: 'Kanit',
+                    //     ),
+                    //   ),
+                    // ),
                   ])
                 ],
               )),

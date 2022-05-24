@@ -16,5 +16,10 @@ class AppStyle {
       fontSize: 10,
       fontWeight: FontWeight.bold);
 
+  TextStyle textStyleUrSizeAndColor(double size, Color color) => TextStyle(
+      color: color,
+      fontSize: size,
+      fontWeight: FontWeight.bold);
+
   EdgeInsets edgeInsets1() => EdgeInsets.fromLTRB(20, 5, 20, 5);
 }

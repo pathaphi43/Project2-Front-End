@@ -96,57 +96,49 @@ class _EditHouseState extends State<EditHouse> {
   // final _controller = Completer<GoogleMapController>();
   MapPickerController mapPickerController = MapPickerController();
   CameraPosition cameraPosition;
-  @override
-  void initState() {
-    super.initState();
 
-    // _getUserLocation();
-    // _determinePosition();
-
-  }
   @override
   void didChangeDependencies()async {
-
     print("didChangeDependencies");
-    args =  ModalRoute.of(context).settings.arguments;
-    // print(args.hid.toString());
-    // await gethomeAll(args.hid.toString());
-    // Geolocator.getCurrentPosition().then((currLocation){
-      setState((){
+    args = ModalRoute.of(context).settings.arguments;
+    currentLatLng = new LatLng(double.parse(args.houseLatitude), double.parse(args.houseLongitude));
+    cameraPosition  =  CameraPosition(
+      target: LatLng(double.parse(args.houseLatitude), double.parse(args.houseLongitude)),
+      zoom: 14.4746,
+    );
 
-        currentLatLng = new LatLng(double.parse(args.houseLatitude), double.parse(args.houseLongitude));
-        // print( "Lat: "+currLocation.latitude.toString() +"Lng:"+currentLatLng.longitude.toString() );
-        cameraPosition  =  CameraPosition(
-          target: LatLng(double.parse(args.houseLatitude), double.parse(args.houseLongitude)),
-          zoom: 14.4746,
-        );
-        _Thailand();
-        // args = ModalRoute.of(context).settings.arguments;
-      });
-    // });
-     h_Manager.text = args.hid.toString();
-    house_Name.text = args.houseName;
-    house_Add.text = args.houseAddress;
-    // house_Province = args.houseProvince;
-    // house_District = args.houseDistrict;
-    // house_Zipcode = TextEditingController();
-     house_Type = args.houseType;
-    // house_Floors;
-    house_Bedroom = args.houseBedroom.toString();
-    house_Bathroom = args.houseBathroom.toString();
-    house_Livingroom = args.houseLivingroom.toString();
-     house_Kitchen = args.houseKitchen.toString();
-    house_Area.text = args.houseAddress;
-     house_Latitude.text = args.houseLatitude;
-     house_Longitude.text = args.houseLongitude;
-     house_Electric.text = args.houseElectric;
-     house_Water.text = args.houseWater;
-     house_Rent.text = args.houseRent.toString();
-     house_Deposit.text = args.houseDeposit.toString();
-     house_Insurance.text = args.houseInsurance.toString();
-     house_Status.text = args.houseStatus.toString();
+    // house_Type = args.houseType == null? 'ประเภทบ้าน': args.houseType;
+    // house_Bedroom = args.houseBedroom == null?'1': args.houseBedroom.toString();
+    // house_Bathroom =args.houseBathroom == null?'1': args.houseBathroom.toString();
+    // house_Livingroom =args.houseLivingroom == null?'1': args.houseLivingroom.toString();
+    // house_Kitchen =args.houseKitchen == null? '1': args.houseKitchen.toString();
+    house_Type =args.houseType;
+     house_Bedroom =args.houseBedroom.toString();
+     house_Bathroom =args.houseBathroom.toString();
+     house_Livingroom =args.houseLivingroom.toString();
+     house_Kitchen =args.houseKitchen.toString();
+    dropdownValue1 =args.houseType == null? 'ประเภทบ้าน': args.houseType;
+    dropdownValue2 =args.houseBedroom == null?'1': args.houseBedroom.toString();
+     dropdownValue3 =args.houseBathroom == null?'1': args.houseBathroom.toString();
+     dropdownValue4 =args.houseLivingroom == null?'1': args.houseLivingroom.toString();
+      dropdownValue5 =args.houseKitchen == null? '1': args.houseKitchen.toString();
+
     super.didChangeDependencies();
+
   }
+
+  @override
+  void initState() {
+    print("initState");
+    _Thailand();
+    super.initState();
+  }
+
+  void getArgumens(){
+
+  }
+
+
 
   String filepath = '';
   File file;
@@ -183,13 +175,14 @@ class _EditHouseState extends State<EditHouse> {
       cameraPosition.target.latitude,
       cameraPosition.target.longitude,
     );
-    String nemeTh = placemarks.first.administrativeArea.trim();
+    String nameTh = placemarks.first.administrativeArea.trim();
     for (province in list) {
-      if(province.nameTh == nemeTh){
+      if(province.nameTh == nameTh){
         _ChoseValue = province.id.toString();
         house_Province = province.nameTh;
-        _Amphure(_ChoseValue);
         _ChoseValueAmphureThailand = null;
+        _Amphure(_ChoseValue);
+
       }
       province_th.add(new Thailand(
         name: province.nameTh.toString(),
@@ -205,6 +198,10 @@ class _EditHouseState extends State<EditHouse> {
     Amphurethai.clear();
     for (AmphureDao amphure in list) {
       if (amphure.nameTh[0] != "*" && amphure.nameTh[amphure.nameTh.length-1] != "*") {
+        if(amphure.nameTh == args.houseDistrict){
+          _ChoseValueAmphureThailand = amphure.id.toString();
+          house_District = amphure.nameTh;
+        }
         Amphurethai.add(new AmphureThailand(
           name: amphure.nameTh.toString(),
           id: amphure.id.toString(),
@@ -442,6 +439,7 @@ class _EditHouseState extends State<EditHouse> {
                                     fontFamily: 'Kanit',
                                   ),
                                   decoration: InputDecoration(
+                                   hintText: args.houseName,
                                       border: OutlineInputBorder(),
                                       // labelText: 'ชื่อบ้านเช่า',
                                       errorText: _validateHouseName
@@ -485,7 +483,8 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ที่อยู่บ้านเช่า',
+                                      hintText: args.houseAddress,
+                                      // labelText: 'ที่อยู่บ้านเช่า',
                                       labelStyle: new TextStyle(
                                           color: const Color.fromRGBO(
                                               250, 120, 186, 1)),
@@ -685,7 +684,8 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ขนาดพื้นที่  (ตร.ม)',
+                                      hintText: args.houseArea,
+                                      // labelText: 'ขนาดพื้นที่  (ตร.ม)',
                                       labelStyle: new TextStyle(
                                           color: const Color.fromRGBO(
                                               250, 120, 186, 1)),
@@ -730,7 +730,7 @@ class _EditHouseState extends State<EditHouse> {
                             child: ListTile(
                               leading: Icon(Icons.upload_file),
                               title: Text(
-                                'เพิ่มรูปบ้านเช่า - $filepath',
+                                'แก้ไขรูปบ้านเช่า - $filepath',
                               ),
                               trailing: IconButton(
                                 icon: Icon(Icons.cancel_outlined),
@@ -781,6 +781,7 @@ class _EditHouseState extends State<EditHouse> {
                   SizedBox(height: 60),
 
 ////////////////////////////////// ลักษณะบ้านเช่า //////////////////////////////////
+
                   Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1090,7 +1091,8 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ค่าเช่าบ้าน    (บาท / เดือน)',
+                                      // labelText: 'ค่าเช่าบ้าน    (บาท / เดือน)',
+                                      hintText:'ค่าเช่าบ้าน ${args.houseRent} (บาท / เดือน)' ,
                                       errorText: _validateHouseRent
                                           ? 'กรุณากรอกค่าเช่าบ้าน'
                                           : null,
@@ -1132,7 +1134,8 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ค่ามัดจำบ้าน   (บาท)',
+                                      // labelText: ,
+                                      hintText: 'ค่ามัดจำบ้าน ${args.houseDeposit} (บาท)',
                                       labelStyle: new TextStyle(
                                           color: const Color.fromRGBO(
                                               250, 120, 186, 1)),
@@ -1171,7 +1174,8 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ค่าประกันบ้าน     (บาท)',
+                                      // labelText: 'ค่าประกันบ้าน     (บาท)',
+                                      hintText: 'ค่าประกันบ้าน ${args.houseInsurance} (บาท)',
                                       labelStyle: new TextStyle(
                                           color: const Color.fromRGBO(
                                               250, 120, 186, 1)),
@@ -1231,7 +1235,7 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'อัตราค่าน้ำ    (บาท / หน่วย)',
+                                      hintText: 'อัตราค่าน้ำ ${args.houseWater} (บาท / หน่วย)',
                                       labelStyle: new TextStyle(
                                           color: const Color.fromRGBO(
                                               250, 120, 186, 1)),
@@ -1271,7 +1275,7 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'อัตราค่าไฟ  (บาท / หน่วย)',
+                                      hintText: 'อัตราค่าไฟ ${args.houseElectric} (บาท / หน่วย)',
                                       labelStyle: new TextStyle(
                                           color: const Color.fromRGBO(
                                               250, 120, 186, 1)),
@@ -1333,18 +1337,22 @@ class _EditHouseState extends State<EditHouse> {
                           height: 50.0,
                           color: Color.fromRGBO(247, 207, 205, 1),
                           onPressed: () async {
-                            setState(() {
-                              house_Name.text.isEmpty ?
-                              _validateHouseName = true : _validateHouseName =
-                              false;
-                              house_Rent.text.isEmpty ?
-                              _validateHouseRent = true : _validateHouseRent =
-                              false;
-                            });
-                            var housedata = Inserthouse();
-                            housedata.hManager = args.hid;
-                            housedata.houseName = house_Name.text;
-                            housedata.houseAdd = house_Add.text;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: CircularProgressIndicator()));
+                            // setState(() {
+                            //   house_Name.text.isEmpty ?
+                            //   _validateHouseName = true : _validateHouseName =
+                            //   false;
+                            //   house_Rent.text.isEmpty ?
+                            //   _validateHouseRent = true : _validateHouseRent =
+                            //   false;
+                            // });
+                            var housedata = House();
+                            housedata.hid = args.hid;
+                            housedata.mid = args.mid;
+                            housedata.houseName = house_Name.text.isEmpty? args.houseName:house_Name.text;
+                            housedata.houseAddress = house_Add.text.isEmpty? args.houseAddress:house_Add.text;
                             housedata.houseProvince = house_Province;
                             housedata.houseDistrict = house_District;
                             // housedata.houseZipcode = house_Zipcode.text;
@@ -1363,7 +1371,7 @@ class _EditHouseState extends State<EditHouse> {
                             house_Kitchen == null ? 1 : int.parse(
                                 house_Kitchen);
                             housedata.houseArea =
-                            house_Area.text.isEmpty ? null : house_Area.text +
+                            house_Area.text.isEmpty ? args.houseArea : house_Area.text +
                                 " ตร.ม";
                             housedata.houseLatitude =
                                 cameraPosition.target.latitude.toString();
@@ -1372,65 +1380,66 @@ class _EditHouseState extends State<EditHouse> {
                             if (checkAmounts) {
                               housedata.houseElectric =
                               house_Electric.text.isEmpty
-                                  ? 'ตามหน่วยบ้าน'
+                                  ? args.houseElectric
                                   : house_Electric.text;
                               housedata.houseWater = house_Water.text.isEmpty
-                                  ? 'ตามหน่วยบ้าน'
+                                  ? args.houseWater
                                   : house_Water.text;
                             } else {
-                              housedata.houseWater = 'ตามหน่วยบ้าน';
-                              housedata.houseElectric = 'ตามหน่วยบ้าน';
+                              housedata.houseWater = args.houseWater;
+                              housedata.houseElectric = args.houseElectric;
                             }
                             housedata.houseRent =
-                            house_Rent.text.isEmpty ? null : int.parse(
+                            house_Rent.text.isEmpty ? args.houseRent : int.parse(
                                 house_Rent.text);
                             housedata.houseDeposit =
-                            house_Deposit.text.isEmpty ? null : int.parse(
+                            house_Deposit.text.isEmpty ? args.houseDeposit : int.parse(
                                 house_Deposit.text);
                             housedata.houseInsurance =
-                            house_Insurance.text.isEmpty ? null : int.parse(
+                            house_Insurance.text.isEmpty ? args.houseInsurance : int.parse(
                                 house_Insurance.text);
+                            housedata.houseStatus = args.houseStatus;
+                            if(file == null) housedata.houseImage = args.houseImage;
                             // housedata.houseStatus = int.parse(args[1]);
 
                             // print('ADDHOMEReq=' + housedata.toString());
-                            var Jsonhousedata = await inserthouseToJson(
-                                housedata);
+                            var Jsonhousedata =  housesToJson(housedata);
                             print(Jsonhousedata.toString());
-                            if (house_Name.text.isNotEmpty &&
-                                house_Rent.text.isNotEmpty) {
-                              // var request =
-                              // http.MultipartRequest('POST', Uri.parse(
-                              //     'https://home-alone-csproject.herokuapp.com/house/insert'))
-                              //   ..fields['houseData'] = Jsonhousedata;
-                              // print(file != null);
-                              // if (file != null) {
-                              //   request.files.add(
-                              //       await http.MultipartFile.fromBytes('file',
-                              //           await File.fromUri(file.uri)
-                              //               .readAsBytes(), filename: filepath,
-                              //           contentType: MediaType(
-                              //               'ContentType',
-                              //               'application/json')));
-                              // }
+                            // if (house_Name.text.isNotEmpty &&
+                            //     house_Rent.text.isNotEmpty) {
+                              var request =
+                              http.MultipartRequest('POST', Uri.parse(
+                                  'https://home-alone-csproject.herokuapp.com/house/edit'))
+                                ..fields['houseData'] = Jsonhousedata;
+                              print(file != null);
+                              if (file != null) {
+                                request.files.add(
+                                    await http.MultipartFile.fromBytes('file',
+                                        await File.fromUri(file.uri)
+                                            .readAsBytes(), filename: filepath,
+                                        contentType: MediaType(
+                                            'ContentType',
+                                            'application/json')));
+                              }
+
+                              var streamedResponse = await request.send();
+                              var response = await http.Response.fromStream(
+                                  streamedResponse);
+                              print(response.body);
                               //
-                              // var streamedResponse = await request.send();
-                              // var response = await http.Response.fromStream(
-                              //     streamedResponse);
-                              // print(response.body);
-                              // //
-                              // if (response.statusCode.toString() == '200') {
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //       const SnackBar(
-                              //           content: Text('เพิ่มบ้านเช่าสำเร็จ')));
-                              //   setState(() {});
-                              //   Navigator.pop(context);
-                              // } else {
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //       const SnackBar(
-                              //           content: Text(
-                              //               'เพิ่มบ้านเช่าไม่สำเร็จ')));
-                              // }
-                            }
+                              if (response.statusCode.toString() == '200') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('แก้ไขบ้านเช่าสำเร็จ')));
+                                setState(() {});
+                                Navigator.pop(context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'แก้ไขบ้านเช่าไม่สำเร็จ')));
+                              }
+                            // }
                           },
                           child: Column(
                             //mainAxisAlignment: MainAxisAlignment.center,

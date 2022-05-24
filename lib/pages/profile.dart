@@ -38,7 +38,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void didChangeDependencies() async{
     super.didChangeDependencies();
-    asyncFunc();
+    setState(() {
+      asyncFunc();
+    });
   }
 
 
@@ -169,10 +171,8 @@ Widget managerWidget(BuildContext context){
                               color: Colors.blueGrey[200],
                               onPressed: () {
                                 Navigator.pushNamed(context, '/Editmanager-page',
-                                arguments: [
-                                  id.toString(),
-                                  status.toString()
-                                ]);
+                                arguments:
+                                  id);
                               },
 
                             ),
@@ -261,14 +261,16 @@ Widget managerWidget(BuildContext context){
                         color: Colors.red,
                         onPressed: () {
                           prefs.clear();
+                          managerdata = null;
+                          tenantdata = null;
+                          id = null;
+                          status = null;
                           Navigator.pushNamedAndRemoveUntil(
                             context,
                             '/main-page',
                                 (Route<dynamic> route) => false,
                           );
-                          managerdata = null;
-                          tenantdata = null;
-                          ProfilePage().createState().didChangeDependencies();
+                          // ProfilePage().createState().didChangeDependencies();
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

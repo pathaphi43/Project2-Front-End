@@ -254,9 +254,10 @@ Tenant tenant;
                                       enlargeCenterPage: true,
                                       aspectRatio: 2.0,
                                       onPageChanged: (index, reason) {
-                                        setState(() {
+                                        // setState(() {
                                           _current = index;
-                                        });
+                                        // }
+                                        // );
                                       }),
                                 ),
                               ),

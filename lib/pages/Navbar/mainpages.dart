@@ -97,6 +97,7 @@ class _MainPagesState extends State<MainPages> {
       status = prefs.getInt('status');
       if (status == 0) {
         await getManager(id);
+        print("get manager" + managerdata.managerFirstname);
         setState(() {
           showWidgets = [
             HomePage(),
@@ -401,13 +402,15 @@ class _MainPagesState extends State<MainPages> {
                   title: Text('ออกจากระบบ'),
                   onTap: () {
                     prefs.clear();
+                    managerdata = null;
+                    tenantdata = null;
+                    id = null;
+                    status = null;
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/main-page',
-                      (Route<dynamic> route) => false,
+                          (Route<dynamic> route) => false,
                     );
-                    managerdata = null;
-                    tenantdata = null;
                   },
                 ),
               ],

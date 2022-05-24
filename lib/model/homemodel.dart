@@ -7,7 +7,7 @@ import 'dart:convert';
 List<House> housesFromJson(String str) => List<House>.from(json.decode(str).map((x) => House.fromJson(x)));
 House houseFromJson(String str) => House.fromJson(json.decode(str));
 String houseToJson(List<House> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
+String housesToJson(House data) => json.encode(data.toJson());
 class House {
   House({
     this.hid,
