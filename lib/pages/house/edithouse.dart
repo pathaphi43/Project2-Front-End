@@ -1,8 +1,18 @@
+
+
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:homealone/model/Edit/edithouse.dart';
 import 'package:homealone/model/homeinsertmodel.dart';
 import 'package:homealone/model/homemodel.dart';
+import 'package:homealone/pages/Navbar/appBar.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_thailand_provinces/dao/amphure_dao.dart';
@@ -12,8 +22,12 @@ import 'package:flutter_thailand_provinces/provider/amphure_provider.dart';
 import 'package:flutter_thailand_provinces/provider/province_provider.dart';
 import 'package:homealone/model/AmphureThailand.dart';
 import 'package:homealone/model/Thailand.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert' show utf8;
 import 'dart:async';
+
+import 'package:map_pin_picker/map_pin_picker.dart';
 
 
 
@@ -26,89 +40,27 @@ class EditHouse extends StatefulWidget {
 }
 
 class _EditHouseState extends State<EditHouse> {
-  List<int> args;
-  @override
-  void initState() {
-    // TODO: implement initState
-    _Thailand();
-    super.initState();
+  House args;
 
+  House house;
+  Future<House> gethomeAll(String hid) async {
+    final response = await http
+        .get(Uri.http('home-alone-csproject.herokuapp.com', '/house-id/'+hid));
+      if (response.statusCode == 200) {
+        print("homeall ready");
+        return house = houseFromJson(utf8.decode(response.bodyBytes));
+      } else {
+        throw Exception('Failed to load homedata');
+      }
   }
+
+
+  int index = 0;
   String dropdownValue1 = 'ประเภทบ้าน';
   String dropdownValue2 = '1';
   String dropdownValue3 = '1';
   String dropdownValue4 = '1';
   String dropdownValue5 = '1';
-
-  List<Thailand> province_th =[];
-  List<AmphureThailand> Amphurethai =[];
-
-  _Thailand() async{
-    var list = await ProvinceProvider.all();
-    ProvinceDao province ;
-    for(province in list){
-      print("111111111111111111111111111");
-      province_th.add(new Thailand(
-        name: province.nameTh.toString(),
-        id: province.id.toString(),
-      ));
-    }
-    // var lists = await AddressProvider.all();
-    setState(() {
-
-    });
-    // print(province_th);
-  }
-  _Amphure(value) async{
-    // var Amphuree = await AmphureProvider.searchInProvince(provinceId: 1);
-
-    // AmphureDao amphure ;
-    var list = await AmphureProvider.all(provinceId: int.parse(value));
-
-    Amphurethai.removeRange(0,Amphurethai.length);
-
-    for(AmphureDao amphure in list){
-      // amphure.id;
-      // amphure.provinceId;
-      // amphure.nameTh;
-      // amphure.nameEn;
-      Amphurethai.add(new AmphureThailand(
-        name: amphure.nameTh.toString(),
-        id: amphure.id.toString(),
-      ));
-      print(amphure.nameTh);
-    }
-
-    setState(() {
-
-    });
-    // print(Amphuree);
-  }
-
-  @override
-  void didChangeDependencies()async {
-    super.didChangeDependencies();
-    print("didChangeDependencies");
-   args =  ModalRoute.of(context).settings.arguments;
-   await gethomeAll(args[0].toString());
-  }
-
-  List<House> homeall;
-  Future<House> gethomeAll(String id) async {
-    final response = await http
-        .get(Uri.http('homealone.comsciproject.com', '/searchhouse/'+id));
-    setState(() {
-      if (response.statusCode == 200) {
-        print("homeall ready");
-        homeall = houseFromJson(response.body);
-      } else {
-        throw Exception('Failed to load homedata');
-      }
-    });
-  }
-
-  var _ChoseValue;
-  var _ChoseValueAmphureThailand;
 
   var h_Manager = TextEditingController();
   var house_Name = TextEditingController();
@@ -116,7 +68,7 @@ class _EditHouseState extends State<EditHouse> {
   var house_Province;
   var house_District;
   var house_Zipcode = TextEditingController();
-  var house_Type;
+  var house_Type = 'ประเภทบ้าน';
   var house_Floors;
   var house_Bedroom = '1';
   var house_Bathroom = '1';
@@ -131,16 +83,271 @@ class _EditHouseState extends State<EditHouse> {
   var house_Deposit = TextEditingController();
   var house_Insurance = TextEditingController();
   var house_Status = TextEditingController();
+  bool selected = false;
 
+  var textController = TextEditingController();
+
+  var mapDetails;
+
+
+  // PickResult selectedPlace;
+  LatLng currentLatLng;
+  Completer<GoogleMapController> _controller = Completer();
+  // final _controller = Completer<GoogleMapController>();
+  MapPickerController mapPickerController = MapPickerController();
+  CameraPosition cameraPosition;
+  @override
+  void initState() {
+    super.initState();
+
+    // _getUserLocation();
+    // _determinePosition();
+
+  }
+  @override
+  void didChangeDependencies()async {
+
+    print("didChangeDependencies");
+    args =  ModalRoute.of(context).settings.arguments;
+    // print(args.hid.toString());
+    // await gethomeAll(args.hid.toString());
+    // Geolocator.getCurrentPosition().then((currLocation){
+      setState((){
+
+        currentLatLng = new LatLng(double.parse(args.houseLatitude), double.parse(args.houseLongitude));
+        // print( "Lat: "+currLocation.latitude.toString() +"Lng:"+currentLatLng.longitude.toString() );
+        cameraPosition  =  CameraPosition(
+          target: LatLng(double.parse(args.houseLatitude), double.parse(args.houseLongitude)),
+          zoom: 14.4746,
+        );
+        _Thailand();
+        // args = ModalRoute.of(context).settings.arguments;
+      });
+    // });
+     h_Manager.text = args.hid.toString();
+    house_Name.text = args.houseName;
+    house_Add.text = args.houseAddress;
+    // house_Province = args.houseProvince;
+    // house_District = args.houseDistrict;
+    // house_Zipcode = TextEditingController();
+     house_Type = args.houseType;
+    // house_Floors;
+    house_Bedroom = args.houseBedroom.toString();
+    house_Bathroom = args.houseBathroom.toString();
+    house_Livingroom = args.houseLivingroom.toString();
+     house_Kitchen = args.houseKitchen.toString();
+    house_Area.text = args.houseAddress;
+     house_Latitude.text = args.houseLatitude;
+     house_Longitude.text = args.houseLongitude;
+     house_Electric.text = args.houseElectric;
+     house_Water.text = args.houseWater;
+     house_Rent.text = args.houseRent.toString();
+     house_Deposit.text = args.houseDeposit.toString();
+     house_Insurance.text = args.houseInsurance.toString();
+     house_Status.text = args.houseStatus.toString();
+    super.didChangeDependencies();
+  }
+
+  String filepath = '';
+  File file;
+  File image;
+  Future pickImage(BuildContext context) async {
+    try{
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return null;
+      final imageTemporary = File(image.path);
+      // setState(() {
+      this.image = imageTemporary;
+      // });
+
+      return imageTemporary;
+    }on PlatformException catch (e){
+      print('Failed to pick image $e');
+    }
+  }
+
+
+
+
+  var _ChoseValue;
+  var _ChoseValueAmphureThailand;
+
+  List<Thailand> province_th = [];
+  List<AmphureThailand> Amphurethai = [];
+
+  _Thailand() async {
+    province_th.clear();
+    var list = await ProvinceProvider.all();
+    ProvinceDao province;
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      cameraPosition.target.latitude,
+      cameraPosition.target.longitude,
+    );
+    String nemeTh = placemarks.first.administrativeArea.trim();
+    for (province in list) {
+      if(province.nameTh == nemeTh){
+        _ChoseValue = province.id.toString();
+        house_Province = province.nameTh;
+        _Amphure(_ChoseValue);
+        _ChoseValueAmphureThailand = null;
+      }
+      province_th.add(new Thailand(
+        name: province.nameTh.toString(),
+        id: province.id.toString(),
+      ));
+    }
+    setState(() {});
+  }
+
+  _Amphure(value) async {
+    // AmphureDao amphure ;
+    var list = await AmphureProvider.all(provinceId: int.parse(value));
+    Amphurethai.clear();
+    for (AmphureDao amphure in list) {
+      if (amphure.nameTh[0] != "*" && amphure.nameTh[amphure.nameTh.length-1] != "*") {
+        Amphurethai.add(new AmphureThailand(
+          name: amphure.nameTh.toString(),
+          id: amphure.id.toString(),
+        ));
+      }
+      // print(amphure.nameTh);
+    }
+
+    setState(() {});
+    // print(Amphuree);
+  }
+
+
+
+  void _gotoDetailsPage(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (BuildContext context) => Scaffold(
+        appBar: NavAppBar(),
+        body: _mapOpen(context, 300, true),
+
+      ),
+    ));
+  }
+  bool _validateHouseName = false;
+  bool _validateHouseRent = false;
+  Widget _mapOpen(BuildContext context,double height,bool buttonBool){
+    return Scaffold(
+      // height: buttonBool ? MediaQuery.of(context).size.height*0.85 :height,
+      body:  cameraPosition == null ? Center(child:CircularProgressIndicator()) : Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          MapPicker(
+            // pass icon widget
+            iconWidget: Icon(Icons.location_on_outlined,size: 20) ,
+            //add map picker controller
+            mapPickerController: mapPickerController,
+            child: GoogleMap(
+              myLocationEnabled: true,
+              zoomControlsEnabled: false,
+              // hide location button
+              myLocationButtonEnabled: true,
+              mapType: MapType.normal,
+              //  camera position
+              initialCameraPosition: cameraPosition,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+
+              onCameraMove: (cameraPosition) {
+                this.cameraPosition = cameraPosition;
+              },
+              // onCameraIdle: () async {
+              //   // notify map stopped moving
+              //   mapPickerController.mapFinishedMoving();
+              //   //get address name from camera position
+              //   List<Placemark> placemarks = await placemarkFromCoordinates(
+              //     cameraPosition.target.latitude,
+              //     cameraPosition.target.longitude,
+              //   );
+              //   // update the ui with the address
+              //   textController.text =
+              //   '${placemarks.first.name}, ${placemarks.first.administrativeArea}, ${placemarks.first.country}';
+              // },
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).viewPadding.top,
+            width: MediaQuery.of(context).size.width - 50,
+            height: 50,
+            child: TextFormField(
+              maxLines: 3,
+              textAlign: TextAlign.center,
+              readOnly: true,
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.zero, border: InputBorder.none),
+              controller: textController,
+            ),
+          ),
+          Positioned(
+            bottom: 24,
+            left: 24,
+            right: 24,
+            child: SizedBox(
+              height: 50,
+              child: TextButton(
+                child: const Text(
+                  "ยืนยัน",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    color: Color(0xFFFFFFFF),
+                    fontSize: 19,
+                    // height: 19/19,
+                  ),
+                ),
+                onPressed: ()  {
+                  // print(
+                  //     "Location ${cameraPosition.target.latitude} ${cameraPosition.target.longitude}");
+                  // print("Address: ${textController.text}");
+                  //  mapDetails = textController.text.split(",");
+                  // print(mapDetails[1].toString().trim());
+                  _Thailand();
+                  // await  province_th.map((e) {
+                  //     print(e.name.isEmpty);
+                  //     if(e.name == mapDetails[1].toString().trim()){
+                  //       setState(() {
+                  //         _ChoseValue = e.id.toString();
+                  //         _Amphure(_ChoseValue);
+                  //         _ChoseValueAmphureThailand = null;
+                  //       });
+                  //
+                  //     }
+                  //   });
+                  Navigator.pop(context);
+                },
+                style: ButtonStyle(
+                  backgroundColor:
+                  MaterialStateProperty.all<Color>(const Color(0xFFA3080C)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),) ;
+
+  }
+  bool checkAmounts = false;
   @override
   Widget build(BuildContext context) {
+    // house_Name.text = args.houseName;
     return Scaffold(
-      body:  Container(
+      appBar: NavAppBar(),
+      body: Container(
         child: ListView(
           children: [
             Container(
               child: Column(
-                children: <Widget> [
+                children: <Widget>[
                   SizedBox(height: 60),
 /////////////////////////////////// ข้อมูลบ้านเช่า //////////////////////////////////
                   Center(
@@ -155,8 +362,63 @@ class _EditHouseState extends State<EditHouse> {
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Kanit',
                           ),
-
                         ),
+                        InkWell(onTap: () {
+                          print("Ontap Map");
+                          _gotoDetailsPage(context);
+                        },
+                          child: Center(
+                              child: Hero(tag: 'hero-rectangle', child:
+                              Container(
+                                height: 100,
+                                child: cameraPosition == null ? Center(
+                                    child: CircularProgressIndicator()) : Stack(
+                                  alignment: Alignment.topCenter,
+                                  children: [
+                                    MapPicker(
+                                      // pass icon widget
+                                      iconWidget: Icon(
+                                          Icons.location_on_outlined, size: 20),
+                                      //add map picker controller
+                                      mapPickerController: mapPickerController,
+                                      child: GoogleMap(
+                                        buildingsEnabled: false,
+                                        myLocationEnabled: false,
+                                        zoomControlsEnabled: false,
+                                        // hide location button
+                                        myLocationButtonEnabled: false,
+                                        mapType: MapType.normal,
+                                        initialCameraPosition: cameraPosition,
+                                        // onMapCreated: (GoogleMapController controller) {
+                                        //   _controller.complete(controller);
+                                        // },
+                                      ),
+                                    ),
+                                    Positioned(
+                                      // top: MediaQuery.of(context).viewPadding.top + 20,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height,
+                                      child: TextFormField(
+                                        onTap: () {
+                                          print("On tap map");
+                                        },
+                                        readOnly: true, enabled: false,
+                                      ),
+                                    )
+
+                                  ],
+                                ),)
+
+                              )
+                          ),
+                        ),
+
 
                         ////////// ชื่อบ้าน
                         Center(
@@ -164,7 +426,6 @@ class _EditHouseState extends State<EditHouse> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               new Container(
-
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(200),
@@ -182,15 +443,18 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: homeall[0].houseName,
+                                      // labelText: 'ชื่อบ้านเช่า',
+                                      errorText: _validateHouseName
+                                          ? 'กรุณากรอกชื่อบ้าน'
+                                          : null,
                                       labelStyle: new TextStyle(
-                                          color: const Color.fromRGBO(250, 120, 186, 1)
-                                      ),
+                                          color: const Color.fromRGBO(
+                                              250, 120, 186, 1)),
                                       // hintText: 'Enter valid mail id as abc@gmail.com'
                                       enabledBorder: new UnderlineInputBorder(
-                                          borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                                      )
-                                  ),
+                                          borderSide: new BorderSide(
+                                              color: Color.fromRGBO(
+                                                  250, 120, 186, 1)))),
                                   // keyboardType: TextInputType.number,
                                 ),
                               ),
@@ -221,15 +485,15 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: homeall[0].houseAddress,
+                                      labelText: 'ที่อยู่บ้านเช่า',
                                       labelStyle: new TextStyle(
-                                          color: const Color.fromRGBO(250, 120, 186, 1)
-                                      ),
+                                          color: const Color.fromRGBO(
+                                              250, 120, 186, 1)),
                                       // hintText: 'Enter valid mail id as abc@gmail.com'
                                       enabledBorder: new UnderlineInputBorder(
-                                          borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                                      )
-                                  ),
+                                          borderSide: new BorderSide(
+                                              color: Color.fromRGBO(
+                                                  250, 120, 186, 1)))),
                                   // keyboardType: TextInputType.number,
                                 ),
                               ),
@@ -244,7 +508,8 @@ class _EditHouseState extends State<EditHouse> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  new Text('จังหวัด',
+                                  new Text(
+                                    'จังหวัด',
                                     style: TextStyle(
                                       color: Color.fromRGBO(250, 120, 186, 1),
                                       fontSize: 18.0,
@@ -252,7 +517,6 @@ class _EditHouseState extends State<EditHouse> {
                                       fontFamily: 'Kanit',
                                     ),
                                   ),
-
                                   new Container(
                                     alignment: Alignment.centerRight,
                                     height: 70.0,
@@ -282,44 +546,44 @@ class _EditHouseState extends State<EditHouse> {
                                       hint: Text(
                                         "  -- โปรดเลือก --  ",
                                         style: TextStyle(
-                                            color: Color.fromRGBO(250, 120, 186, 1),
+                                            color: Color.fromRGBO(
+                                                250, 120, 186, 1),
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       // value: dropdownValue1,
-
                                       items: province_th.map((item) {
                                         return DropdownMenuItem<String>(
                                           value: item.id,
                                           child: Text(item.name,
                                               style: TextStyle(
-                                                  color: Color.fromRGBO(250, 120, 186, 1),
-                                                  fontSize: 18)
-                                          ),
+                                                  color: Color.fromRGBO(
+                                                      250, 120, 186, 1),
+                                                  fontSize: 18)),
 
                                           // ,style:TextStyle(color:Colors.black,fontSize: 20),),
                                         );
                                       })?.toList(),
-
                                       onChanged: (value) {
                                         // print("Test:"+value);
                                         setState(() {
                                           _ChoseValue = value;
                                           int index = int.parse(_ChoseValue);
-                                          house_Province = province_th[index-1].name;
+                                          house_Province =
+                                              province_th[index - 1].name;
                                           _Amphure(_ChoseValue);
+                                          _ChoseValueAmphureThailand = null;
                                         });
                                       },
-
                                     ),
                                   ),
                                 ],
                               ),
-
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  new Text('อำเภอ',
+                                  new Text(
+                                    'อำเภอ',
                                     style: TextStyle(
                                       color: Color.fromRGBO(250, 120, 186, 1),
                                       fontSize: 18.0,
@@ -334,7 +598,6 @@ class _EditHouseState extends State<EditHouse> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(200),
                                     ),
-
                                     child: DropdownButton<String>(
                                       icon: const Icon(
                                         Icons.arrow_circle_down,
@@ -357,7 +620,8 @@ class _EditHouseState extends State<EditHouse> {
                                       hint: Text(
                                         "  -- โปรดเลือก --  ",
                                         style: TextStyle(
-                                            color: Color.fromRGBO(250, 120, 186, 1),
+                                            color: Color.fromRGBO(
+                                                250, 120, 186, 1),
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -368,37 +632,33 @@ class _EditHouseState extends State<EditHouse> {
                                           value: item.id,
                                           child: Text(item.name,
                                               style: TextStyle(
-                                                  color: Color.fromRGBO(250, 120, 186, 1),
-                                                  fontSize: 18)
-                                          ),
+                                                  color: Color.fromRGBO(
+                                                      250, 120, 186, 1),
+                                                  fontSize: 18)),
 
                                           // ,style:TextStyle(color:Colors.black,fontSize: 20),),
                                         );
                                       })?.toList(),
-
                                       onChanged: (value) {
                                         setState(() {
                                           _ChoseValueAmphureThailand = value;
                                           // house_District = value;
-
-                                          for(int i = 0;i < Amphurethai.length;i++){
-                                            if(Amphurethai[i].id == _ChoseValueAmphureThailand){
-                                              print("Index"+Amphurethai[i].name);
-                                              house_District = Amphurethai[i].name;
+                                          for (int i = 0;
+                                          i < Amphurethai.length;
+                                          i++) {
+                                            if (Amphurethai[i].id ==
+                                                _ChoseValueAmphureThailand) {
+                                              // print("Index"+Amphurethai[i].name[0]);
+                                              house_District =
+                                                  Amphurethai[i].name;
                                             }
                                           }
-
-
-
                                         });
                                       },
-
                                     ),
                                   ),
                                 ],
                               ),
-
-
                             ],
                           ),
                         ),
@@ -408,7 +668,6 @@ class _EditHouseState extends State<EditHouse> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               new Container(
-
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(200),
@@ -426,15 +685,15 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ขนาดพื้นที่ '+homeall[0].houseArea+' (ตร.ม)',
+                                      labelText: 'ขนาดพื้นที่  (ตร.ม)',
                                       labelStyle: new TextStyle(
-                                          color: const Color.fromRGBO(250, 120, 186, 1)
-                                      ),
+                                          color: const Color.fromRGBO(
+                                              250, 120, 186, 1)),
                                       // hintText: 'Enter valid mail id as abc@gmail.com'
                                       enabledBorder: new UnderlineInputBorder(
-                                          borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                                      )
-                                  ),
+                                          borderSide: new BorderSide(
+                                              color: Color.fromRGBO(
+                                                  250, 120, 186, 1)))),
                                   keyboardType: TextInputType.number,
                                 ),
                               ),
@@ -444,36 +703,80 @@ class _EditHouseState extends State<EditHouse> {
 
                         ///////// ตำแหน่งที่ตั้ง
                         Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              new Container(
-                                child :
-                                new FlatButton (
-                                  minWidth: 200.0,
-                                  height: 50.0,
-                                  color: Color.fromRGBO(247, 207, 205, 1),
-                                  onPressed: () {},
-                                  child: Text(" ตำแหน่งที่ตั้ง ",
-                                    style: TextStyle(
-                                      color: Color.fromRGBO(250, 120, 186, 1),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Kanit',
-                                    ),),
-                                  shape: StadiumBorder(
-                                      side: BorderSide(width: 3.0,color: Color.fromRGBO(247, 207, 205, 1))
-                                  ),
-                                ),
+                          child: FlatButton(
+                            onPressed: () async {
+                              FilePickerResult result =
+                              await FilePicker.platform.pickFiles(
+                                type: FileType.custom,
+                                allowedExtensions: [
+                                  'jpg',
+                                  'png',
+                                ],
+                              );
+
+                              if (result != null) {
+                                // file = result.files.p;
+                                // print(file.name);
+                                file = File(result.files.first.path);
+                                filepath = file.path
+                                    .split("/")
+                                    .last;
+                                setState(() {});
+                              } else {
+                                print('cancel');
+                                // User canceled the picker
+                              }
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.upload_file),
+                              title: Text(
+                                'เพิ่มรูปบ้านเช่า - $filepath',
                               ),
-                            ],
+                              trailing: IconButton(
+                                icon: Icon(Icons.cancel_outlined),
+                                onPressed: () {
+                                  print('IconButton');
+                                  setState(() {
+                                    file = null;
+                                    filepath = '';
+                                  });
+                                },
+                              ),
+                            ),
                           ),
                         ),
-
+                        // Center(
+                        //   child: Column(
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: <Widget>[
+                        //       RaisedButton(
+                        //         onPressed: () async {
+                        //           LocationResult result = await showLocationPicker(
+                        //             context,
+                        //             apiKey,
+                        //             initialCenter: LatLng(31.1975844, 29.9598339),
+                        //  automaticallyAnimateToCurrentLocation: true,
+                        //  mapStylePath: 'assets/mapStyle.json',
+                        //             myLocationButtonEnabled: true,
+                        //             // requiredGPS: true,
+                        //             layersButtonEnabled: true,
+                        //             // countries: ['AE', 'NG']
+                        //
+                        //  resultCardAlignment: Alignment.bottomCenter,
+                        //             desiredAccuracy: LocationAccuracy.best,
+                        //           );
+                        //           print("result = $result");
+                        //           setState(() => _pickedLocation = result);
+                        //         },
+                        //         child: Text('Pick location'),
+                        //       ),
+                        //       Text(_pickedLocation.toString()),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
-
 
                   SizedBox(height: 60),
 
@@ -482,7 +785,8 @@ class _EditHouseState extends State<EditHouse> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("ลักษณะบ้าน",
+                        Text(
+                          "ลักษณะบ้าน",
                           style: TextStyle(
                             color: Color.fromRGBO(2, 97, 26, 1),
                             fontSize: 18.0,
@@ -490,10 +794,10 @@ class _EditHouseState extends State<EditHouse> {
                             fontFamily: 'Kanit',
                           ),
                         ),
-
                         DropdownButton<String>(
                           value: dropdownValue1,
-                          icon: const Icon(Icons.arrow_circle_down,
+                          icon: const Icon(
+                            Icons.arrow_circle_down,
                             color: Color.fromRGBO(250, 120, 186, 1),
                           ),
                           iconSize: 24,
@@ -504,7 +808,6 @@ class _EditHouseState extends State<EditHouse> {
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Kanit',
-
                           ),
                           underline: Container(
                             height: 2,
@@ -524,11 +827,11 @@ class _EditHouseState extends State<EditHouse> {
                             );
                           }).toList(),
                         ),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("ห้องนอน",
+                            Text(
+                              "ห้องนอน",
                               style: const TextStyle(
                                 color: Color.fromRGBO(250, 120, 186, 1),
                                 fontSize: 18,
@@ -536,17 +839,19 @@ class _EditHouseState extends State<EditHouse> {
                                 fontFamily: 'Kanit',
                               ),
                             ),
-                            SizedBox(width: 20,),
+                            SizedBox(
+                              width: 20,
+                            ),
                             DropdownButton<String>(
                               value: dropdownValue2,
-                              icon: const Icon(Icons.arrow_circle_down,
+                              icon: const Icon(
+                                Icons.arrow_circle_down,
                                 color: Color.fromRGBO(250, 120, 186, 1),
                               ),
                               iconSize: 24,
-
                               elevation: 16,
                               style: const TextStyle(
-                                color:Color.fromRGBO(250, 120, 186, 1),
+                                color: Color.fromRGBO(250, 120, 186, 1),
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Kanit',
@@ -561,17 +866,26 @@ class _EditHouseState extends State<EditHouse> {
                                   house_Bedroom = newValue;
                                 });
                               },
-                              items: <String>[ '1', '2', '3','4','5','6']
-                                  .map<DropdownMenuItem<String>>((String value) {
+                              items: <String>[
+                                '0',
+                                '1',
+                                '2',
+                                '3',
+                                '4',
+                                '5',
+                                '6'
+                              ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
                                 );
                               }).toList(),
                             ),
-
-                            SizedBox(width: 40,),
-                            Text("ห้องน้ำ",
+                            SizedBox(
+                              width: 40,
+                            ),
+                            Text(
+                              "ห้องน้ำ",
                               style: const TextStyle(
                                 color: Color.fromRGBO(250, 120, 186, 1),
                                 fontSize: 18,
@@ -579,10 +893,13 @@ class _EditHouseState extends State<EditHouse> {
                                 fontFamily: 'Kanit',
                               ),
                             ),
-                            SizedBox(width: 20,),
+                            SizedBox(
+                              width: 20,
+                            ),
                             DropdownButton<String>(
                               value: dropdownValue3,
-                              icon: const Icon(Icons.arrow_circle_down,
+                              icon: const Icon(
+                                Icons.arrow_circle_down,
                                 color: Color.fromRGBO(250, 120, 186, 1),
                               ),
                               iconSize: 24,
@@ -603,23 +920,28 @@ class _EditHouseState extends State<EditHouse> {
                                   house_Bathroom = newValue;
                                 });
                               },
-                              items: <String>[ '1', '2', '3','4','5','6']
-                                  .map<DropdownMenuItem<String>>((String value) {
+                              items: <String>[
+                                '0',
+                                '1',
+                                '2',
+                                '3',
+                                '4',
+                                '5',
+                                '6'
+                              ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
                                 );
                               }).toList(),
                             ),
-
-
                           ],
                         ),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("ห้องรับแขก",
+                            Text(
+                              "ห้องรับแขก",
                               style: const TextStyle(
                                 color: Color.fromRGBO(250, 120, 186, 1),
                                 fontSize: 18,
@@ -627,17 +949,19 @@ class _EditHouseState extends State<EditHouse> {
                                 fontFamily: 'Kanit',
                               ),
                             ),
-                            SizedBox(width: 20,),
+                            SizedBox(
+                              width: 20,
+                            ),
                             DropdownButton<String>(
                               value: dropdownValue4,
-
-                              icon: const Icon(Icons.arrow_circle_down,
+                              icon: const Icon(
+                                Icons.arrow_circle_down,
                                 color: Color.fromRGBO(250, 120, 186, 1),
                               ),
                               iconSize: 24,
                               elevation: 16,
                               style: const TextStyle(
-                                color:Color.fromRGBO(250, 120, 186, 1),
+                                color: Color.fromRGBO(250, 120, 186, 1),
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Kanit',
@@ -652,17 +976,26 @@ class _EditHouseState extends State<EditHouse> {
                                   house_Livingroom = newValue;
                                 });
                               },
-                              items: <String>['1', '2', '3','4','5','6']
-                                  .map<DropdownMenuItem<String>>((String value) {
+                              items: <String>[
+                                '0',
+                                '1',
+                                '2',
+                                '3',
+                                '4',
+                                '5',
+                                '6'
+                              ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
                                 );
                               }).toList(),
                             ),
-
-                            SizedBox(width: 40,),
-                            Text("ห้องครัว",
+                            SizedBox(
+                              width: 40,
+                            ),
+                            Text(
+                              "ห้องครัว",
                               style: const TextStyle(
                                 color: Color.fromRGBO(250, 120, 186, 1),
                                 fontSize: 18,
@@ -670,10 +1003,13 @@ class _EditHouseState extends State<EditHouse> {
                                 fontFamily: 'Kanit',
                               ),
                             ),
-                            SizedBox(width: 20,),
+                            SizedBox(
+                              width: 20,
+                            ),
                             DropdownButton<String>(
                               value: dropdownValue5,
-                              icon: const Icon(Icons.arrow_circle_down,
+                              icon: const Icon(
+                                Icons.arrow_circle_down,
                                 color: Color.fromRGBO(250, 120, 186, 1),
                               ),
                               iconSize: 24,
@@ -694,23 +1030,26 @@ class _EditHouseState extends State<EditHouse> {
                                   house_Kitchen = newValue;
                                 });
                               },
-                              items: <String>['1', '2', '3','4','5','6']
-                                  .map<DropdownMenuItem<String>>((String value) {
+                              items: <String>[
+                                '0',
+                                '1',
+                                '2',
+                                '3',
+                                '4',
+                                '5',
+                                '6'
+                              ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
                                 );
                               }).toList(),
                             ),
-
-
                           ],
                         ),
-
                       ],
                     ),
                   ),
-
 
                   SizedBox(height: 60),
 ///////////////////////////////// ข้อมูลค่าใช้จ่าย ///////////////////////////////////
@@ -734,7 +1073,6 @@ class _EditHouseState extends State<EditHouse> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               new Container(
-
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(200),
@@ -752,15 +1090,18 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ค่าเช่าบ้าน '+homeall[0].houseRent.toString()+'   (บาท / เดือน)',
+                                      labelText: 'ค่าเช่าบ้าน    (บาท / เดือน)',
+                                      errorText: _validateHouseRent
+                                          ? 'กรุณากรอกค่าเช่าบ้าน'
+                                          : null,
                                       labelStyle: new TextStyle(
-                                          color: const Color.fromRGBO(250, 120, 186, 1)
-                                      ),
+                                          color: const Color.fromRGBO(
+                                              250, 120, 186, 1)),
                                       // hintText: 'Enter valid mail id as abc@gmail.com'
                                       enabledBorder: new UnderlineInputBorder(
-                                          borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                                      )
-                                  ),
+                                          borderSide: new BorderSide(
+                                              color: Color.fromRGBO(
+                                                  250, 120, 186, 1)))),
                                   keyboardType: TextInputType.number,
                                 ),
                               ),
@@ -774,7 +1115,6 @@ class _EditHouseState extends State<EditHouse> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               new Container(
-
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(200),
@@ -792,15 +1132,15 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ค่ามัดจำบ้าน '+homeall[0].houseDeposit.toString()+'  (บาท)',
+                                      labelText: 'ค่ามัดจำบ้าน   (บาท)',
                                       labelStyle: new TextStyle(
-                                          color: const Color.fromRGBO(250, 120, 186, 1)
-                                      ),
+                                          color: const Color.fromRGBO(
+                                              250, 120, 186, 1)),
                                       // hintText: 'Enter valid mail id as abc@gmail.com'
                                       enabledBorder: new UnderlineInputBorder(
-                                          borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                                      )
-                                  ),
+                                          borderSide: new BorderSide(
+                                              color: Color.fromRGBO(
+                                                  250, 120, 186, 1)))),
                                   keyboardType: TextInputType.number,
                                 ),
                               ),
@@ -814,7 +1154,6 @@ class _EditHouseState extends State<EditHouse> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               new Container(
-
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(200),
@@ -832,29 +1171,48 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'ค่าประกันบ้าน  '+homeall[0].houseInsurance.toString()+'   (บาท)',
+                                      labelText: 'ค่าประกันบ้าน     (บาท)',
                                       labelStyle: new TextStyle(
-                                          color: const Color.fromRGBO(250, 120, 186, 1)
-                                      ),
+                                          color: const Color.fromRGBO(
+                                              250, 120, 186, 1)),
                                       // hintText: 'Enter valid mail id as abc@gmail.com'
                                       enabledBorder: new UnderlineInputBorder(
-                                          borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                                      )
-                                  ),
+                                          borderSide: new BorderSide(
+                                              color: Color.fromRGBO(
+                                                  250, 120, 186, 1)))),
                                   keyboardType: TextInputType.number,
                                 ),
                               ),
                             ],
                           ),
                         ),
-
+                        //check box
+                        Padding(
+                            padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  Text(
+                                      'ต้องการเพิ่มอัตราค่าน้ำกับค่าไฟเองหรือไม่ ?'),
+                                  Checkbox(
+                                    value: checkAmounts,
+                                    onChanged: (bool newValue) {
+                                      setState(() {
+                                        checkAmounts = newValue;
+                                        print(checkAmounts);
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                            )),
                         ///////// อัตราค่าน้ำ
                         Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               new Container(
-
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(200),
@@ -863,6 +1221,7 @@ class _EditHouseState extends State<EditHouse> {
                                 height: 80.0,
                                 width: 300.0,
                                 child: TextField(
+                                  enabled: checkAmounts,
                                   controller: house_Water,
                                   style: TextStyle(
                                     color: Color.fromRGBO(250, 120, 186, 1),
@@ -872,15 +1231,15 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'อัตราค่าน้ำ  '+homeall[0].houseWater+'  (บาท / หน่วย)',
+                                      labelText: 'อัตราค่าน้ำ    (บาท / หน่วย)',
                                       labelStyle: new TextStyle(
-                                          color: const Color.fromRGBO(250, 120, 186, 1)
-                                      ),
+                                          color: const Color.fromRGBO(
+                                              250, 120, 186, 1)),
                                       // hintText: 'Enter valid mail id as abc@gmail.com'
                                       enabledBorder: new UnderlineInputBorder(
-                                          borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                                      )
-                                  ),
+                                          borderSide: new BorderSide(
+                                              color: Color.fromRGBO(
+                                                  250, 120, 186, 1)))),
                                   keyboardType: TextInputType.number,
                                 ),
                               ),
@@ -894,7 +1253,6 @@ class _EditHouseState extends State<EditHouse> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               new Container(
-
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(200),
@@ -903,6 +1261,7 @@ class _EditHouseState extends State<EditHouse> {
                                 height: 80.0,
                                 width: 300.0,
                                 child: TextField(
+                                  enabled: checkAmounts,
                                   controller: house_Electric,
                                   style: TextStyle(
                                     color: Color.fromRGBO(250, 120, 186, 1),
@@ -912,63 +1271,56 @@ class _EditHouseState extends State<EditHouse> {
                                   ),
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'อัตราค่าไฟ '+homeall[0].houseElectric+' (บาท / หน่วย)',
+                                      labelText: 'อัตราค่าไฟ  (บาท / หน่วย)',
                                       labelStyle: new TextStyle(
-                                          color: const Color.fromRGBO(250, 120, 186, 1)
-                                      ),
+                                          color: const Color.fromRGBO(
+                                              250, 120, 186, 1)),
                                       // hintText: 'Enter valid mail id as abc@gmail.com'
                                       enabledBorder: new UnderlineInputBorder(
-                                          borderSide: new BorderSide(color: Color.fromRGBO(250, 120, 186, 1))
-                                      )
-                                  ),
+                                          borderSide: new BorderSide(
+                                              color: Color.fromRGBO(
+                                                  250, 120, 186, 1)))),
                                   keyboardType: TextInputType.number,
                                 ),
                               ),
                             ],
                           ),
                         ),
-
-
                       ],
                     ),
                   ),
 
                   SizedBox(height: 60),
 ///////////////////////////// รูปภาพบ้านเช่า /////////////////////////////////////////
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "รูปภาพบ้านเช่า",
-                          style: TextStyle(
-                            color: Color.fromRGBO(2, 97, 26, 1),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Kanit',
-                          ),
-                        ),
-
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.network(homeall[0].houseImage,width: 200,height: 200,),
-                              // Icon(
-                              //   Image.network(homeall[0].houseImage),
-                              //   size: 200,
-                              //   // Color.fromRGBO(247, 207, 205, 1),
-                              //   color: Color.fromRGBO(250, 200, 210, 1),
-                              // ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-
-
+//                   Center(
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         Text(
+//                           "รูปภาพบ้านเช่า",
+//                           style: TextStyle(
+//                             color: Color.fromRGBO(2, 97, 26, 1),
+//                             fontSize: 18,
+//                             fontWeight: FontWeight.bold,
+//                             fontFamily: 'Kanit',
+//                           ),
+//                         ),
+//                         Center(
+//                           child: Column(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               Icon(
+//                                 Icons.add_photo_alternate,
+//                                 size: 200,
+//                                 // Color.fromRGBO(247, 207, 205, 1),
+//                                 color: Color.fromRGBO(250, 200, 210, 1),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
 
                   SizedBox(height: 30),
                   Row(
@@ -976,21 +1328,118 @@ class _EditHouseState extends State<EditHouse> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(30.0),
-                        child :
-                        new FlatButton (
+                        child: new FlatButton(
                           minWidth: 120.0,
                           height: 50.0,
                           color: Color.fromRGBO(247, 207, 205, 1),
                           onPressed: () async {
-                            print("onPressed 1");
+                            setState(() {
+                              house_Name.text.isEmpty ?
+                              _validateHouseName = true : _validateHouseName =
+                              false;
+                              house_Rent.text.isEmpty ?
+                              _validateHouseRent = true : _validateHouseRent =
+                              false;
+                            });
+                            var housedata = Inserthouse();
+                            housedata.hManager = args.hid;
+                            housedata.houseName = house_Name.text;
+                            housedata.houseAdd = house_Add.text;
+                            housedata.houseProvince = house_Province;
+                            housedata.houseDistrict = house_District;
+                            // housedata.houseZipcode = house_Zipcode.text;
+                            housedata.houseType = house_Type;
+                            // housedata.houseFloors = int.parse(house_Floors);
+                            housedata.houseBedroom =
+                            house_Bedroom == null ? 1 : int.parse(
+                                house_Bedroom);
+                            housedata.houseBathroom =
+                            house_Bathroom == null ? 1 : int.parse(
+                                house_Bathroom);
+                            housedata.houseLivingroom =
+                            house_Livingroom == null ? 1 : int.parse(
+                                house_Livingroom);
+                            housedata.houseKitchen =
+                            house_Kitchen == null ? 1 : int.parse(
+                                house_Kitchen);
+                            housedata.houseArea =
+                            house_Area.text.isEmpty ? null : house_Area.text +
+                                " ตร.ม";
+                            housedata.houseLatitude =
+                                cameraPosition.target.latitude.toString();
+                            housedata.houseLongitude =
+                                cameraPosition.target.longitude.toString();
+                            if (checkAmounts) {
+                              housedata.houseElectric =
+                              house_Electric.text.isEmpty
+                                  ? 'ตามหน่วยบ้าน'
+                                  : house_Electric.text;
+                              housedata.houseWater = house_Water.text.isEmpty
+                                  ? 'ตามหน่วยบ้าน'
+                                  : house_Water.text;
+                            } else {
+                              housedata.houseWater = 'ตามหน่วยบ้าน';
+                              housedata.houseElectric = 'ตามหน่วยบ้าน';
+                            }
+                            housedata.houseRent =
+                            house_Rent.text.isEmpty ? null : int.parse(
+                                house_Rent.text);
+                            housedata.houseDeposit =
+                            house_Deposit.text.isEmpty ? null : int.parse(
+                                house_Deposit.text);
+                            housedata.houseInsurance =
+                            house_Insurance.text.isEmpty ? null : int.parse(
+                                house_Insurance.text);
+                            // housedata.houseStatus = int.parse(args[1]);
+
+                            // print('ADDHOMEReq=' + housedata.toString());
+                            var Jsonhousedata = await inserthouseToJson(
+                                housedata);
+                            print(Jsonhousedata.toString());
+                            if (house_Name.text.isNotEmpty &&
+                                house_Rent.text.isNotEmpty) {
+                              // var request =
+                              // http.MultipartRequest('POST', Uri.parse(
+                              //     'https://home-alone-csproject.herokuapp.com/house/insert'))
+                              //   ..fields['houseData'] = Jsonhousedata;
+                              // print(file != null);
+                              // if (file != null) {
+                              //   request.files.add(
+                              //       await http.MultipartFile.fromBytes('file',
+                              //           await File.fromUri(file.uri)
+                              //               .readAsBytes(), filename: filepath,
+                              //           contentType: MediaType(
+                              //               'ContentType',
+                              //               'application/json')));
+                              // }
+                              //
+                              // var streamedResponse = await request.send();
+                              // var response = await http.Response.fromStream(
+                              //     streamedResponse);
+                              // print(response.body);
+                              // //
+                              // if (response.statusCode.toString() == '200') {
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //       const SnackBar(
+                              //           content: Text('เพิ่มบ้านเช่าสำเร็จ')));
+                              //   setState(() {});
+                              //   Navigator.pop(context);
+                              // } else {
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //       const SnackBar(
+                              //           content: Text(
+                              //               'เพิ่มบ้านเช่าไม่สำเร็จ')));
+                              // }
+                            }
                           },
                           child: Column(
                             //mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("ยืนยัน",
+                              Text(
+                                "ยืนยัน",
                                 style: TextStyle(
                                   color: Color.fromRGBO(250, 120, 186, 1),
-                                  fontSize: 16  ,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Kanit',
                                 ),
@@ -998,15 +1447,15 @@ class _EditHouseState extends State<EditHouse> {
                             ],
                           ),
                           shape: StadiumBorder(
-                              side: BorderSide(width: 1.0,color: Color.fromRGBO(250, 120, 186, 1),)
-                          ),
+                              side: BorderSide(
+                                width: 1.0,
+                                color: Color.fromRGBO(250, 120, 186, 1),
+                              )),
                         ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.all(30.0),
-                        child :
-                        new FlatButton (
+                        child: new FlatButton(
                           minWidth: 120.0,
                           height: 50.0,
                           // color: Color.fromRGBO(247, 207, 205, 1),
@@ -1016,10 +1465,11 @@ class _EditHouseState extends State<EditHouse> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("ยกเลิก",
+                              Text(
+                                "ยกเลิก",
                                 style: TextStyle(
                                   color: Color.fromRGBO(250, 120, 186, 1),
-                                  fontSize: 16  ,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Kanit',
                                 ),
@@ -1027,22 +1477,19 @@ class _EditHouseState extends State<EditHouse> {
                             ],
                           ),
                           shape: StadiumBorder(
-                              side: BorderSide(width: 1.0,color: Color.fromRGBO(250, 120, 186, 1),)
-                          ),
+                              side: BorderSide(
+                                width: 1.0,
+                                color: Color.fromRGBO(250, 120, 186, 1),
+                              )),
                         ),
                       ),
                     ],
-                  ) ,
-
-
+                  ),
                 ],
-
               ),
             ),
           ],
         ),
-
-
       ),
     );
   }

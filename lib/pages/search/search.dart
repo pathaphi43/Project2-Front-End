@@ -51,7 +51,7 @@ class _SearchPageState extends State<SearchPage> {
     print(response.statusCode);
 
     if (response.statusCode == 200) {
-     return homedata = houseFromJson(utf8.decode(response.bodyBytes));
+     return homedata = housesFromJson(utf8.decode(response.bodyBytes));
       print(homedata[0].houseName);
     } else {
       throw Exception('Failed to load homedata');
@@ -579,7 +579,9 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   print("snapshot OK");
-                  return SingleChildScrollView( child: Container(
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
                         color: Color.fromRGBO(247, 207, 205, 1),
                         margin: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.1),
                         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.15),

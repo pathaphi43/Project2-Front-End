@@ -14,14 +14,15 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
-class Transactions extends StatefulWidget {
-  const Transactions({Key key}) : super(key: key);
+
+class EditPayment extends StatefulWidget {
+  const EditPayment({Key key}) : super(key: key);
 
   @override
-  State<Transactions> createState() => _TransactionsState();
+  State<EditPayment> createState() => _EditPaymentState();
 }
 
-class _TransactionsState extends State<Transactions> {
+class _EditPaymentState extends State<EditPayment> {
   AppStyle _appStyle = new AppStyle();
   DateTime dateTimeIn = DateTime.now();
   DateTime dateTimeOut = DateTime.now().add(Duration(days: 5));
@@ -106,19 +107,24 @@ class _TransactionsState extends State<Transactions> {
                             padding: _appStyle.edgeInsets1(),
                             child: TextField(
                               readOnly: true,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .headline6,
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
                                   enabled: false,
                                   border: OutlineInputBorder(
                                       borderRadius:
-                                          BorderRadius.circular(5.0),borderSide: BorderSide(
-                                                color: Colors.red,
-                                      width: 1.0,style: BorderStyle.solid)
+                                      BorderRadius.circular(5.0),
+                                      borderSide: BorderSide(
+                                          color: Colors.red,
+                                          width: 1.0, style: BorderStyle.solid)
                                   ),
                                   labelText: snapshot.data.tenantFirstname +
                                       "\t" +
-                                      snapshot.data.tenantLastname,labelStyle: _appStyle.textStyleUrSize(16),
+                                      snapshot.data.tenantLastname,
+                                  labelStyle: _appStyle.textStyleUrSize(16),
                                   prefixIcon: Icon(Icons.account_circle)),
                               controller: null, //ส่งข้อมูลTextField
                             ),
@@ -126,7 +132,10 @@ class _TransactionsState extends State<Transactions> {
                           Padding(
                             padding: _appStyle.edgeInsets1(),
                             child: TextField(
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .headline6,
                               textAlign: TextAlign.start,
                               // enabled: false,
                               readOnly: true,
@@ -134,7 +143,7 @@ class _TransactionsState extends State<Transactions> {
                                   enabled: false,
                                   border: OutlineInputBorder(
                                       borderRadius:
-                                          BorderRadius.circular(5.0)),
+                                      BorderRadius.circular(5.0)),
                                   labelText: snapshot.data.houseName,
                                   prefixIcon: Icon(Icons.house)),
                               controller: null, //ส่งข้อมูลTextField
@@ -165,7 +174,10 @@ class _TransactionsState extends State<Transactions> {
                             padding: _appStyle.edgeInsets1(),
                             child: TextField(
                               enabled: checkAmounts,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .headline6,
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
@@ -173,7 +185,7 @@ class _TransactionsState extends State<Transactions> {
                                 labelText: snapshot.data.houseRent.isNaN
                                     ? 'ค่าเช่า'
                                     : 'ค่าเช่า ' +
-                                        snapshot.data.houseRent.toString(),
+                                    snapshot.data.houseRent.toString(),
                                 // prefixIcon: Icon(Icons.confirmation_num_outlined)
                               ),
                               controller: payHouseAmount, //ส่งข้อมูลTextField
@@ -204,7 +216,10 @@ class _TransactionsState extends State<Transactions> {
                             padding: _appStyle.edgeInsets1(),
                             child: TextField(
                               enabled: checkUtilities,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .headline6,
                               textAlign: TextAlign.start,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
@@ -212,7 +227,7 @@ class _TransactionsState extends State<Transactions> {
                                 labelText: snapshot.data.houseDeposit.isNaN
                                     ? 'ค่าไฟฟ้า'
                                     : 'ค่าไฟฟ้า ' +
-                                        snapshot.data.houseElectric.toString(),
+                                    snapshot.data.houseElectric.toString(),
                                 // prefixIcon: Icon(Icons.money_rounded)
                               ),
                               controller: payElecAmount, //ส่งข้อมูลTextField
@@ -222,7 +237,10 @@ class _TransactionsState extends State<Transactions> {
                             padding: _appStyle.edgeInsets1(),
                             child: TextField(
                               enabled: checkUtilities,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .headline6,
                               textAlign: TextAlign.start,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
@@ -230,7 +248,7 @@ class _TransactionsState extends State<Transactions> {
                                 labelText: snapshot.data.houseInsurance.isNaN
                                     ? 'ค่าน้ำ'
                                     : 'ค่าน้ำ ' +
-                                        snapshot.data.houseWater.toString(),
+                                    snapshot.data.houseWater.toString(),
                                 // prefixIcon:
                                 // Icon(Icons.money_off_csred_outlined)
                               ),
@@ -244,18 +262,20 @@ class _TransactionsState extends State<Transactions> {
                                     DatePicker.showDatePicker(context,
                                         showTitleActions: true,
                                         onConfirm: (date) {
-                                      setState(() {
-                                        dateTimeIn = date;
-                                        print('ยืนยัน $date');
-                                      });
-                                    },
+                                          setState(() {
+                                            dateTimeIn = date;
+                                            print('ยืนยัน $date');
+                                          });
+                                        },
                                         currentTime: DateTime.now(),
                                         locale: LocaleType.th);
                                   },
                                   child: ListTile(
                                     leading: Icon(Icons.date_range_outlined),
                                     title: Text(
-                                      'วันที่เรียกเก็บ \n ${dateTimeIn.day} - ${dateTimeIn.month} - ${dateTimeIn.year}',
+                                      'วันที่เรียกเก็บ \n ${dateTimeIn
+                                          .day} - ${dateTimeIn
+                                          .month} - ${dateTimeIn.year}',
                                       textAlign: TextAlign.center,
                                       style: _appStyle.textStyleUrSize(18),
                                     ),
@@ -272,18 +292,20 @@ class _TransactionsState extends State<Transactions> {
                                         //   print('change $date');
                                         // }
                                         onConfirm: (date) {
-                                      dateTimeOut = date;
-                                      print('ยืนยัน $dateTimeOut');
+                                          dateTimeOut = date;
+                                          print('ยืนยัน $dateTimeOut');
 
-                                      setState(() {});
-                                    },
+                                          setState(() {});
+                                        },
                                         currentTime: DateTime.now(),
                                         locale: LocaleType.th);
                                   },
                                   child: ListTile(
                                     leading: Icon(Icons.date_range_outlined),
                                     title: Text(
-                                      'วันที่เริ่มปรับ \n ${dateTimeOut.day} - ${dateTimeOut.month} - ${dateTimeOut.year}',
+                                      'วันที่เริ่มปรับ \n ${dateTimeOut
+                                          .day} - ${dateTimeOut
+                                          .month} - ${dateTimeOut.year}',
                                       textAlign: TextAlign.center,
                                       style: _appStyle.textStyleUrSize(18),
                                     ),
@@ -341,13 +363,24 @@ class _TransactionsState extends State<Transactions> {
 
                                   model.installment = dateTimeIn;
                                   model.payHouseEnd = dateTimeOut;
-                                  if(checkAmounts) model.payHouseAmount = payHouseAmount.text.isEmpty ? _rentModel.houseRent:int.parse(payHouseAmount.text);
-                                  else model.payHouseAmount = _rentModel.houseRent;
+                                  if (checkAmounts)
+                                    model.payHouseAmount =
+                                    payHouseAmount.text.isEmpty ? _rentModel
+                                        .houseRent : int.parse(
+                                        payHouseAmount.text);
+                                  else
+                                    model.payHouseAmount = _rentModel.houseRent;
 
-                                  if(checkUtilities){
-                                    model.payWaterAmount = payWaterAmount.text.isEmpty ? 'ตามหน่วยบ้าน':payWaterAmount.text;
-                                    model.payElecAmount = payElecAmount.text.isEmpty ? 'ตามหน่วยบ้าน' :payElecAmount.text;
-                                  }else{
+                                  if (checkUtilities) {
+                                    model.payWaterAmount =
+                                    payWaterAmount.text.isEmpty
+                                        ? 'ตามหน่วยบ้าน'
+                                        : payWaterAmount.text;
+                                    model.payElecAmount =
+                                    payElecAmount.text.isEmpty
+                                        ? 'ตามหน่วยบ้าน'
+                                        : payElecAmount.text;
+                                  } else {
                                     model.payWaterAmount = 'ตามหน่วยบ้าน';
                                     model.payElecAmount = 'ตามหน่วยบ้าน';
                                   }
@@ -360,102 +393,144 @@ class _TransactionsState extends State<Transactions> {
                                   showDialog<String>(
                                     barrierDismissible: false,
                                     context: context,
-                                    builder: (BuildContext context) => AlertDialog(
-                                      title: const Text('ยืนยันการเพิ่มรายการชำระค่าใช้จ่าย'),
-                                      titleTextStyle: _appStyle.textStyleUrSize(20),
-                                      content: Column(children: <Widget>[
-                                        Container(
-                                            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                            child :Text(
-                                              "ค่าเช่าบ้าน:${model.payHouseAmount}",
-                                              style: _appStyle.textStyle18(),
-                                              overflow: TextOverflow.visible,
-                                              textAlign: TextAlign.center,
-                                            )),
-                                        Container(
-                                            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                            child :Text(
-                                              "ค่าน้ำ:${model.payWaterAmount}",
-                                              style: _appStyle.textStyle18(),
-                                              overflow: TextOverflow.visible,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              softWrap: false,
-                                            )),
-                                        Container(
-                                            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                            child :Text(
-                                              "ค่าไฟฟ้า:${model.payElecAmount}",
-                                              style: _appStyle.textStyle18(),
-                                              overflow: TextOverflow.visible,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              softWrap: false,
-                                            )),
-                                        Container(
-                                            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                            child :Text(
-                                              "วันที่เรียกเก็บ:${model.installment.day}/${model.installment.month}/${model.installment.year}",
-                                              style: _appStyle.textStyle18(),
-                                              overflow: TextOverflow.visible,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              softWrap: false,
-                                            )),
-                                        Container(
-                                            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                            child :Text(
-                                              "วันที่เริ่มปรับ:${model.payHouseEnd.day}/${model.payHouseEnd.month}/${model.payHouseEnd.year}",
-                                              style: _appStyle.textStyle18(),
-                                              overflow: TextOverflow.visible,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              softWrap: false,
-                                            )),
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                          title: const Text(
+                                              'ยืนยันการเพิ่มรายการชำระค่าใช้จ่าย'),
+                                          titleTextStyle: _appStyle
+                                              .textStyleUrSize(20),
+                                          content: Column(children: <Widget>[
+                                            Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    20, 20, 20, 0),
+                                                child: Text(
+                                                  "ค่าเช่าบ้าน:${model
+                                                      .payHouseAmount}",
+                                                  style: _appStyle
+                                                      .textStyle18(),
+                                                  overflow: TextOverflow
+                                                      .visible,
+                                                  textAlign: TextAlign.center,
+                                                )),
+                                            Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    20, 20, 20, 0),
+                                                child: Text(
+                                                  "ค่าน้ำ:${model
+                                                      .payWaterAmount}",
+                                                  style: _appStyle
+                                                      .textStyle18(),
+                                                  overflow: TextOverflow
+                                                      .visible,
+                                                  textAlign: TextAlign.center,
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                )),
+                                            Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    20, 20, 20, 0),
+                                                child: Text(
+                                                  "ค่าไฟฟ้า:${model
+                                                      .payElecAmount}",
+                                                  style: _appStyle
+                                                      .textStyle18(),
+                                                  overflow: TextOverflow
+                                                      .visible,
+                                                  textAlign: TextAlign.center,
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                )),
+                                            Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    20, 20, 20, 0),
+                                                child: Text(
+                                                  "วันที่เรียกเก็บ:${model
+                                                      .installment.day}/${model
+                                                      .installment
+                                                      .month}/${model
+                                                      .installment.year}",
+                                                  style: _appStyle
+                                                      .textStyle18(),
+                                                  overflow: TextOverflow
+                                                      .visible,
+                                                  textAlign: TextAlign.center,
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                )),
+                                            Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    20, 20, 20, 0),
+                                                child: Text(
+                                                  "วันที่เริ่มปรับ:${model
+                                                      .payHouseEnd.day}/${model
+                                                      .payHouseEnd
+                                                      .month}/${model
+                                                      .payHouseEnd.year}",
+                                                  style: _appStyle
+                                                      .textStyle18(),
+                                                  overflow: TextOverflow
+                                                      .visible,
+                                                  textAlign: TextAlign.center,
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                )),
 
-                                      ]),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(context, 'Cancel'),
-                                          child: const Text('ยกเลิก'),
-                                        ),
-                                        TextButton(
-                                          onPressed: ()async {
-                                            ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-                                              duration: new Duration(seconds: 4),
-                                              content: new Row(
-                                                children: <Widget>[
-                                                  new CircularProgressIndicator(),
-                                                  new Text("กำลังโหลด...")
-                                                ],
-                                              ),
-                                            ));
+                                          ]),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  context, 'Cancel'),
+                                              child: const Text('ยกเลิก'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(new SnackBar(
+                                                  duration: new Duration(
+                                                      seconds: 4),
+                                                  content: new Row(
+                                                    children: <Widget>[
+                                                      new CircularProgressIndicator(),
+                                                      new Text("กำลังโหลด...")
+                                                    ],
+                                                  ),
+                                                ));
 
-                                            var response = await http.post(
-                                                Uri.parse('https://home-alone-csproject.herokuapp.com/payment/save-payment'),
-                                                body: jsonBody,
-                                                headers: {
-                                                  'Content-Type': 'application/json'
-                                                });
-                                            if (response.statusCode == 200){
-                                              Navigator.popUntil(context, ModalRoute.withName('/PreTransaction-page'));
-                                            }else{
-                                              ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-                                                duration: new Duration(seconds: 4),
-                                                content: new Row(
-                                                  children: <Widget>[
-                                                    new CircularProgressIndicator(),
-                                                    new Text("เกิดข้อผิดพลาด")
-                                                  ],
-                                                ),
-                                              ));
-                                              print("Upload fail"+ response.statusCode.toString());
-                                            }
-                                          },
-                                          child: const Text('ยืนยัน'),
+                                                var response = await http.post(
+                                                    Uri.parse(
+                                                        'https://home-alone-csproject.herokuapp.com/payment/save-payment'),
+                                                    body: jsonBody,
+                                                    headers: {
+                                                      'Content-Type': 'application/json'
+                                                    });
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  Navigator.popUntil(context,
+                                                      ModalRoute.withName(
+                                                          '/PreTransaction-page'));
+                                                } else {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                      new SnackBar(
+                                                        duration: new Duration(
+                                                            seconds: 4),
+                                                        content: new Row(
+                                                          children: <Widget>[
+                                                            new CircularProgressIndicator(),
+                                                            new Text(
+                                                                "เกิดข้อผิดพลาด")
+                                                          ],
+                                                        ),
+                                                      ));
+                                                  print("Upload fail" +
+                                                      response.statusCode
+                                                          .toString());
+                                                }
+                                              },
+                                              child: const Text('ยืนยัน'),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
                                   );
 
                                   // ScaffoldMessenger.of(context)
@@ -478,22 +553,22 @@ class _TransactionsState extends State<Transactions> {
                                         fontWeight: FontWeight.bold)),
                                 style: ButtonStyle(
                                     padding:
-                                        MaterialStateProperty.all<EdgeInsets>(
-                                            EdgeInsets.all(15)),
+                                    MaterialStateProperty.all<EdgeInsets>(
+                                        EdgeInsets.all(15)),
                                     foregroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.black45),
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.black45),
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.blue),
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.blue),
                                     minimumSize:
-                                        MaterialStateProperty.all<Size>(
-                                            Size(200, 45)),
+                                    MaterialStateProperty.all<Size>(
+                                        Size(200, 45)),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(50.0),
+                                          BorderRadius.circular(50.0),
                                           side: BorderSide(color: Colors.blue)),
                                     ))),
                           ),

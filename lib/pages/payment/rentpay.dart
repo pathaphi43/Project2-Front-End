@@ -1,6 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
+import 'package:homealone/model/payment/TransactionShowModel.dart';
 import 'package:homealone/pages/Navbar/appBar.dart';
+import 'package:homealone/pages/Navbar/mainpages.dart';
+import 'package:homealone/pages/payment/paymentWidgetShow.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class RentpayPage extends StatefulWidget {
   @override
@@ -9,28 +18,29 @@ class RentpayPage extends StatefulWidget {
 
 class Exercise {
   String name;
+
   Exercise({this.name});
 }
 
 String dropdownValue1 = 'สถานะ';
 
 class _RentpayPageState extends State<RentpayPage> {
-
-static const int numItems = 15;
+  static const int numItems = 15;
   int selectedCard = -1;
+
   // ignore: unused_field
   int _counter = 0;
 
-
-DateTime _selectedDate;
-  
+  DateTime _selectedDate;
 
   List<Exercise> statusexercises = [
     Exercise(name: 'ชำระแล้ว'),
     Exercise(name: 'ค้างชำระ'),
   ];
+
   // ignore: unused_field
   int _selected;
+
   // ignore: unused_element
   void _incrementCounter() {
     setState(() {
@@ -38,103 +48,308 @@ DateTime _selectedDate;
     });
   }
 
+  int args;
+
+  @override
+  void didChangeDependencies() async {
+    args = ModalRoute.of(context).settings.arguments;
+    gethomeAll();
+    super.didChangeDependencies();
+  }
+
+  DateTime dateTimeEnd = DateTime.now();
+  DateTime dateTimeStart = DateTime.now().subtract(Duration(days: 30));
+  List<TransactionShowModel> transactions;
+  Stream<List<TransactionShowModel>> onCurrentUserChanged;
+  StreamController<List<TransactionShowModel>> currentUserStreamCtrl =
+      new StreamController<List<TransactionShowModel>>.broadcast();
+
+  Future<void> onRefresh() {
+    setState(() {
+      gethomeAll();
+    });
+    return Future.delayed(Duration(seconds: 1));
+  }
+
+  Future<List<TransactionShowModel>> gethomeAll() async {
+    String uri;
+    if (status == 0) {
+      uri = '/payment/house-rent/';
+    } else if (status == 1) {
+      uri = 'payment/house-rent-tenant/';
+    } else {
+      uri = '/payment/house-rent/';
+    }
+    final response = await http.get(Uri.http(
+        'home-alone-csproject.herokuapp.com', '${uri}' + args.toString()));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      // print("Body" + utf8.decode(response.bodyBytes));
+      currentUserStreamCtrl.sink
+          .add(transactionShowModelFromJson(utf8.decode(response.bodyBytes)));
+      transactions =
+          transactionShowModelFromJson(utf8.decode(response.bodyBytes));
+
+      return transactions;
+    } else {
+      throw Exception('Failed to load homedata');
+    }
+  }
+
+
+PaymentWidgetShow _paymentWidgetShow = new PaymentWidgetShow();
+  List<DataRow> dataRowList(List<TransactionShowModel> model) {
+    List<DataRow> dataRows = [];
+    model.forEach((element) {
+      print(element.house.houseName);
+      element.payments.forEach((pay) {
+        dataRows.add(DataRow(cells: [
+          DataCell(Center(
+            child: Text(element.tenant.tenantFirstname),
+          )),
+          DataCell(Center(
+            child: TextButton(
+                onPressed: () => Navigator.pushNamed(context, '/Homeinfo-page',
+                    arguments: [element.house.hid]),
+                child: Text(element.house.houseName)),
+          )),
+          DataCell(Center(
+            child: Text('${DateFormat("MMMM", "th").format(pay.installment)}'),
+          )),
+          DataCell(Center(
+            child: Text(pay.payHouseAmount.toString()),
+          )),
+          DataCell(
+            Center(
+                // child:(status == 1)? (pay.payHouseStatus != 1)? TextButton(onPressed: () =>  Navigator.pushNamed(context, '/RentPayTenant-page', arguments: pay), child: Text("ชำระเงิน")):Text(pay.payHouseStatus == 1? 'ชำระแล้ว':'ค้างชำระ',style:TextStyle(color:pay.payHouseStatus == 1?Colors.red: Colors.green,),) :Text(pay.payHouseStatus == 1? 'ชำระแล้ว':'ค้างชำระ',style:TextStyle(color:pay.payHouseStatus == 1?Colors.red: Colors.green,),)
+                child: (status == 1)
+                    ? (pay.payHouseStatus == 0)
+                        ? TextButton(
+                            onPressed: () => Navigator.pushNamed(
+                                context, '/RentPayTenant-page', arguments: pay),
+                            child: Text(
+                              "ชำระเงิน",
+                              style: TextStyle(color: Colors.red),
+                            ))
+                        : (pay.payHouseStatus == 1)
+                            ? TextButton(
+                                onPressed: () => Navigator.pushNamed(
+                                    context, '/RentPayTenant-page',
+                                    arguments: pay),
+                                child: Text(
+                                  "รอยืนยัน",
+                                  style: TextStyle(color: Colors.orange),
+                                ))
+                            : Text(
+                                "ชำระแล้ว",
+                                style: TextStyle(color: Colors.green),
+                              )
+                    : (pay.payHouseStatus == 0)
+                        ? TextButton(
+                            onPressed: () => print("ไปหน้าแก้ไข"),
+                            child: Text(
+                              "ค้างชำระ",
+                              style: TextStyle(color: Colors.red),
+                            ))
+                        : (pay.payHouseStatus == 1)
+                            ? TextButton(
+                                onPressed: () => showDialog<String>(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        title: const Text('ยืนยันการชำระเงิน'),
+                                        content: Center(child: _paymentWidgetShow.columnShowRent(pay)),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                context, 'Cancel'),
+                                            child: const Text('ยกเลิก'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(new SnackBar(
+                                                duration:
+                                                    new Duration(seconds: 4),
+                                                content: new Row(
+                                                  children: <Widget>[
+                                                    new CircularProgressIndicator(),
+                                                    new Text("กำลังโหลด...")
+                                                  ],
+                                                ),
+                                              ));
+                                              print(pay.id);
+                                              var response = await http.get(
+                                                  Uri.parse(
+                                                      'https://home-alone-csproject.herokuapp.com/payment/tenant-rent/' +
+                                                          pay.id.toString()),
+                                                  headers: {
+                                                    'Content-Type':
+                                                        'application/json'
+                                                  });
+                                              if (response.statusCode == 200) {
+                                                setState(() {
+                                                  Navigator.pop(
+                                                      context, 'ยืนยัน');
+                                                });
+                                              } else
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(new SnackBar(
+                                                  duration:
+                                                      new Duration(seconds: 4),
+                                                  content: new Row(
+                                                    children: <Widget>[
+                                                      new CircularProgressIndicator(),
+                                                      new Text("เกิดข้อผิดพลาด")
+                                                    ],
+                                                  ),
+                                                ));
+                                            },
+                                            child: const Text('ยืนยัน'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                child: Text(
+                                  "รอยืนยัน",
+                                  style: TextStyle(color: Colors.orange),
+                                ))
+                            : TextButton(
+                                onPressed: () => showDialog<String>(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        title: const Text('การชำระเงิน'),
+                                        content: Center(child: _paymentWidgetShow.columnShowRent(pay)),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                context, 'Cancel'),
+                                            child: const Text('ปิด'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                child: Text(
+                                  "ชำระแล้ว",
+                                  style: TextStyle(color: Colors.lightGreen),
+                                ))),
+          )
+        ]));
+      });
+    });
+
+    return dataRows;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-     appBar: NavAppBar(), body: rentBody(context)
-    );
+    return Scaffold(appBar: NavAppBar(), body: rentBody(context));
   }
 
-    Widget rentBody(BuildContext context) {
+  Widget rentBody(BuildContext context) {
+    print(args);
     final mqHeight = MediaQuery.of(context).size.height;
     final mqWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          SizedBox(
-            height: 18,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("ค่าเช่า",
-                style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontSize: 20)),
-          ),
-          SizedBox(
-            height: 14,
-          ),
-          Container(
-            child: rentsearch(context),
-          ),
-          Container(
-            width: mqWidth,
-            height: mqHeight,
-            child: Stack(
-              overflow: Overflow.visible,
-              children: [
-                Container(
-                    width: mqWidth,
-                    child: DataTable(
-                        columnSpacing: 0,
-                        horizontalMargin: 0,
-                        columns: const <DataColumn>[
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('ผู้เช่า',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('บ้าน',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('เดือน',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('จำนวน',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('สถานะ',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
+        body: RefreshIndicator(
+            onRefresh: onRefresh,
+            child: StreamBuilder(
+                stream: currentUserStreamCtrl.stream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<TransactionShowModel>> snapshot) {
+                  print(snapshot.connectionState);
+                  if (snapshot.hasData) {
+                    return SingleChildScrollView(
+                      child: (Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 18,
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text("ค่าเช่า",
+                                style: TextStyle(
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    fontSize: 20)),
+                          ),
+                          SizedBox(
+                            height: 14,
+                          ),
+                          Container(
+                            child: rentsearch(context),
+                          ),
+                          Container(
+                            width: mqWidth,
+                            height: mqHeight,
+                            child: Stack(
+                              overflow: Overflow.visible,
+                              children: [
+                                Container(
+                                    width: mqWidth,
+                                    child: DataTable(
+                                        columnSpacing: 0,
+                                        horizontalMargin: 0,
+                                        columns: const <DataColumn>[
+                                          DataColumn(
+                                              label: Expanded(
+                                            child: Text('ผู้เช่า',
+                                                style: TextStyle(
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                          DataColumn(
+                                              label: Expanded(
+                                            child: Text('บ้าน',
+                                                style: TextStyle(
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                          DataColumn(
+                                              label: Expanded(
+                                            child: Text('เดือน',
+                                                style: TextStyle(
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                          DataColumn(
+                                              label: Expanded(
+                                            child: Text('จำนวน',
+                                                style: TextStyle(
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                          DataColumn(
+                                              label: Expanded(
+                                            child: Text('สถานะ',
+                                                style: TextStyle(
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                        ],
+                                        rows: dataRowList(snapshot.data)))
+                              ],
+                            ),
+                          )
                         ],
-                        rows: List<DataRow>.generate(
-                          numItems,
-                          (int index) => DataRow(cells: <DataCell>[
-                            DataCell(Center(child: Text('นิรมัย'))),
-                            DataCell(Center(child: Text('บ้านลักษณาวดี'))),
-                            DataCell(Center(child: Text('มกราคม'))),
-                            DataCell(Center(child: Text('5,500'))),
-                            DataCell(Center(
-                              child: Text(
-                                'เสร็จสิ้น',
-                                style: TextStyle(color: Colors.green),
-                              ),
-                            )),
-                          ]),
-                        )))
-              ],
-            ),
-          )
-        ],
-      ),
-    ));
+                      )),
+                    );
+                  } else
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                })));
   }
 
-   Widget rentsearch(BuildContext context) {
+  Widget rentsearch(BuildContext context) {
     return Container(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -157,27 +372,34 @@ DateTime _selectedDate;
     ));
   }
 
-selectDate(BuildContext context) async {
-  // ignore: unnecessary_statements, unused_label
-  context: context;
-              var datePicked = await DatePicker.showSimpleDatePicker(
-                context,
-                initialDate: _selectedDate!= null ? _selectedDate:DateTime.now(),
-                firstDate: DateTime(2000),
-                dateFormat: "dd-MMMM-yyyy",
-                locale: DateTimePickerLocale.th,
-                textColor: Color.fromRGBO(250, 120, 186, 1),
-                looping: true,
-              );
-       
-              final snackBar =
-              SnackBar(content: Text("$datePicked",style: TextStyle(fontSize: 18,fontFamily: 'Kanit',),));
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  var datePicked;
 
- }
- 
+  selectDate(BuildContext context) async {
+    // ignore: unnecessary_statements, unused_label
+    context:
+    context;
+    datePicked = await DatePicker.showSimpleDatePicker(
+      context,
+      initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
+      firstDate: DateTime(2000),
+      dateFormat: "MMMM-yyyy",
+      locale: DateTimePickerLocale.th,
+      textColor: Color.fromRGBO(250, 120, 186, 1),
+      looping: true,
+    );
 
-   Widget Menusearch(BuildContext context) {
+    final snackBar = SnackBar(
+        content: Text(
+      "$datePicked",
+      style: TextStyle(
+        fontSize: 18,
+        fontFamily: 'Kanit',
+      ),
+    ));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Widget Menusearch(BuildContext context) {
     return Container(
       alignment: Alignment.center,
       child: PopupMenuButton(
@@ -196,9 +418,10 @@ selectDate(BuildContext context) async {
                   ),
                   onTap: () {
                     Future<void>.delayed(
-                      const Duration(), // OR const Duration(milliseconds: 500),
-                      () {selectDate(context);}
-                    );
+                        const Duration(), // OR const Duration(milliseconds: 500),
+                        () {
+                      selectDate(context);
+                    });
                   },
                   value: 1,
                 ),
@@ -229,7 +452,10 @@ selectDate(BuildContext context) async {
                             FlatButton(
                               child: const Text(
                                 'OK',
-                                style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontWeight: FontWeight.bold,),
+                                style: TextStyle(
+                                  color: Color.fromRGBO(250, 120, 186, 1),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
@@ -238,10 +464,15 @@ selectDate(BuildContext context) async {
                                 Navigator.pop(context);
                               },
                             ),
-                            SizedBox(width: 2,),
+                            SizedBox(
+                              width: 2,
+                            ),
                             FlatButton(
                               child: const Text('Cancel',
-                                  style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontWeight: FontWeight.bold,)),
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(250, 120, 186, 1),
+                                    fontWeight: FontWeight.bold,
+                                  )),
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                               textColor: Theme.of(context).accentColor,
@@ -249,7 +480,6 @@ selectDate(BuildContext context) async {
                                 Navigator.pop(context);
                               },
                             ),
-                            
                           ],
                           content: Container(
                             height: 150,
@@ -307,5 +537,4 @@ selectDate(BuildContext context) async {
               ]),
     );
   }
-
 }

@@ -8,6 +8,8 @@ List<ReviewsModel> reviewsModelFromJson(String str) => List<ReviewsModel>.from(j
 
 String reviewsModelToJson(List<ReviewsModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+String reviewsToJson(ReviewsModel data) => json.encode(data.toJson());
+
 class ReviewsModel {
   ReviewsModel({
     this.id,
@@ -24,7 +26,7 @@ class ReviewsModel {
   int rid;
   int tid;
   String reviewsText;
-  double reviewsScore;
+  int reviewsScore;
   DateTime reviewsDate;
   int reviewsStatus;
   List<ReviewsImage> reviewsImage;
@@ -33,22 +35,22 @@ class ReviewsModel {
     id: json["id"],
     rid: json["rid"],
     tid: json["tid"],
-    reviewsText: json["reviewsText"],
-    reviewsScore: json["reviewsScore"].toDouble(),
+    reviewsText: json["reviewsText"] == null ? null :json["reviewsText"],
+    reviewsScore: json["reviewsScore"],
     reviewsDate: DateTime.parse(json["reviewsDate"]),
-    reviewsStatus: json["reviewsStatus"],
-    reviewsImage: List<ReviewsImage>.from(json["reviewsImage"].map((x) => ReviewsImage.fromJson(x))),
+    reviewsStatus: json["reviewsStatus"] == null ? null :json["reviewsStatus"],
+    reviewsImage:json["reviewsImage"] == null ? null :  List<ReviewsImage>.from(json["reviewsImage"].map((x) => ReviewsImage.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "rid": rid,
     "tid": tid,
-    "reviewsText": reviewsText,
+    "reviewsText": reviewsText == null ? null :reviewsText,
     "reviewsScore": reviewsScore,
     "reviewsDate": reviewsDate.toIso8601String(),
-    "reviewsStatus": reviewsStatus,
-    "reviewsImage": List<dynamic>.from(reviewsImage.map((x) => x.toJson())),
+    "reviewsStatus": reviewsStatus == null ? null :reviewsStatus,
+    "reviewsImage":reviewsImage == null? null : List<dynamic>.from(reviewsImage.map((x) => x.toJson())),
   };
 }
 

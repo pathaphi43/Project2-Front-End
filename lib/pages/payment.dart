@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/pages/Navbar/mainpages.dart';
 import 'package:homealone/pages/home.dart';
 import 'package:homealone/pages/profile.dart';
 import 'package:homealone/Icon_img/imgIcon.dart';
@@ -166,7 +167,7 @@ Widget body(){
                   // color: Color.fromRGBO(247, 207, 205, 1),
                   onPressed: () {
 
-                    Navigator.pushNamed(context, '/Rentpay-page', arguments: null);
+                    Navigator.pushNamed(context, '/Rentpay-page', arguments: id);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,7 +205,7 @@ Widget body(){
                   height: MediaQuery.of(context).size.height/8,
                   // color: Color.fromRGBO(247, 207, 205, 1),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/Waterpay-page',arguments: null);
+                    Navigator.pushNamed(context, '/Waterpay-page',arguments: id);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -242,7 +243,7 @@ Widget body(){
                   height: MediaQuery.of(context).size.height/8,
                   // color: Color.fromRGBO(247, 207, 205, 1),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/Elecpay-page',arguments: null);
+                    Navigator.pushNamed(context, '/Elecpay-page',arguments: id);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,9 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:homealone/model/payment/TransactionMedel.dart';
+import 'package:homealone/model/payment/TransactionShowModel.dart';
 import 'package:homealone/pages/Navbar/appBar.dart';
+import 'package:homealone/pages/Navbar/mainpages.dart';
+import 'package:homealone/pages/payment/rentpay.dart';
+import 'package:homealone/pages/payment/waterpay.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+
 
 class waterTenant extends StatefulWidget {
   waterTenant({key}) : super(key: key);
@@ -14,10 +22,17 @@ class waterTenant extends StatefulWidget {
 
 class _waterTenantState extends State<waterTenant> {
   var image;
+  Payment args;
 
+  @override
+  void didChangeDependencies() async {
+    args = ModalRoute.of(context).settings.arguments;
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
  return Scaffold(
+   bottomNavigationBar: buttomPay(),
       appBar: NavAppBar(),
       body: Container(
         child: SingleChildScrollView(
@@ -35,18 +50,17 @@ class _waterTenantState extends State<waterTenant> {
                 height: 8,
               ),
               waterInfo(),
-              SizedBox(
-                height: 8,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    child: waterTenantBody(),
+                  ),
+                ],
               ),
-              waterTenantBody(),
-              SizedBox(
-                height: 8,
-              ),
+
               datepay(context),
-              SizedBox(
-                height: 28,
-              ),
-              buttomPay()
+
             ],
           ),
         ),
@@ -66,16 +80,16 @@ class _waterTenantState extends State<waterTenant> {
             SizedBox(
               height: 6,
             ),
-            Text("ค่าน้ำประจำเดือน......."),
+            Text("ค่าน้ำประจำเดือน ${DateFormat('MMMM-yyyy','th').format(args.payWaterInmonth)}"),
             SizedBox(
               height: 8,
             ),
-            Text("จำนวนเงิน......บาท"),
+            Text("จำนวนเงิน ${args.payWaterAmount} บาท"),
             SizedBox(
               height: 18,
             ),
             Text(
-              "หมดเขตชำระ........",
+              "หมดเขตชำระ ${DateFormat('dd-MMMM-yyyy','th').format(args.payWaterEnd)}",
               style: TextStyle(color: Colors.red),
             ),
           ],
@@ -88,8 +102,9 @@ class _waterTenantState extends State<waterTenant> {
     final mqHeight = MediaQuery.of(context).size.height;
     final mqWidth = MediaQuery.of(context).size.width;
     return Container(
+      alignment: Alignment.center,
       width: mqWidth / 0.8,
-      height: 180,
+      // height: 180,
       child: Card(
         child: Column(
           children: [
@@ -98,33 +113,49 @@ class _waterTenantState extends State<waterTenant> {
             ),
             Container(
                 alignment: Alignment.topLeft,
-                child: Text(
-                  "อัพโหลดหลักฐานการชำระเงิน",
-                  style: TextStyle(fontSize: 16),
+                child: Row(
+                  children: [
+                    Text(
+                      "อัพโหลดหลักฐานการชำระเงิน",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            image = null;
+                          });
+                        },
+                        child: Text("ลบรูป"))
+                  ],
                 )),
             SizedBox(
               height: 8,
             ),
-            //   Padding(
-            //   padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
-            //   child: image != null? ClipRRect(
-            //     borderRadius: BorderRadius.circular(50),
-            //     child: Image.file(
-            //       image,
-            //       width: 150,
-            //       height: 200,
-            //       fit: BoxFit.fitHeight,
-            //     ),
-            //   ) : Container(
-            //     child: Icon(
-            //       Icons.account_box_sharp,
-            //       color: Colors.grey[800],size: 150,
-            //     ),
-            //   ),
-            // ),
-            //  SizedBox(
-            //   height: 8,
-            // ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+              child: image != null
+                  ? SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                child: Image.file(
+                  image,
+                  // width: 150,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              )
+                  : SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+
+                child: (args.payWaterImg != null)? Image.network(
+                  args.payWaterImg,
+                  // width: 150,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ):Container(),
+              ),
+            ),
             Center(
               child: IconButton(
                 icon: Icon(
@@ -191,8 +222,8 @@ class _waterTenantState extends State<waterTenant> {
     );
   }
 
-  String _selectedDate = '01/01/2015';
-
+  String _selectedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+  DateTime datePicker = DateTime.now();
   Future<void> _selectDate(BuildContext context) async {
     final DateTime d = await showDatePicker(
       context: context,
@@ -236,7 +267,46 @@ class _waterTenantState extends State<waterTenant> {
   Widget buttomPay() {
     return TextButton(
         child: FlatButton(
-          onPressed: () {},
+          onPressed: () async{
+            TransactionModel model = new TransactionModel();
+            model.payHouseDate = _selectedDate;
+            model.id = args.id;
+            print(_selectedDate);
+            print(args.id);
+            print(image == null ? "null" : image.path);
+            var postUri = Uri.parse(
+                "https://home-alone-csproject.herokuapp.com/payment/tenant-water");
+
+            String fileName = image.path.split('/').last;
+            print(fileName);
+            // print('{"rid": ${rentMode.rid},"tid": ${rentMode.tid},"hid": ${rentMode.hid},"rentingBook": ${rentMode.rentingBook},"rentingCheckIn": ${rentMode.rentingCheckIn},"rentingCheckOut": ${rentMode.rentingCheckOut}}');
+            var request =
+            http.MultipartRequest('POST', postUri)
+              ..fields['id'] = args.id.toString()
+              ..fields['date'] = datePicker.toString()
+              ..files.add(await http.MultipartFile.fromBytes('file', await File.fromUri(image.uri).readAsBytes(), filename: fileName, contentType: MediaType(
+                  'ContentType', 'application/json')));
+            print(request.fields.values);
+            print(request.files.first.contentType);
+            print(request.files.first.filename);
+            print(request.files.first.field);
+            var streamedResponse = await request.send();
+            var response = await http.Response.fromStream(streamedResponse);
+            if (response.statusCode == 200) {
+             Navigator.of(context).pop(true);
+
+            } else
+              ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                duration: new Duration(seconds: 4),
+                content: new Row(
+                  children: <Widget>[
+                    new CircularProgressIndicator(),
+                    new Text("เกิดข้อผิดพลาด:"+response.statusCode.toString())
+                  ],
+                ),
+              ));
+
+          },
           child: Text(
             "ยืนยันการชำระ",
             style: TextStyle(color: Colors.white, fontSize: 16),

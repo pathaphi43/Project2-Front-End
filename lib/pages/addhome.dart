@@ -1,7 +1,9 @@
+import 'dart:io';
 
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,6 +18,8 @@ import 'package:flutter_thailand_provinces/provider/amphure_provider.dart';
 import 'package:flutter_thailand_provinces/provider/province_provider.dart';
 import 'package:homealone/model/AmphureThailand.dart';
 import 'package:homealone/model/Thailand.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert' show utf8;
 import 'dart:async';
 
@@ -87,6 +91,23 @@ class _AddHomeState extends State<AddHome> {
         args = ModalRoute.of(context).settings.arguments;
       });
     });
+  }
+  String filepath = '';
+  File file;
+  File image;
+  Future pickImage(BuildContext context) async {
+    try{
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return null;
+      final imageTemporary = File(image.path);
+      // setState(() {
+      this.image = imageTemporary;
+      // });
+
+      return imageTemporary;
+    }on PlatformException catch (e){
+      print('Failed to pick image $e');
+    }
   }
 
 
@@ -263,7 +284,7 @@ class _AddHomeState extends State<AddHome> {
     ),) ;
 
   }
-
+  bool checkAmounts = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -618,61 +639,74 @@ class _AddHomeState extends State<AddHome> {
                         ),
 
                         ///////// ตำแหน่งที่ตั้ง
-                        // Center(
-                        //   child: Column(
-                        //     mainAxisAlignment: MainAxisAlignment.center,
-                        //     children: [
-                        //       new Container(
-                        //         child :
-                        //         new FlatButton (
-                        //           minWidth: 200.0,
-                        //           height: 50.0,
-                        //           color: Color.fromRGBO(247, 207, 205, 1),
-                        //           onPressed: () {},
-                        //           child: Text(" ตำแหน่งที่ตั้ง ",
-                        //             style: TextStyle(
-                        //               color: Color.fromRGBO(250, 120, 186, 1),
-                        //               fontSize: 16,
-                        //               fontWeight: FontWeight.bold,
-                        //               fontFamily: 'Kanit',
-                        //             ),),
-                        //           shape: StadiumBorder(
-                        //               side: BorderSide(width: 3.0,color: Color.fromRGBO(247, 207, 205, 1))
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-//                     Center(
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: <Widget>[
-//                           RaisedButton(
-//                             onPressed: () async {
-//                               LocationResult result = await showLocationPicker(
-//                                 context,
-//                                 apiKey,
-//                                 initialCenter: LatLng(31.1975844, 29.9598339),
-// //                      automaticallyAnimateToCurrentLocation: true,
-// //                      mapStylePath: 'assets/mapStyle.json',
-//                                 myLocationButtonEnabled: true,
-//                                 // requiredGPS: true,
-//                                 layersButtonEnabled: true,
-//                                 // countries: ['AE', 'NG']
-//
-// //                      resultCardAlignment: Alignment.bottomCenter,
-//                                 desiredAccuracy: LocationAccuracy.best,
-//                               );
-//                               print("result = $result");
-//                               setState(() => _pickedLocation = result);
-//                             },
-//                             child: Text('Pick location'),
-//                           ),
-//                           Text(_pickedLocation.toString()),
-//                         ],
-//                       ),
-//                     ),
+                        Center(
+                          child: FlatButton(
+                            onPressed: () async {
+                              FilePickerResult result =
+                              await FilePicker.platform.pickFiles(
+                                type: FileType.custom,
+                                allowedExtensions: [
+                                  'jpg',
+                                  'png',
+                                ],
+                              );
+
+                              if (result != null) {
+                                // file = result.files.p;
+                                // print(file.name);
+                                file = File(result.files.first.path);
+                                filepath = file.path.split("/").last;
+                                setState(() {});
+                              } else {
+                                print('cancel');
+                                // User canceled the picker
+                              }
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.upload_file),
+                              title: Text(
+                                'เพิ่มรูปบ้านเช่า - $filepath',
+                              ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.cancel_outlined),
+                                onPressed: () {
+                                  print('IconButton');
+                                  setState(() {file = null;
+                                  filepath = '';});
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                    // Center(
+                    //   child: Column(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: <Widget>[
+                    //       RaisedButton(
+                    //         onPressed: () async {
+                    //           LocationResult result = await showLocationPicker(
+                    //             context,
+                    //             apiKey,
+                    //             initialCenter: LatLng(31.1975844, 29.9598339),
+                    //  automaticallyAnimateToCurrentLocation: true,
+                    //  mapStylePath: 'assets/mapStyle.json',
+                    //             myLocationButtonEnabled: true,
+                    //             // requiredGPS: true,
+                    //             layersButtonEnabled: true,
+                    //             // countries: ['AE', 'NG']
+                    //
+                    //  resultCardAlignment: Alignment.bottomCenter,
+                    //             desiredAccuracy: LocationAccuracy.best,
+                    //           );
+                    //           print("result = $result");
+                    //           setState(() => _pickedLocation = result);
+                    //         },
+                    //         child: Text('Pick location'),
+                    //       ),
+                    //       Text(_pickedLocation.toString()),
+                    //     ],
+                    //   ),
+                    // ),
                       ],
                     ),
                   ),
@@ -1083,7 +1117,27 @@ class _AddHomeState extends State<AddHome> {
                             ],
                           ),
                         ),
-
+                        //check box
+                        Padding(
+                            padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  Text(
+                                      'ต้องการเพิ่มอัตราค่าน้ำกับค่าไฟเองหรือไม่ ?'),
+                                  Checkbox(
+                                    value: checkAmounts,
+                                    onChanged: (bool newValue) {
+                                      setState(() {
+                                        checkAmounts = newValue;
+                                        print(checkAmounts);
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                            )),
                         ///////// อัตราค่าน้ำ
                         Center(
                           child: Column(
@@ -1098,6 +1152,7 @@ class _AddHomeState extends State<AddHome> {
                                 height: 80.0,
                                 width: 300.0,
                                 child: TextField(
+                                  enabled: checkAmounts,
                                   controller: house_Water,
                                   style: TextStyle(
                                     color: Color.fromRGBO(250, 120, 186, 1),
@@ -1137,6 +1192,7 @@ class _AddHomeState extends State<AddHome> {
                                 height: 80.0,
                                 width: 300.0,
                                 child: TextField(
+                                  enabled: checkAmounts,
                                   controller: house_Electric,
                                   style: TextStyle(
                                     color: Color.fromRGBO(250, 120, 186, 1),
@@ -1213,7 +1269,6 @@ class _AddHomeState extends State<AddHome> {
                               house_Rent.text.isEmpty ? _validateHouseRent = true : _validateHouseRent = false;
                             });
                             var housedata = Inserthouse();
-
                             housedata.hManager = args;
                             housedata.houseName = house_Name.text;
                             housedata.houseAdd = house_Add.text;
@@ -1229,25 +1284,34 @@ class _AddHomeState extends State<AddHome> {
                             housedata.houseArea = house_Area.text.isEmpty ?  null: house_Area.text + " ตร.ม";
                             housedata.houseLatitude = cameraPosition.target.latitude.toString();
                             housedata.houseLongitude = cameraPosition.target.longitude.toString();
-                            housedata.houseElectric = house_Electric.text.isEmpty ? null : house_Electric.text;
-                            housedata.houseWater = house_Water.text.isEmpty ? null : house_Water.text;
+                            if(checkAmounts){
+                              housedata.houseElectric = house_Electric.text.isEmpty ? 'ตามหน่วยบ้าน' : house_Electric.text;
+                              housedata.houseWater = house_Water.text.isEmpty ? 'ตามหน่วยบ้าน' : house_Water.text;
+                            }else{
+                              housedata.houseWater = 'ตามหน่วยบ้าน';
+                              housedata.houseElectric = 'ตามหน่วยบ้าน';
+                            }
                             housedata.houseRent = house_Rent.text.isEmpty ? null : int.parse(house_Rent.text);
-                            print(house_Deposit.text.isEmpty);
                             housedata.houseDeposit = house_Deposit.text.isEmpty ? null : int.parse(house_Deposit.text);
                             housedata.houseInsurance = house_Insurance.text.isEmpty ? null : int.parse(house_Insurance.text);
                             // housedata.houseStatus = int.parse(args[1]);
 
-                            print('ADDHOMEReq=' + housedata.toString());
+                            // print('ADDHOMEReq=' + housedata.toString());
                             var Jsonhousedata = await inserthouseToJson(housedata);
                             print(Jsonhousedata.toString());
                             if(house_Name.text.isNotEmpty && house_Rent.text.isNotEmpty ){
-                              var response = await http.post(
-                                  Uri.parse(
-                                      'https://home-alone-csproject.herokuapp.com/house/insert'),
-                                  body: Jsonhousedata,
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                  });
+                              var request =
+                              http.MultipartRequest('POST', Uri.parse('https://home-alone-csproject.herokuapp.com/house/insert'))
+                                ..fields['houseData'] = Jsonhousedata;
+                              print(file != null);
+                              if(file != null){
+                                request.files.add(await http.MultipartFile.fromBytes('file', await File.fromUri(file.uri).readAsBytes(), filename: filepath, contentType: MediaType(
+                            'ContentType', 'application/json')));
+                              }
+
+                              var streamedResponse = await request.send();
+                              var response = await http.Response.fromStream(
+                                  streamedResponse);
                               print(response.body);
                               //
                               if (response.statusCode.toString() == '200') {

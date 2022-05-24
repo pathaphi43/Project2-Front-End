@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:homealone/model/house/HouseAndImageModel.dart';
+import 'package:homealone/theme.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:async';
@@ -22,6 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
 
   TextStyle _textStyle() {
     TextStyle(
@@ -248,7 +250,9 @@ class _HomePageState extends State<HomePage> {
                                                           size: 12.0,
                                                         ),
                                                         Text(
-                                                           e.houseDistrict == null ? "null" :" อ.${e.houseDistrict}"+
+                                                           e.houseDistrict == null ? ""+
+                                                               " จ."+
+                                                               e.houseProvince :" ${e.houseDistrict}"+
                                                                 " จ."+
                                                                 e.houseProvince,
                                                             style: TextStyle(

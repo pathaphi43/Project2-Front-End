@@ -1,8 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:condition/condition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
+import 'package:homealone/model/payment/TransactionShowModel.dart';
 import 'package:homealone/pages/Navbar/appBar.dart';
-
+import 'package:homealone/pages/Navbar/mainpages.dart';
+import 'package:homealone/pages/payment/paymentWidgetShow.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 class ElecpayPage extends StatefulWidget {
   @override
   _ElecpayPageState createState() => _ElecpayPageState();
@@ -33,6 +40,180 @@ DateTime _selectedDate;
       _counter++;
     });
   }
+  int args;
+
+  @override
+  void didChangeDependencies() async {
+    args = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
+    gethomeAll();
+    super.didChangeDependencies();
+  }
+
+  DateTime dateTimeEnd = DateTime.now();
+  DateTime dateTimeStart = DateTime.now().subtract(Duration(days: 30));
+  List<TransactionShowModel> transactions;
+  Stream<List<TransactionShowModel>> onCurrentUserChanged;
+  StreamController<List<TransactionShowModel>> currentUserStreamCtrl =
+  new StreamController<List<TransactionShowModel>>.broadcast();
+
+  Future<void> onRefresh() {
+    setState(() {
+      gethomeAll();
+    });
+    return Future.delayed(Duration(seconds: 1));
+  }
+
+
+  Future<List<TransactionShowModel>> gethomeAll() async {
+    String uri;
+    if(status == 0){
+      uri = '/payment/house-rent/';
+    }else if(status == 1){
+      uri = 'payment/house-rent-tenant/';
+    }else{
+      uri = '/payment/house-rent/';
+    }
+    final response = await http.get(Uri.http(
+        'home-alone-csproject.herokuapp.com','${uri}' + args.toString()));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      // print("Body" + utf8.decode(response.bodyBytes));
+      currentUserStreamCtrl.sink
+          .add(transactionShowModelFromJson(utf8.decode(response.bodyBytes)));
+      transactions =
+          transactionShowModelFromJson(utf8.decode(response.bodyBytes));
+
+      return transactions;
+    } else {
+      throw Exception('Failed to load homedata');
+    }
+  }
+  PaymentWidgetShow _paymentWidgetShow = new PaymentWidgetShow();
+  List<DataRow> dataRowList(List<TransactionShowModel> model) {
+    List<DataRow> dataRows = [];
+    model.forEach((element) {
+      print(element.house.houseName);
+      element.payments.forEach((pay) {
+        dataRows.add(
+            DataRow(
+                cells: [
+                  DataCell(
+                      Center(child: Text(element.tenant.tenantFirstname),)
+                  ),
+                  DataCell(
+                      Center(child: Text(element.house.houseName),)
+                  ),
+                  DataCell(
+                      Center(child: Text('${DateFormat("MMMM","th").format(pay.payElecInmonth)}'),)
+                  ),
+                  DataCell(
+                      Center(child: Text(pay.payElecAmount.toString()),)
+                  ),
+                  DataCell(
+                      Center(
+                          // child:(status == 1)? (pay.payElecStatus != 1)? TextButton(onPressed: () => Navigator.pushNamed(context, '/ElecPayTenant-page', arguments: pay), child: Text("ชำระเงิน")):Text(pay.payElecStatus == 1? 'ชำระแล้ว':'ค้างชำระ',style:TextStyle(color:pay.payElecStatus == 1?Colors.red: Colors.green,),) :Text(pay.payElecStatus == 1? 'ชำระแล้ว':'ค้างชำระ',style:TextStyle(color:pay.payElecStatus == 1?Colors.red: Colors.green,),)
+                    child:(status == 1)? (pay.payElecStatus == 0)?TextButton(onPressed: () =>  Navigator.pushNamed(context, '/ElecPayTenant-page', arguments: pay), child: Text("ชำระเงิน",style: TextStyle(color: Colors.red),)):(pay.payElecStatus  == 1)?TextButton(onPressed: () =>  Navigator.pushNamed(context, '/ElecPayTenant-page', arguments: pay), child: Text("รอยืนยัน",style: TextStyle(color: Colors.orange),)):Text("ชำระแล้ว",style: TextStyle(color: Colors.green),) : (pay.payElecStatus == 0)
+                        ? TextButton(
+                        onPressed: () => print("ไปหน้าแก้ไข"),
+                        child: Text(
+                          "ค้างชำระ",
+                          style: TextStyle(color: Colors.red),
+                        ))
+                        : (pay.payElecStatus == 1)
+                        ? TextButton(
+                        onPressed: () => showDialog<String>(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) =>
+                              AlertDialog(
+                                title: const Text('ยืนยันการชำระเงิน'),
+                                content: Center(
+                                  child: _paymentWidgetShow.columnShowElec(pay)
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(
+                                        context, 'Cancel'),
+                                    child: const Text('ยกเลิก'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(new SnackBar(
+                                        duration:
+                                        new Duration(seconds: 4),
+                                        content: new Row(
+                                          children: <Widget>[
+                                            new CircularProgressIndicator(),
+                                            new Text("กำลังโหลด...")
+                                          ],
+                                        ),
+                                      ));
+                                      print(pay.id);
+                                      var response = await http.get(
+                                          Uri.parse('https://home-alone-csproject.herokuapp.com/payment/tenant-electric/'+pay.id.toString()),
+                                          headers: {
+                                            'Content-Type': 'application/json'
+                                          });
+                                      if (response.statusCode == 200){
+                                        setState(() {
+                                          Navigator.pop(context, 'ยืนยัน');
+                                        });
+                                      }else ScaffoldMessenger.of(context)
+                                          .showSnackBar(new SnackBar(
+                                        duration:
+                                        new Duration(seconds: 4),
+                                        content: new Row(
+                                          children: <Widget>[
+                                            new CircularProgressIndicator(),
+                                            new Text("เกิดข้อผิดพลาด")
+                                          ],
+                                        ),
+                                      ));
+                                    },
+                                    child: const Text('ยืนยัน'),
+                                  ),
+                                ],
+                              ),
+                        ),
+                        child: Text(
+                          "รอยืนยัน",
+                          style: TextStyle(color: Colors.orange),
+                        ))
+                        : TextButton(
+                        onPressed: () => showDialog<String>(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) =>
+                              AlertDialog(
+                                title: const Text('การชำระเงิน'),
+                                content: Center(child: _paymentWidgetShow.columnShowElec(pay)),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(
+                                        context, 'Cancel'),
+                                    child: const Text('ปิด'),
+                                  ),
+                                ],
+                              ),
+                        ),
+                        child: Text(
+                          "ชำระแล้ว",
+                          style: TextStyle(color: Colors.lightGreen),
+                        )))
+                  ),
+                ]
+            )
+        );
+      });
+    });
+
+
+    return dataRows;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,88 +234,83 @@ DateTime _selectedDate;
     final mqHeight = MediaQuery.of(context).size.height;
     final mqWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          SizedBox(
-            height: 18,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("ค่าไฟฟ้า",
-                style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontSize: 20)),
-          ),
-          SizedBox(
-            height: 14,
-          ),
-          Container(
-            child: rentsearch(context),
-          ),
-          Container(
-            width: mqWidth,
-            height: mqHeight,
-            child: Stack(
-              overflow: Overflow.visible,
-              children: [
-                Container(
-                    width: mqWidth,
-                    child: DataTable(
-                        columnSpacing: 0,
-                        horizontalMargin: 0,
-                        columns: const <DataColumn>[
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('ผู้เช่า',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('บ้าน',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('เดือน',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('จำนวน',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                          DataColumn(
-                              label: Expanded(
-                            child: Text('สถานะ',
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.center),
-                          )),
-                        ],
-                        rows: List<DataRow>.generate(
-                          numItems,
-                          (int index) => DataRow(cells: <DataCell>[
-                            DataCell(Center(child: Text('นิรมัย'))),
-                            DataCell(Center(child: Text('บ้านลักษณาวดี'))),
-                            DataCell(Center(child: Text('มกราคม'))),
-                            DataCell(Center(child: Text('5,500'))),
-                            DataCell(Center(
-                              child: Text(
-                                'เสร็จสิ้น',
-                                style: TextStyle(color: Colors.green),
-                              ),
-                            )),
-                          ]),
-                        )))
-              ],
-            ),
-          )
-        ],
-      ),
-    ));
+        body: RefreshIndicator(onRefresh: onRefresh,
+            child: StreamBuilder(stream: currentUserStreamCtrl.stream,builder: (BuildContext context,
+                AsyncSnapshot<List<TransactionShowModel>> snapshot) {
+              if(snapshot.hasData){
+                return SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 18,
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text("ค่าไฟฟ้า",
+                            style: TextStyle(color: Color.fromRGBO(250, 120, 186, 1),fontSize: 20)),
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      Container(
+                        child: rentsearch(context),
+                      ),
+                      Container(
+                        width: mqWidth,
+                        height: mqHeight,
+                        child: Stack(
+                          overflow: Overflow.visible,
+                          children: [
+                            Container(
+                                width: mqWidth,
+                                child: DataTable(
+                                    columnSpacing: 0,
+                                    horizontalMargin: 0,
+                                    columns: const <DataColumn>[
+                                      DataColumn(
+                                          label: Expanded(
+                                            child: Text('ผู้เช่า',
+                                                style: TextStyle(fontStyle: FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                      DataColumn(
+                                          label: Expanded(
+                                            child: Text('บ้าน',
+                                                style: TextStyle(fontStyle: FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                      DataColumn(
+                                          label: Expanded(
+                                            child: Text('เดือน',
+                                                style: TextStyle(fontStyle: FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                      DataColumn(
+                                          label: Expanded(
+                                            child: Text('จำนวน',
+                                                style: TextStyle(fontStyle: FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                      DataColumn(
+                                          label: Expanded(
+                                            child: Text('สถานะ',
+                                                style: TextStyle(fontStyle: FontStyle.italic),
+                                                textAlign: TextAlign.center),
+                                          )),
+                                    ],
+                                    rows: dataRowList(snapshot.data)))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              }else return Center(
+                child: CircularProgressIndicator(),
+              );
+            }) ) 
+      );
   }
 
    Widget rentsearch(BuildContext context) {
@@ -167,7 +343,7 @@ selectDate(BuildContext context) async {
                 context,
                 initialDate: _selectedDate!= null ? _selectedDate:DateTime.now(),
                 firstDate: DateTime(2000),
-                dateFormat: "dd-MMMM-yyyy",
+                dateFormat: "MMMM-yyyy",
                 locale: DateTimePickerLocale.th,
                 textColor: Color.fromRGBO(250, 120, 186, 1),
                 looping: true,

@@ -36,7 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
   var tenant_IDcard = TextEditingController();
   var tenant_Add = TextEditingController();
   var tenant_Province;
-  var tenant_District = TextEditingController();
+  var tenant_District;
   var tenant_Email = TextEditingController();
   var _ChoseValue;
   var _ChoseValueAmphureThailand;
@@ -70,7 +70,6 @@ class _RegisterPageState extends State<RegisterPage> {
     // AmphureDao amphure ;
     var list = await AmphureProvider.all(provinceId: int.parse(value));
 
-
     Amphurethai.removeRange(0,Amphurethai.length);
 
     for(AmphureDao amphure in list){
@@ -79,7 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
           name: amphure.nameTh.toString(),
           id: amphure.id.toString(),
         ));
-        print(amphure.nameTh);
+        // print(amphure.nameTh);
       }
     }
 
@@ -91,10 +90,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String dropdownValue1 = 'กรุงเทพฯ';
   var maskIDcardFormatter = new MaskTextInputFormatter(
-      mask: '# #### ##### ## #', filter: {"#": RegExp(r'[0-9]')});
+      mask: '#############', filter: {"#": RegExp(r'[0-9]')});
   
   var maskPhoneFormatter = new MaskTextInputFormatter(
-      mask: '### ### ####', filter: {"#": RegExp(r'[0-9]')});
+      mask: '##########', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   Widget build(BuildContext context) {
@@ -421,10 +420,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                   onChanged: (value) {
                                     setState(() {
                                       _ChoseValue = value;
-                                      // print(_ChoseValue);
-                                      _Amphure(_ChoseValue);
-                                        _ChoseValueAmphureThailand = null;
+                                      print(_ChoseValue);
 
+                                      _Amphure(_ChoseValue);
+                                      int index = int.parse(_ChoseValue);
+                                      tenant_Province = province_th[int.parse(value)-1].name;
+                                      _ChoseValueAmphureThailand = null;
 
                                     });
                                   },
@@ -505,6 +506,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                     setState(() {
                                       _ChoseValueAmphureThailand = value;
                                       // print(_ChoseValue);
+                                      for (int i = 0;
+                                      i < Amphurethai.length;
+                                      i++) {
+                                        if (Amphurethai[i].id ==
+                                            _ChoseValueAmphureThailand) {
+                                          // print("Index"+Amphurethai[i].name[0]);
+                                          tenant_District =
+                                              Amphurethai[i].name;
+                                        }
+                                      }
 
                                     });
                                   },
@@ -620,19 +631,19 @@ class _RegisterPageState extends State<RegisterPage> {
                           regdata.tenantLastname = tenant_Lastname.text;
                           regdata.tenantAdd = tenant_Add.text;
                           regdata.tenantProvince = tenant_Province;
-                          regdata.tenantDistrict = tenant_District.text;
+                          regdata.tenantDistrict = tenant_District;
                           regdata.tenantIDcard = tenant_IDcard.text;
                           regdata.tenantPhone = tenant_Phone.text;
                           regdata.tenantEmail = tenant_Email.text;
 
                           var jsondata = regtenantToJson(regdata);
                           print(jsondata);
-                          var response = await http.post(Uri.parse('http://homealone.comsciproject.com/user/regtenant'),
+                          var response = await http.post(Uri.parse('https://home-alone-csproject.herokuapp.com/tenant/signup'),
                               body: jsondata, headers: {
                                 'Content-Type': 'application/json',
                               }
                           );
-                          if(response.statusCode.toString() == "201"){
+                          if(response.statusCode.toString() == "200"){
                             Navigator.popUntil(context, ModalRoute.withName('/Prelogin-page'));
                           }else{
                             print("ชื่อผู้ใช้งานซ้ำกัน");

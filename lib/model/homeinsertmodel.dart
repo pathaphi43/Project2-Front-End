@@ -31,6 +31,7 @@ class Inserthouse {
     this.houseDeposit,
     this.houseInsurance,
     this.houseStatus,
+    this.houseImage
   });
 
   int hManager;
@@ -45,6 +46,7 @@ class Inserthouse {
   int houseBathroom;
   int houseLivingroom;
   int houseKitchen;
+  String houseImage;
   String houseArea;
   String houseLatitude;
   String houseLongitude;
@@ -76,6 +78,7 @@ class Inserthouse {
     houseRent: json["houseRent"],
     houseDeposit: json["houseDeposit"],
     houseInsurance: json["houseInsurance"],
+    houseImage: json["houseImage"],
     houseStatus: json["houseStatus"],
   );
 
@@ -100,6 +103,7 @@ class Inserthouse {
     "houseRent": houseRent,
     "houseDeposit": houseDeposit,
     "houseInsurance": houseInsurance,
+    "houseImage":houseImage,
     "houseStatus": houseStatus,
   };
 }

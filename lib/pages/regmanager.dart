@@ -29,7 +29,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
   var manager_Facebook = TextEditingController();
 
   var maskPhoneFormatter = new MaskTextInputFormatter(
-      mask: '### ### ####', filter: {"#": RegExp(r'[0-9]')});
+      mask: '##########', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   Widget build(BuildContext context) {

@@ -19,7 +19,7 @@ class PreRent extends StatefulWidget {
 class _PreRentState extends State<PreRent> {
   int args;
   List<HouseAndImageModel> homes;
-
+ bool checkSend= true;
   @override
   void didChangeDependencies() async {
     args = ModalRoute.of(context).settings.arguments;
@@ -47,7 +47,7 @@ class _PreRentState extends State<PreRent> {
           'Content-Type': 'application/json',
           // 'Content-Type':  'application/x-www-form-urlencoded'
         });
-
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return homes =
           houseAndImageModelFromJson(utf8.decode(response.bodyBytes));
@@ -124,16 +124,6 @@ class _PreRentState extends State<PreRent> {
                                                   ],
                                                 ),
                                               ));
-                                              // _scaffoldKey.currentState.showSnackBar(new SnackBar(
-                                              //   duration: new Duration(seconds: 4),
-                                              //   content: new Row(
-                                              //     children: <Widget>[
-                                              //       new CircularProgressIndicator(),
-                                              //       new Text("กำลังโหลด...")
-                                              //     ],
-                                              //   ),
-                                              // ));
-
                                               print("ยืนยัน"+e.hid.toString());
                                               var response = await http.get(
                                                   Uri.parse('https://home-alone-csproject.herokuapp.com/house/cancelrent/'+e.hid.toString()),

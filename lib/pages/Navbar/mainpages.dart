@@ -19,14 +19,10 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 List<int> args;
 SharedPreferences prefs;
-int id,status;
-String firstName,lastName,userName,imageProfile;
-
-
+int id, status;
+String firstName, lastName, userName, imageProfile;
 
 class MainPages extends StatefulWidget {
   @override
@@ -34,6 +30,11 @@ class MainPages extends StatefulWidget {
 }
 
 class _MainPagesState extends State<MainPages> {
+
+  int index = 0;
+  String message = ' ';
+  Manager managerdata;
+  Tenant tenantdata;
   List<Widget> showWidgets = [
     HomePage(),
     SearchPage(),
@@ -41,22 +42,12 @@ class _MainPagesState extends State<MainPages> {
     PaymentPage(),
     ProfilePage()
   ];
-  int index = 0;
-  String message = ' ';
-  Manager managerdata;
-  Tenant tenantdata;
-
-
   @override
   void initState() {
-    super.initState();
     asyncFunc();
     _determinePosition();
-    print("initState");
-
-
+    super.initState();
   }
-
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -94,37 +85,49 @@ class _MainPagesState extends State<MainPages> {
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
   }
 
   asyncFunc() async {
     print("Main Page AsyncFunc");
     prefs = await SharedPreferences.getInstance();
-    if(prefs.getInt('id') != null && prefs.getInt('status') != null){
+    if (prefs.getInt('id') != null && prefs.getInt('status') != null) {
       id = prefs.getInt('id');
       status = prefs.getInt('status');
-      if(status == 0){
-        await  getManager(id);
+      if (status == 0) {
+        await getManager(id);
         setState(() {
-        prefs.setString("imageprofile", managerdata.managerImage);
-        prefs.setString("firstname", managerdata.managerFirstname);
-        prefs.setString("lastname", managerdata.managerLastname);
-        prefs.setString("username", managerdata.managerUsername);
-
-        firstName = prefs.getString('firstname');
-        lastName = prefs.getString('lastname');
-        userName = prefs.getString('username');
-        imageProfile = prefs.getString('imageprofile');
-        // args[0] = id;
-        // args[1] = status;
-        ProfilePage().createState().asyncFunc();
+          showWidgets = [
+            HomePage(),
+            SearchPage(),
+            MapPage(),
+            PaymentPage(),
+            ProfilePage()
+          ];
+          prefs.setString("imageprofile", managerdata.managerImage);
+          prefs.setString("firstname", managerdata.managerFirstname);
+          prefs.setString("lastname", managerdata.managerLastname);
+          prefs.setString("username", managerdata.managerUsername);
+          firstName = prefs.getString('firstname');
+          lastName = prefs.getString('lastname');
+          userName = prefs.getString('username');
+          imageProfile = prefs.getString('imageprofile');
+          // args[0] = id;
+          // args[1] = status;
+          ProfilePage().createState().asyncFunc();
         });
-
-
-      }else if(status == 1){
-        await  getTenant(id);
+      } else if (status == 1) {
+        await getTenant(id);
 
         setState(() {
+          showWidgets = [
+            HomePage(),
+            SearchPage(),
+            MapPage(),
+            PaymentPage(),
+            ProfilePage()
+          ];
           prefs.setString("imageprofile", tenantdata.tenantImage);
           prefs.setString("firstname", tenantdata.tenantFirstname);
           prefs.setString("lastname", tenantdata.tenantLastname);
@@ -139,8 +142,14 @@ class _MainPagesState extends State<MainPages> {
           ProfilePage().createState().asyncFunc();
         });
       }
-    }else{
+    } else {
       setState(() {
+        showWidgets = [
+          HomePage(),
+          SearchPage(),
+          MapPage(),
+          ProfilePage()
+        ];
         managerdata = null;
         tenantdata = null;
         id = null;
@@ -151,9 +160,7 @@ class _MainPagesState extends State<MainPages> {
         userName = null;
       });
     }
-
   }
-
 
   // @override
   // void didChangeDependencies() {
@@ -173,19 +180,19 @@ class _MainPagesState extends State<MainPages> {
   // }
 
   Future<Manager> getManager(int id) async {
-    final response = await http.get(
-        Uri.http('home-alone-csproject.herokuapp.com', '/manager/id/' + id.toString()));
-      if (response.statusCode == 200) {
-        print("Main Page Get Manager");
-        return managerdata = managerFromJson(utf8.decode(response.bodyBytes));
-      } else {
-        throw Exception('Failed to load data');
-      }
+    final response = await http.get(Uri.http(
+        'home-alone-csproject.herokuapp.com', '/manager/id/' + id.toString()));
+    if (response.statusCode == 200) {
+      print("Main Page Get Manager");
+      return managerdata = managerFromJson(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception('Failed to load data');
+    }
   }
 
   Future<Tenant> getTenant(int id) async {
-    final response = await http.get(
-        Uri.http('home-alone-csproject.herokuapp.com', '/tenant/id/' + id.toString()));
+    final response = await http.get(Uri.http(
+        'home-alone-csproject.herokuapp.com', '/tenant/id/' + id.toString()));
     setState(() {
       print(response.statusCode);
       if (response.statusCode == 200) {
@@ -209,52 +216,62 @@ class _MainPagesState extends State<MainPages> {
                   accountName: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                     Text(firstName +
-                        "\t" +
-                        lastName,style: TextStyle(
-                      color: Color.fromRGBO(250, 120, 186, 1),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Kanit',
-                    ),),],
+                      Text(
+                        firstName + "\t" + lastName,
+                        style: TextStyle(
+                          color: Color.fromRGBO(250, 120, 186, 1),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanit',
+                        ),
+                      ),
+                    ],
                   ),
                   accountEmail: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                    Text(userName,style: TextStyle(
-                      color: Colors.blueGrey[600],
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Kanit',
-                    ),),],
+                      Text(
+                        userName,
+                        style: TextStyle(
+                          color: Colors.blueGrey[600],
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanit',
+                        ),
+                      ),
+                    ],
                   ),
-                  currentAccountPictureSize: Size(MediaQuery.of(context).size.width * 0.75, 80),
+                  currentAccountPictureSize:
+                      Size(MediaQuery.of(context).size.width * 0.75, 80),
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: ExactAssetImage('images/background_drawer.jpg'.toString()),
+                          image: ExactAssetImage(
+                              'images/background_drawer.jpg'.toString()),
                           fit: BoxFit.cover)),
                   currentAccountPicture: Center(
                     child: CircleAvatar(
                       radius: 60,
-                      backgroundImage:
-                          NetworkImage(imageProfile),
+                      backgroundImage: NetworkImage(imageProfile),
                     ),
                   ),
-
                 ),
                 ListTile(
                   leading: Icon(Icons.edit),
                   title: Text('แก้ไขข้อมูลส่วนตัว'),
                   onTap: () {
                     Navigator.pushNamed(context, '/Editmanager-page',
-                        arguments: [ prefs.getInt("id"),prefs.getInt("status") ]);
+                        arguments: [
+                          prefs.getInt("id"),
+                          prefs.getInt("status")
+                        ]);
                   },
-                ),ListTile(
+                ),
+                ListTile(
                   leading: Icon(Icons.apartment),
                   title: Text('ข้อมูลบ้านเช่า'),
                   onTap: () {
                     Navigator.pushNamed(context, '/Myhouse-page',
-                        arguments:  prefs.getInt("id").toString());
+                        arguments: prefs.getInt("id").toString());
                   },
                 ),
                 ListTile(
@@ -273,34 +290,33 @@ class _MainPagesState extends State<MainPages> {
                         arguments: id);
                   },
                 ),
-                 ListTile(
+                ListTile(
                   leading: Icon(Icons.account_balance_wallet_outlined),
-                  title: Text('การเงิน'),
+                  title: Text('การเงินและการจัดการ'),
                   onTap: () {
-                    Navigator.pushNamed(context,'/PreTransaction-page',arguments: id);
+                    Navigator.pushNamed(context, '/PreTransaction-page',
+                        arguments: id);
                   },
                 ),
-                ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text('ตั้งค่า'),
-                ),
+                // ListTile(
+                //   leading: Icon(Icons.settings),
+                //   title: Text('ตั้งค่า'),
+                // ),
                 ListTile(
                   leading: Icon(Icons.exit_to_app_outlined),
                   title: Text('ออกจากระบบ'),
                   onTap: () {
                     setState(() {
-                    prefs.clear();
-                    managerdata = null;
-                    tenantdata = null;
-                    id = null;
-                    status = null;
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/main-page',
-                      (Route<dynamic> route) => false,
-                    );
-
-
+                      prefs.clear();
+                      managerdata = null;
+                      tenantdata = null;
+                      id = null;
+                      status = null;
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/main-page',
+                        (Route<dynamic> route) => false,
+                      );
                     });
                   },
                 ),
@@ -315,7 +331,10 @@ class _MainPagesState extends State<MainPages> {
               Builder(
                 builder: (BuildContext context) {
                   return IconButton(
-                     icon: const Icon(Icons.filter_list_alt,color: Color.fromRGBO(250, 120, 186, 1), ),
+                    icon: const Icon(
+                      Icons.filter_list_alt,
+                      color: Color.fromRGBO(250, 120, 186, 1),
+                    ),
                     // icon: Container(
                     //   child: Hero(
                     //     tag: 'Profile Picture',
@@ -347,28 +366,30 @@ class _MainPagesState extends State<MainPages> {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  accountName: Text(firstName +
-                      "\t" +
-                     lastName,style: TextStyle(
-              color: Color.fromRGBO(250, 120, 186, 1),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Kanit',
-            ),),
-                  accountEmail: Text(userName,style: TextStyle(
-                    color: Color.fromRGBO(250, 120, 186, 1),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Kanit',
-                  ),),
+                  accountName: Text(
+                    firstName + "\t" + lastName,
+                    style: TextStyle(
+                      color: Color.fromRGBO(250, 120, 186, 1),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Kanit',
+                    ),
+                  ),
+                  accountEmail: Text(
+                    userName,
+                    style: TextStyle(
+                      color: Color.fromRGBO(250, 120, 186, 1),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Kanit',
+                    ),
+                  ),
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: ExactAssetImage('images/back.jpg'.toString()),
                           fit: BoxFit.cover)),
                   currentAccountPicture: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        imageProfile
-                            .toString()),
+                    backgroundImage: NetworkImage(imageProfile.toString()),
                   ),
                 ),
                 ListTile(
@@ -405,8 +426,7 @@ class _MainPagesState extends State<MainPages> {
                       child: Hero(
                         tag: 'Profile Picture',
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              imageProfile),
+                          backgroundImage: NetworkImage(imageProfile),
                         ),
                       ),
                     ),
@@ -414,7 +434,7 @@ class _MainPagesState extends State<MainPages> {
                       Scaffold.of(context).openEndDrawer();
                     },
                     tooltip:
-                    MaterialLocalizations.of(context).openAppDrawerTooltip,
+                        MaterialLocalizations.of(context).openAppDrawerTooltip,
                   );
                 },
               ),
@@ -463,23 +483,29 @@ class _MainPagesState extends State<MainPages> {
 
   Widget myButtonNavBar() {
     return BottomNavigationBar(
-      onTap: (int i) {
-        setState(() {
-          index = i;
-        });
-      },
-      currentIndex: index,
-      unselectedItemColor: Color.fromRGBO(247, 207, 205, 1),
-      selectedItemColor: Color.fromRGBO(250, 120, 186, 1),
-      backgroundColor: Colors.pink[200],
-      items: <BottomNavigationBarItem>[
-        homeNav(),
-        searchNav(),
-        mapNav(),
-        paymentNav(),
-        profileNav()
-      ],
-    );
+        onTap: (int i) {
+          setState(() {
+            index = i;
+          });
+        },
+        currentIndex: index,
+        unselectedItemColor: Color.fromRGBO(247, 207, 205, 1),
+        selectedItemColor: Color.fromRGBO(250, 120, 186, 1),
+        backgroundColor: Colors.pink[200],
+        items: (status == 1 || status == 0)
+            ? <BottomNavigationBarItem>[
+                homeNav(),
+                searchNav(),
+                mapNav(),
+                paymentNav(),
+                profileNav()
+              ]
+            : <BottomNavigationBarItem>[
+                homeNav(),
+                searchNav(),
+                mapNav(),
+                profileNav()
+              ]);
   }
 
   BottomNavigationBarItem homeNav() {
@@ -488,16 +514,16 @@ class _MainPagesState extends State<MainPages> {
           Icons.home,
           // size: 20,
         ),
-        label:'หน้าแรก');
+        label: 'หน้าแรก');
   }
 
   BottomNavigationBarItem searchNav() {
     return BottomNavigationBarItem(
-      icon: Icon(
-        Icons.search,
-        // size: 20,
-      ),
-      label:'ค้นหา');
+        icon: Icon(
+          Icons.search,
+          // size: 20,
+        ),
+        label: 'ค้นหา');
   }
 
   BottomNavigationBarItem mapNav() {

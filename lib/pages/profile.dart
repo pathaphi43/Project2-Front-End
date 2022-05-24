@@ -41,11 +41,11 @@ class _ProfilePageState extends State<ProfilePage> {
     asyncFunc();
   }
 
+
+
   asyncFunc()async {
      prefs = await SharedPreferences.getInstance();
-
      MainPages().createState().asyncFunc();
-
   }
 
   Future<Manager> getManager(int id) async {
@@ -64,7 +64,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<Tenant> getTenant(int id) async {
     final response = await http.get(
         Uri.http('home-alone-csproject.herokuapp.com', '/tenant/id/' + id.toString()));
-
       print(response.statusCode);
       if (response.statusCode == 200) {
         tenantdata = tenantFromJson(response.body);
@@ -91,7 +90,11 @@ class _ProfilePageState extends State<ProfilePage> {
       print('Failed to pick image $e');
     }
   }
-
+// @override
+//   void dispose() {
+//     // TODO: implement dispose
+//     super.dispose();
+//   }
   @override
   Widget build(BuildContext context) {
 // print("profile Status"+status.toString());
@@ -104,8 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 Widget managerWidget(BuildContext context){
-  File image;
-  return Scaffold(
+  return (status!=null)? Scaffold(
       body: Center(
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -154,7 +156,7 @@ Widget managerWidget(BuildContext context){
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(firstName +" "+lastName,
+                            Text('$firstName\t$lastName',
                               style: TextStyle(
                                 color: Color.fromRGBO(250, 120, 186, 1),
                                 fontSize: 20,
@@ -233,7 +235,7 @@ Widget managerWidget(BuildContext context){
                             minWidth: MediaQuery.of(context).size.width/2.3,
                             height: 100.0,
                             onPressed: () {
-                             Navigator.pushNamed(context, '/Income-page',arguments: id.toString());
+                             Navigator.pushNamed(context, '/Income-page');
                             },
                             child: Text(
                               "ข้อมูลรายได้",
@@ -297,12 +299,12 @@ Widget managerWidget(BuildContext context){
           ),
 
         ),
-      ));
+      )):notloginWidget(context);
 }
 
 
 Widget tenantWidget(BuildContext context){
-  return Scaffold(
+  return (status!=null)?Scaffold(
       body: Center(
         child: Container(
           child: ListView(
@@ -442,7 +444,7 @@ Widget tenantWidget(BuildContext context){
                           minWidth: 60.0,
                           height: 90.0,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/Review-page',arguments: null);
+                            Navigator.pushNamed(context, '/PreReview-page',arguments: id);
 
                           },
                           child: Text(
@@ -509,7 +511,7 @@ Widget tenantWidget(BuildContext context){
             ],
           ),
         ),
-      ));
+      )):notloginWidget(context);
 }
 
 Widget notloginWidget(BuildContext context){

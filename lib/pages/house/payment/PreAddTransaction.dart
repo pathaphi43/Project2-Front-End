@@ -18,13 +18,17 @@ class _PreAddTransactionsState extends State<PreAddTransactions> {
   List<HouseAndImageModel> homes;
 
   @override
+  void initState() {
+    getHome();
+    super.initState();
+  }
+  @override
   void didChangeDependencies() async {
     args = ModalRoute.of(context).settings.arguments;
     super.didChangeDependencies();
   }
   void onRefresh(){
     getHome();
-
   }
   Future<void> onRefresh2 () {
     setState(() {
@@ -86,9 +90,9 @@ class _PreAddTransactionsState extends State<PreAddTransactions> {
                               // actionExtentRatio: 0.1,
                               secondaryActions: <Widget>[
                                 IconSlideAction(
-                                  caption: 'ยืนยัน',
+                                  caption: 'เพิ่มการเงิน',
                                   color: Colors.green,
-                                  icon: Icons.check,
+                                  icon: Icons.add,
                                   onTap: () {
                                     print(e.houseName);
                                     Navigator.pushNamed(context, '/Transaction-page',
@@ -96,7 +100,7 @@ class _PreAddTransactionsState extends State<PreAddTransactions> {
                                   },
                                 ),
                                 IconSlideAction(
-                                  caption: 'ยกเลิก',
+                                  caption: 'ยกเลิกการเช่า',
                                   color: Colors.red,
                                   icon: Icons.delete,
                                   onTap: () => showDialog<String>(
@@ -123,17 +127,25 @@ class _PreAddTransactionsState extends State<PreAddTransactions> {
                                             ));
 
                                             print("ยืนยัน"+e.hid.toString());
-                                            // var response = await http.get(
-                                            //     Uri.parse('https://home-alone-csproject.herokuapp.com/house/cancelrent/'+e.hid.toString()),
-                                            //     headers: {
-                                            //       'Content-Type': 'application/json'
-                                            //     });
-                                            // if (response.statusCode == 200){
-                                            //   setState(() {
-                                            //     getHome();
-                                            //   });
+                                            var response = await http.get(
+                                                Uri.parse('https://home-alone-csproject.herokuapp.com/house/cancel-house-after-rent/'+e.hid.toString()),
+                                                headers: {
+                                                  'Content-Type': 'application/json'
+                                                });
+                                            if (response.statusCode == 200){
+                                              setState(() {
+                                                getHome();
+                                              });
                                               Navigator.pop(context, 'ยืนยัน');
-                                            // }else print("Upload fail"+ response.statusCode.toString());
+                                            }else  ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                                              duration: new Duration(seconds: 4),
+                                              content: new Row(
+                                                children: <Widget>[
+                                                  new CircularProgressIndicator(),
+                                                  new Text("เกิดข้อผิดพลาด:"+response.statusCode.toString())
+                                                ],
+                                              ),
+                                            ));
                                           },
                                           child: const Text('ยืนยัน'),
                                         ),
