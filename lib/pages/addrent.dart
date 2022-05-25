@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:homealone/AppStyle.dart';
 import 'package:homealone/model/Rent/RentModel.dart';
 import 'package:homealone/model/house/HouseAndImageModel.dart';
 import 'package:homealone/pages/Navbar/appBar.dart';
@@ -76,6 +77,8 @@ class _AddRentState extends State<AddRent> {
   @override
   Widget build(BuildContext context) {
     print(args);
+    final mqHeight = MediaQuery.of(context).size.height;
+    final mqWidth = MediaQuery.of(context).size.width;
     return FutureBuilder(
       future: gethomeAll(args),
       builder: (BuildContext context, AsyncSnapshot<RentModel> snapshot) {
@@ -91,44 +94,147 @@ class _AddRentState extends State<AddRent> {
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(50, 55, 50, 10),
-                            child: TextField(
-                              readOnly: true,
-                              style: Theme.of(context).textTheme.headline6,
-                              textAlign: TextAlign.center,
-                              decoration: InputDecoration(
-                                  enabled: false,
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(100.0)),
-                                  labelText: snapshot.data.tenantFirstname +
-                                      "\t" +
-                                      snapshot.data.tenantLastname,
-                                  prefixIcon: Icon(Icons.account_circle)),
-                              controller: null, //ส่งข้อมูลTextField
-                            ),
+                          // Padding(
+                          //   padding: const EdgeInsets.fromLTRB(50, 55, 50, 10),
+                          //   child: TextField(
+                          //     readOnly: true,
+                          //     style: Theme.of(context).textTheme.headline6,
+                          //     textAlign: TextAlign.center,
+                          //     decoration: InputDecoration(
+                          //         enabled: false,
+                          //         border: OutlineInputBorder(
+                          //             borderRadius:
+                          //                 BorderRadius.circular(100.0)),
+                          //         labelText: snapshot.data.tenantFirstname +
+                          //             "\t" +
+                          //             snapshot.data.tenantLastname,
+                          //         prefixIcon: Icon(Icons.account_circle)),
+                          //     controller: null, //ส่งข้อมูลTextField
+                          //   ),
+                          // ),
+                          // Padding(
+                          //   padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
+                          //   child: TextField(
+                          //     style: Theme.of(context).textTheme.headline6,
+                          //     textAlign: TextAlign.start,
+                          //     // enabled: false,
+                          //     readOnly: true,
+                          //     decoration: InputDecoration(
+                          //         enabled: false,
+                          //         border: OutlineInputBorder(
+                          //             borderRadius:
+                          //                 BorderRadius.circular(100.0)),
+                          //         labelText: snapshot.data.houseName,
+                          //         prefixIcon: Icon(Icons.map_outlined)),
+                          //     controller: null, //ส่งข้อมูลTextField
+                          //   ),
+                          // ),
+                          Container(
+                              color: Color.fromRGBO(250, 120, 186, 1),
+                              width: mqWidth / 0.2,
+                              height: 50,
+                              child: Center(
+                                  child: Text(
+                                    "ผู้เช่า",
+                                    style: TextStyle(fontSize: 18, color: Colors.white),
+                                  ))),
+                          SizedBox(
+                            height: 4,
                           ),
+                          showTanent(context, snapshot.data),
+                          Container(
+                              color: Color.fromRGBO(250, 120, 186, 1),
+                              width: mqWidth / 0.2,
+                              height: 50,
+                              child:  Center(
+                                  child:Text(
+                                    "บ้านเช่า",
+                                    style: TextStyle(fontSize: 18, color: Colors.white),
+                                  ))
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            // width: 350,
+                            //   height: 250,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    new Text(snapshot.data.houseName,
+                                        style: _appStyle.textStyleUrSize(22)),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    snapshot.data.houseAddress != null
+                                        ? new Text(
+                                      snapshot.data.houseAddress,
+                                      style: _appStyle.textStyle18(),
+                                      overflow: TextOverflow.fade,
+                                    )
+                                        : Row(),
+                                    new Text(
+                                        snapshot.data.houseDistrict == null
+                                            ? "" + " จ." + snapshot.data.houseProvince
+                                            : " ${snapshot.data.houseDistrict}" +
+                                            " จ." +
+                                            snapshot.data.houseProvince,
+                                        style: _appStyle.textStyle18(),
+                                        overflow: TextOverflow.fade),
+                                    Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              snapshot.data.houseElectric == null
+                                                  ? ""
+                                                  : " อัตราค่าไฟฟ้า " +
+                                                  snapshot.data.houseElectric +
+                                                  " ",
+                                              style: TextStyle(
+                                                color:
+                                                Color.fromRGBO(250, 120, 186, 1),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Kanit',
+                                              ),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              snapshot.data.houseWater == null
+                                                  ? ""
+                                                  : " อัตราค่าน้ำ " +
+                                                  snapshot.data.houseWater +
+                                                  " ",
+                                              style: TextStyle(
+                                                color:
+                                                Color.fromRGBO(250, 120, 186, 1),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Kanit',
+                                              ),
+                                            ),
+                                          ),
+                                        ]),
+
+                                  ],
+                                ),
+                              )),
+
+                          SizedBox(
+                            height: 4,
+                          ),
+                          // showReview(context),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                             child: TextField(
-                              style: Theme.of(context).textTheme.headline6,
-                              textAlign: TextAlign.start,
-                              // enabled: false,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                  enabled: false,
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(100.0)),
-                                  labelText: snapshot.data.houseName,
-                                  prefixIcon: Icon(Icons.map_outlined)),
-                              controller: null, //ส่งข้อมูลTextField
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
-                            child: TextField(
+                              enabled: false,
                               style: Theme.of(context).textTheme.headline6,
                               textAlign: TextAlign.start,
                               decoration: InputDecoration(
@@ -146,6 +252,7 @@ class _AddRentState extends State<AddRent> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                             child: TextField(
+                              enabled: false,
                               style: Theme.of(context).textTheme.headline6,
                               textAlign: TextAlign.start,
                               decoration: InputDecoration(
@@ -165,6 +272,7 @@ class _AddRentState extends State<AddRent> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(50, 0, 50, 10),
                             child: TextField(
+                              enabled: false,
                               style: Theme.of(context).textTheme.headline6,
                               textAlign: TextAlign.start,
                               decoration: InputDecoration(
@@ -208,30 +316,30 @@ class _AddRentState extends State<AddRent> {
                                     trailing: Icon(Icons.keyboard_arrow_down),
                                   ))),
                           ////วันที่ออก
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(30, 0, 50, 10),
-                              child: FlatButton(
-                                  onPressed: () {
-                                    DatePicker.showDatePicker(context,
-                                        showTitleActions: true,
-                                        // onChanged: (date) {
-                                        //   print('change $date');
-                                        // }
-                                        onConfirm: (date) {
-                                      dateTimeOut = date;
-                                      print('confirm $dateTimeOut');
-
-                                      setState(() {});
-                                    },
-                                        currentTime: DateTime.now(),
-                                        locale: LocaleType.th);
-                                  },
-                                  child: ListTile(
-                                    leading: Icon(Icons.date_range_outlined),
-                                    title: Text(
-                                        'วันที่ออก ${dateTimeOut.day} - ${dateTimeOut.month} - ${dateTimeOut.year}'),
-                                    trailing: Icon(Icons.keyboard_arrow_down),
-                                  ))),
+                          // Padding(
+                          //     padding: const EdgeInsets.fromLTRB(30, 0, 50, 10),
+                          //     child: FlatButton(
+                          //         onPressed: () {
+                          //           DatePicker.showDatePicker(context,
+                          //               showTitleActions: true,
+                          //               // onChanged: (date) {
+                          //               //   print('change $date');
+                          //               // }
+                          //               onConfirm: (date) {
+                          //             dateTimeOut = date;
+                          //             print('confirm $dateTimeOut');
+                          //
+                          //             setState(() {});
+                          //           },
+                          //               currentTime: DateTime.now(),
+                          //               locale: LocaleType.th);
+                          //         },
+                          //         child: ListTile(
+                          //           leading: Icon(Icons.date_range_outlined),
+                          //           title: Text(
+                          //               'วันที่ออก ${dateTimeOut.day} - ${dateTimeOut.month} - ${dateTimeOut.year}'),
+                          //           trailing: Icon(Icons.keyboard_arrow_down),
+                          //         ))),
                           Padding(
                               padding: const EdgeInsets.fromLTRB(30, 0, 50, 10),
                               child: FlatButton(
@@ -362,7 +470,7 @@ class _AddRentState extends State<AddRent> {
                                             Colors.black45),
                                     backgroundColor:
                                         MaterialStateProperty.all<Color>(
-                                            Colors.blue),
+                                          Color.fromRGBO(250, 120, 186, 1),),
                                     minimumSize:
                                         MaterialStateProperty.all<Size>(
                                             Size(200, 45)),
@@ -371,7 +479,7 @@ class _AddRentState extends State<AddRent> {
                                       RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(50.0),
-                                          side: BorderSide(color: Colors.blue)),
+                                          side: BorderSide(color: Colors.pink)),
                                     ))),
                           ),
                         ],
@@ -391,5 +499,35 @@ class _AddRentState extends State<AddRent> {
           );
       },
     );
+  }
+  AppStyle _appStyle = new AppStyle();
+  Widget showTanent(BuildContext context, RentModel data) {
+    final mqHeight = MediaQuery.of(context).size.height;
+    final mqWidth = MediaQuery.of(context).size.width;
+
+            return Container(
+                width: mqWidth / 0.2,
+                height: mqHeight / 4.0,
+                child: Card(
+                    color: Colors.grey[200],
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Image.network(data.tenantImage,height: 100,width: 100, fit: BoxFit.cover),
+                        Text(
+                            data.tenantFirstname +
+                                " " +
+                                data.tenantLastname,
+                            style: _appStyle.textStyleUrSize(22)),
+                        data.tenantPhone == null
+                            ? Row()
+                            : Text("เบอร์โทร:" + data.tenantPhone,
+                            style: _appStyle.textStyleUrSize(16)),
+                      ],
+                    )));
+
+
   }
 }

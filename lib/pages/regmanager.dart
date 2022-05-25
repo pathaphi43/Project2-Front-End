@@ -44,7 +44,8 @@ class _RegManagerPageState extends State<RegManagerPage> {
             children: <Widget>[
               SizedBox(height: 40.0),
               new Text(
-                ' Sign up',
+                'สร้างบัญชีใหม่',
+                overflow: TextOverflow.fade,
                 style: TextStyle(
                   color: Color.fromRGBO(250, 120, 186, 1),
                   fontSize: 60,
@@ -397,7 +398,7 @@ class _RegManagerPageState extends State<RegManagerPage> {
                         padding: EdgeInsets.all(10.0),
                         color: Color.fromRGBO(250, 120, 186, 1),
                         textColor: Colors.white,
-                        child: Text("Confirm",
+                        child: Text("ยืนยัน",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,

@@ -204,7 +204,7 @@ class _PreLoginState extends State<PreLogin> {
                                               onPressed: () => Navigator.pop(
                                                   context, 'Cancel'),
                                               child: const Text(
-                                                'Cancel',
+                                                'ยกเลิก',
                                                 style: TextStyle(
                                                   color: Colors.red,
                                                   fontSize: 20,

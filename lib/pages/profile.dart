@@ -594,7 +594,7 @@ Widget notloginWidget(BuildContext context){
                             ],),),
                         actions: [
                           TextButton(onPressed:  () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel', style: TextStyle(
+                              child: const Text('ยกเลิก', style: TextStyle(
                                 color: Color.fromRGBO(2, 97, 26, 1),
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

@@ -236,6 +236,7 @@ class _PreAddTransactionsState extends State<PreAddTransactions> {
                     ],
                   ),
                   Row(children: <Widget>[
+
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -292,18 +293,18 @@ class _PreAddTransactionsState extends State<PreAddTransactions> {
                             )
                           ],
                         )),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        e.houseArea == null ? "" : e.houseArea + " ",
-                        style: TextStyle(
-                          color: Color.fromRGBO(250, 120, 186, 1),
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                        ),
-                      ),
-                    ),
+                    // Align(
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text(
+                    //     e.houseArea == null ? "" : e.houseArea + " ",
+                    //     style: TextStyle(
+                    //       color: Color.fromRGBO(250, 120, 186, 1),
+                    //       fontSize: 12,
+                    //       fontWeight: FontWeight.bold,
+                    //       fontFamily: 'Kanit',
+                    //     ),
+                    //   ),
+                    // ),
                   ])
                 ],
               )),
